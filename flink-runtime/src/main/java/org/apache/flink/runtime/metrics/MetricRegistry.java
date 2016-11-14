@@ -244,7 +244,7 @@ public class MetricRegistry {
 			}
 			if (metric instanceof View) {
 				if (viewUpdater == null) {
-					viewUpdater = new ViewUpdater(executor);
+					viewUpdater = new ViewUpdater();
 				}
 				viewUpdater.notifyOfAddedView((View) metric);
 			}

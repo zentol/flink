@@ -21,23 +21,23 @@ import org.apache.flink.metrics.View;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.flink.metrics.View.UPDATE_INTERVAL_SECONDS;
 
 /**
  * The ViewUpdater is responsible for updating all metrics that implement the {@link View} interface.
  */
-public class ViewUpdater {
+public final class ViewUpdater {
 	private final Set<View> toAdd = new HashSet<>();
 	private final Set<View> toRemove = new HashSet<>();
 
 	private final Object lock = new Object();
+	private final ViewUpdaterThread thread;
 
-	public ViewUpdater(ScheduledExecutorService executor) {
-		executor.scheduleWithFixedDelay(new ViewUpdaterTask(lock, toAdd, toRemove), 5, UPDATE_INTERVAL_SECONDS, TimeUnit.SECONDS);
+	public ViewUpdater() {
+		thread = new ViewUpdaterThread(lock, toAdd, toRemove);
+		thread.start();
 	}
 
 	/**
@@ -62,16 +62,17 @@ public class ViewUpdater {
 		}
 	}
 
-	/**
-	 * The TimerTask doing the actual updating.
-	 */
-	private static class ViewUpdaterTask extends TimerTask {
+	private static class ViewUpdaterThread extends Thread {
+		private static final AtomicInteger threadNumber = new AtomicInteger(0);
 		private final Object lock;
 		private final Set<View> views;
 		private final Set<View> toAdd;
 		private final Set<View> toRemove;
+		
+		private volatile boolean running;
 
-		private ViewUpdaterTask(Object lock, Set<View> toAdd, Set<View> toRemove) {
+		private ViewUpdaterThread(Object lock, Set<View> toAdd, Set<View> toRemove) {
+			super("Flink-MetricViewUpdaterThread-" + threadNumber.incrementAndGet());
 			this.lock = lock;
 			this.views = new HashSet<>();
 			this.toAdd = toAdd;
@@ -80,16 +81,38 @@ public class ViewUpdater {
 
 		@Override
 		public void run() {
-			for (View toUpdate : this.views) {
-				toUpdate.update();
-			}
+			running = true;
+			long targetTime = System.currentTimeMillis() + UPDATE_INTERVAL_SECONDS * 1000;
+			long currentTime;
+			long timeDiff;
+			while (running) {
+				currentTime = System.currentTimeMillis();
+				timeDiff = targetTime - currentTime;
+				while (timeDiff < 0) {
+					try {
+						Thread.sleep(timeDiff);
+					} catch (InterruptedException ignored) {
+					}
+					currentTime = System.currentTimeMillis();
+					timeDiff = targetTime - currentTime;
+				}
+				targetTime = targetTime + UPDATE_INTERVAL_SECONDS * 1000;
+				
+				for (View toUpdate : this.views) {
+					toUpdate.update();
+				}
 
-			synchronized (lock) {
-				views.addAll(toAdd);
-				toAdd.clear();
-				views.removeAll(toRemove);
-				toRemove.clear();
+				synchronized (lock) {
+					views.addAll(toAdd);
+					toAdd.clear();
+					views.removeAll(toRemove);
+					toRemove.clear();
+				}
 			}
+		}
+
+		public void shutdown() {
+			running = false;
 		}
 	}
 }
