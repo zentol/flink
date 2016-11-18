@@ -17,6 +17,8 @@
 
 package org.apache.flink.streaming.connectors.cassandra;
 
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -31,7 +33,7 @@ import org.apache.flink.configuration.Configuration;
  *
  * @param <IN> Type of the elements emitted by this sink
  */
-public class CassandraPojoSink<IN> extends CassandraSinkBase<IN, Void> {
+public class CassandraPojoSink<IN> extends CassandraSinkBase<IN, ResultSet> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -61,7 +63,8 @@ public class CassandraPojoSink<IN> extends CassandraSinkBase<IN, Void> {
 	}
 
 	@Override
-	public ListenableFuture<Void> send(IN value) {
-		return mapper.saveAsync(value);
+	public ListenableFuture<ResultSet> send(IN value) {
+		Statement s = mapper.saveQuery(value);
+		return session.executeAsync(s);
 	}
 }
