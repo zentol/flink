@@ -194,7 +194,7 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		}
 
 		long start = System.currentTimeMillis();
-		long deadline = start + 1000 * 30;
+		long deadline = start + 1000 * 120;
 		while (true) {
 			try {
 				cluster = builder.getCluster();
