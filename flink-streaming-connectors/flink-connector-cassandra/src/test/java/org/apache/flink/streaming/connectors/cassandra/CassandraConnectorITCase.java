@@ -49,18 +49,35 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.UUID;
 
+import static org.apache.flink.runtime.testutils.CommonTestUtils.createTempDirectory;
+import static org.apache.flink.runtime.testutils.CommonTestUtils.getCurrentClasspath;
+import static org.apache.flink.runtime.testutils.CommonTestUtils.getJavaCommandPath;
+import static org.apache.flink.runtime.testutils.CommonTestUtils.printLog4jDebugConfig;
+
 @SuppressWarnings("serial")
+@RunWith(PowerMockRunner.class)
 public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<String, Integer, Integer>, CassandraConnectorITCase.TestCassandraTupleWriteAheadSink<Tuple3<String, Integer, Integer>>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CassandraConnectorITCase.class);
@@ -89,12 +106,17 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 
 	private static final List<Tuple3<String, Integer, Integer>> collection = new ArrayList<>();
 
-	private static CassandraService cassandra;
+	private static File tmpDir;
+	private static Process cassandra;
 	private static Cluster cluster;
 	private static Session session;
+	private static StringWriter sw;
 
 	private static final Random random = new Random();
 	private int tableID;
+
+	@Rule
+	public Retry retriy = new Retry(3);
 
 	@BeforeClass
 	public static void generateCollection() {
@@ -109,15 +131,66 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		// check if we should run this test, current Cassandra version requires Java >= 1.8
 		CommonTestUtils.assumeJava8();
 
-		try {
-			cassandra = new CassandraService();
-		} catch (Exception e) {
-			LOG.error("Failed to instantiate cassandra service.", e);
-			Assert.fail("Failed to instantiate cassandra service.");
+		// generate temporary files
+		tmpDir = createTempDirectory();
+		ClassLoader classLoader = CassandraConnectorITCase.class.getClassLoader();
+		File file = new File(classLoader.getResource("cassandra.yaml").getFile());
+		File tmp = new File(tmpDir.getAbsolutePath() + File.separator + "cassandra.yaml");
+
+		Assert.assertTrue(tmp.createNewFile());
+		BufferedWriter b = new BufferedWriter(new FileWriter(tmp));
+
+		//copy cassandra.yaml; inject absolute paths into cassandra.yaml
+		Scanner scanner = new Scanner(file);
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			line = line.replace("$PATH", "'" + tmp.getParentFile());
+			b.write(line + "\n");
+			b.flush();
 		}
+		scanner.close();
 
 		if (EMBEDDED) {
-			cassandra.startProcess();
+			String javaCommand = getJavaCommandPath();
+
+			// create a logging file for the process
+			File tempLogFile = File.createTempFile("testlogconfig", "properties");
+			printLog4jDebugConfig(tempLogFile);
+
+			// start the task manager process
+			String[] command = new String[]{
+				javaCommand,
+				"-Dlog.level=DEBUG",
+				"-Dlog4j.configuration=file:" + tempLogFile.getAbsolutePath(),
+				"-Dcassandra.config=" + tmp.toURI(),
+				// these options were taken directly from the jvm.options file in the cassandra repo
+				"-XX:+UseThreadPriorities",
+				"-Xss256k",
+				"-XX:+AlwaysPreTouch",
+				"-XX:+UseTLAB",
+				"-XX:+ResizeTLAB",
+				"-XX:+UseNUMA",
+				"-XX:+PerfDisableSharedMem",
+				"-XX:+UseParNewGC",
+				"-XX:+UseConcMarkSweepGC",
+				"-XX:+CMSParallelRemarkEnabled",
+				"-XX:SurvivorRatio=8",
+				"-XX:MaxTenuringThreshold=1",
+				"-XX:CMSInitiatingOccupancyFraction=75",
+				"-XX:+UseCMSInitiatingOccupancyOnly",
+				"-XX:CMSWaitDuration=10000",
+				"-XX:+CMSParallelInitialMarkEnabled",
+				"-XX:+CMSEdenChunksRecordAlways",
+				"-XX:+CMSClassUnloadingEnabled",
+
+				"-classpath", getCurrentClasspath(),
+				CassandraService.class.getName()
+			};
+
+			ProcessBuilder bld = new ProcessBuilder(command);
+			cassandra = bld.start();
+			sw = new StringWriter();
+			new org.apache.flink.runtime.testutils.CommonTestUtils.PipeForwarder(cassandra.getErrorStream(), sw);
 		}
 
 		long start = System.currentTimeMillis();
@@ -320,11 +393,7 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		}
 
 		ResultSet rs = session.execute(SELECT_DATA_QUERY.replace(TABLE_NAME_VARIABLE, TABLE_NAME_PREFIX + tableID));
-		try {
-			Assert.assertEquals(20, rs.all().size());
-		} catch (Throwable e) {
-			LOG.error("test failed.", e);
-		}
+		Assert.assertEquals(20, rs.all().size());
 	}
 
 	@Test
@@ -348,11 +417,7 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		}
 
 		ResultSet rs = session.execute(SELECT_DATA_QUERY.replace(TABLE_NAME_VARIABLE, "test"));
-		try {
-			Assert.assertEquals(20, rs.all().size());
-		} catch (Throwable e) {
-			LOG.error("test failed.", e);
-		}
+		Assert.assertEquals(20, rs.all().size());
 	}
 
 	@Test
@@ -378,11 +443,7 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		}
 
 		source.close();
-		try {
-			Assert.assertEquals(20, result.size());
-		} catch (Throwable e) {
-			LOG.error("test failed.", e);
-		}
+		Assert.assertEquals(20, result.size());
 	}
 
 	protected static class TestCassandraTupleWriteAheadSink<IN extends Tuple> extends CassandraTupleWriteAheadSink<IN> {
@@ -391,6 +452,40 @@ public class CassandraConnectorITCase extends WriteAheadSinkTestBase<Tuple3<Stri
 		private TestCassandraTupleWriteAheadSink(String tableName, TypeSerializer<IN> serializer, ClusterBuilder builder, CheckpointCommitter committer) throws Exception {
 			super(INSERT_DATA_QUERY.replace(TABLE_NAME_VARIABLE, tableName), serializer, builder, committer);
 			this.tableName = tableName;
+		}
+	}
+
+	public class Retry implements TestRule {
+		private int retryCount;
+
+		public Retry(int retryCount) {
+			this.retryCount = retryCount;
+		}
+
+		public Statement apply(Statement base, Description description) {
+			return statement(base, description);
+		}
+
+		private Statement statement(final Statement base, final Description description) {
+			return new Statement() {
+				@Override
+				public void evaluate() throws Throwable {
+					Throwable caughtThrowable = null;
+
+					// implement retry logic here
+					for (int i = 0; i < retryCount; i++) {
+						try {
+							base.evaluate();
+							return;
+						} catch (Throwable t) {
+							caughtThrowable = t;
+							System.err.println(description.getDisplayName() + ": run " + (i+1) + " failed");
+						}
+					}
+					System.err.println(description.getDisplayName() + ": giving up after " + retryCount + " failures");
+					throw caughtThrowable;
+				}
+			};
 		}
 	}
 }
