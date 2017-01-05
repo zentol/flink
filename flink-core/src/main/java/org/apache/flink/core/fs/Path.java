@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.flink.annotation.Public;
 import org.apache.flink.core.io.IOReadableWritable;
@@ -58,6 +60,10 @@ public class Path implements IOReadableWritable, Serializable {
 	 * Character denoting the current directory.
 	 */
 	public static final String CUR_DIR = ".";
+
+	private static final Pattern PATTERN_WINDOWS_PATH = Pattern.compile("(file:(\\\\|/){1,3})?[A-Za-z]:");
+
+	private static final Pattern PATTERN_WINDOWS_PATH_SLASHED = Pattern.compile("(file:/{1,3})?/[A-Za-z]:");
 
 	/**
 	 * The internal representation of the path, a hierarchical URI.
@@ -179,9 +185,7 @@ public class Path implements IOReadableWritable, Serializable {
 		// escaped, which we don't require of Paths.
 
 		// add a slash in front of paths with Windows drive letters
-		if (hasWindowsDrive(pathString, false)) {
-			pathString = "/" + pathString;
-		}
+		boolean windows = hasWindowsDrive(pathString, false);
 
 		// parse uri components
 		String scheme = null;
@@ -194,8 +198,10 @@ public class Path implements IOReadableWritable, Serializable {
 		final int slash = pathString.indexOf('/');
 		if ((colon != -1) && ((slash == -1) || (colon < slash))) { // has a
 			// scheme
-			scheme = pathString.substring(0, colon);
-			start = colon + 1;
+			if (!windows || colon != 1) {
+				scheme = pathString.substring(0, colon);
+				start = colon + 1;
+			}
 		}
 
 		// parse uri authority, if any
@@ -207,7 +213,11 @@ public class Path implements IOReadableWritable, Serializable {
 		}
 
 		// uri path is the rest of the string -- query & fragment not supported
-		final String path = pathString.substring(start, pathString.length());
+		String path = pathString.substring(start, pathString.length());
+		
+		if (windows) {
+			path = "/" + path;
+		}
 
 		initialize(scheme, authority, path);
 	}
@@ -272,6 +282,8 @@ public class Path implements IOReadableWritable, Serializable {
 
 		return path;
 	}
+	
+	private static final String regex = "(file:\\\\{1,3})?[A-Z]:\\\\";
 
 	/**
 	 * Checks if the provided path string contains a windows drive letter.
@@ -283,12 +295,9 @@ public class Path implements IOReadableWritable, Serializable {
 	 * @return <code>true</code> if the path string contains a windows drive letter, <code>false</code> otherwise
 	 */
 	private boolean hasWindowsDrive(String path, boolean slashed) {
-		final int start = slashed ? 1 : 0;
-		return path.length() >= start + 2
-			&& (!slashed || path.charAt(0) == '/')
-			&& path.charAt(start + 1) == ':'
-			&& ((path.charAt(start) >= 'A' && path.charAt(start) <= 'Z') || (path.charAt(start) >= 'a' && path
-				.charAt(start) <= 'z'));
+		Pattern p = slashed ? PATTERN_WINDOWS_PATH_SLASHED : PATTERN_WINDOWS_PATH;
+		Matcher m = p.matcher(path);
+		return m.lookingAt();
 	}
 
 	/**
