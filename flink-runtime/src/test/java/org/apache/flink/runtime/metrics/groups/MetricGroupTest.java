@@ -182,10 +182,10 @@ public class MetricGroupTest extends TestLogger {
 		}
 
 		@Override
-		protected void addMetric(String name, Metric metric) {}
+		public void addMetric(String name, Metric metric) {}
 
 		@Override
-		public MetricGroup addGroup(String name) {
+		public AbstractMetricGroup addGroup(String name) {
 			return new DummyAbstractMetricGroup(registry);
 		}
 	}

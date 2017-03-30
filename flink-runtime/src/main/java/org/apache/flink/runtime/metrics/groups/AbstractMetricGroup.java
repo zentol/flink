@@ -80,7 +80,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	private final Map<String, Metric> metrics = new HashMap<>();
 
 	/** All metric subgroups of this group */
-	private final Map<String, AbstractMetricGroup> groups = new HashMap<>();
+	private final Map<String, AbstractMetricGroup<AbstractMetricGroup<A>>> groups = new HashMap<>();
 
 	/** The metrics scope represented by this group.
 	 *  For example ["host-7", "taskmanager-2", "window_word_count", "my-mapper" ]. */
@@ -344,7 +344,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	 * @param name the name to register the metric under
 	 * @param metric the metric to register
 	 */
-	protected void addMetric(String name, Metric metric) {
+	public void addMetric(String name, Metric metric) {
 		if (metric == null) {
 			LOG.warn("Ignoring attempted registration of a metric due to being null for name {}.", name);
 			return;
@@ -387,12 +387,12 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	// ------------------------------------------------------------------------
 
 	@Override
-	public MetricGroup addGroup(int name) {
+	public AbstractMetricGroup<?> addGroup(int name) {
 		return addGroup(String.valueOf(name));
 	}
 
 	@Override
-	public MetricGroup addGroup(String name) {
+	public AbstractMetricGroup<AbstractMetricGroup<A>> addGroup(String name) {
 		synchronized (this) {
 			if (!closed) {
 				// adding a group with the same name as a metric creates problems in many reporters/dashboards
@@ -403,8 +403,8 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 							name + "'. Metric might not get properly reported. " + Arrays.toString(scopeComponents));
 				}
 
-				AbstractMetricGroup newGroup = new GenericMetricGroup(registry, this, name);
-				AbstractMetricGroup prior = groups.put(name, newGroup);
+				AbstractMetricGroup<AbstractMetricGroup<A>> newGroup = new GenericMetricGroup<>(registry, this, name);
+				AbstractMetricGroup<AbstractMetricGroup<A>> prior = groups.put(name, newGroup);
 				if (prior == null) {
 					// no prior group with that name
 					return newGroup;
@@ -416,7 +416,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 			}
 			else {
 				// return a non-registered group that is immediately closed already
-				GenericMetricGroup closedGroup = new GenericMetricGroup(registry, this, name);
+				AbstractMetricGroup<AbstractMetricGroup<A>> closedGroup = new GenericMetricGroup<>(registry, this, name);
 				closedGroup.close();
 				return closedGroup;
 			}

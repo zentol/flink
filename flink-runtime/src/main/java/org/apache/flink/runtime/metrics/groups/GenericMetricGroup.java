@@ -28,11 +28,11 @@ import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
  * subgroups of metrics.
  */
 @Internal
-public class GenericMetricGroup extends AbstractMetricGroup<AbstractMetricGroup<?>> {
+public class GenericMetricGroup<A extends AbstractMetricGroup<?>> extends AbstractMetricGroup<AbstractMetricGroup<A>> {
 	/** The name of this group */
 	private String name;
 
-	public GenericMetricGroup(MetricRegistry registry, AbstractMetricGroup parent, String name) {
+	public GenericMetricGroup(MetricRegistry registry, AbstractMetricGroup<A> parent, String name) {
 		super(registry, makeScopeComponents(parent, name), parent);
 		this.name = name;
 	}

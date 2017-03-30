@@ -20,9 +20,9 @@ package org.apache.flink.runtime.operators.testutils;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.metrics.Metric;
-import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
 import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
+import org.apache.flink.runtime.metrics.groups.AbstractMetricGroup;
 import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.runtime.metrics.groups.TaskIOMetricGroup;
 import org.apache.flink.runtime.metrics.groups.TaskManagerJobMetricGroup;
@@ -45,11 +45,11 @@ public class UnregisteredTaskMetricsGroup extends TaskMetricGroup {
 	}
 
 	@Override
-	protected void addMetric(String name, Metric metric) {}
+	public void addMetric(String name, Metric metric) {}
 
 	@Override
-	public MetricGroup addGroup(String name) {
-		return new UnregisteredMetricsGroup();
+	public AbstractMetricGroup addGroup(String name) {
+		return null;
 	}
 
 	// ------------------------------------------------------------------------
