@@ -962,6 +962,17 @@ under the License.
 						<exclude>flink-tests/src/test/resources/stateful-udf-migration-itcase-flink1.1-savepoint-rocksdb</exclude>
 						<exclude>flink-libraries/flink-cep/src/test/resources/cep-keyed-snapshot-1.1</exclude>
 						<exclude>flink-libraries/flink-cep/src/test/resources/cep-non-keyed-snapshot-1.1</exclude>
+						<exclude>flink-connectors/flink-connector-filesystem/src/test/resources/bucketing-sink-migration-test-flink1.2-snapshot</exclude>
+						<exclude>flink-connectors/flink-connector-kafka-base/src/test/resources/kafka-consumer-migration-test-flink1.2-snapshot</exclude>
+						<exclude>flink-connectors/flink-connector-kafka-base/src/test/resources/kafka-consumer-migration-test-flink1.2-snapshot-empty-state</exclude>
+						<exclude>flink-connectors/flink-connector-kinesis/src/test/resources/kinesis-consumer-migration-test-flink1.1-snapshot</exclude>
+						<exclude>flink-connectors/flink-connector-kinesis/src/test/resources/kinesis-consumer-migration-test-flink1.1-snapshot-empty</exclude>
+						<exclude>flink-fs-tests/src/test/resources/monitoring-function-migration-test-1493116191000-flink1.2-snapshot</exclude>
+						<exclude>flink-streaming-java/src/test/resources/win-op-migration-test-apply-event-time-flink1.2-snapshot</exclude>
+						<exclude>flink-streaming-java/src/test/resources/win-op-migration-test-apply-processing-time-flink1.2-snapshot</exclude>
+						<exclude>flink-streaming-java/src/test/resources/win-op-migration-test-reduce-event-time-flink1.2-snapshot</exclude>
+						<exclude>flink-streaming-java/src/test/resources/win-op-migration-test-reduce-processing-time-flink1.2-snapshot</exclude>
+						<exclude>flink-streaming-java/src/test/resources/win-op-migration-test-session-with-stateful-trigger-flink1.2-snapshot</exclude>
 
 						<!-- TweetInputFormat Test Data-->
 						<exclude>flink-contrib/flink-tweet-inputformat/src/main/resources/HashTagTweetSample.json</exclude>
