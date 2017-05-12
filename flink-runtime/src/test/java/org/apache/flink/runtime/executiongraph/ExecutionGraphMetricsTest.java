@@ -260,6 +260,11 @@ public class ExecutionGraphMetricsTest extends TestLogger {
 
 		@Override
 		public boolean canRestart() {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				Thread.interrupted();
+			}
 			return restartable;
 		}
 
