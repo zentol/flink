@@ -34,6 +34,7 @@ import org.apache.flink.runtime.blob.BlobRecoveryITCase;
 import org.apache.flink.runtime.fs.hdfs.HadoopFileSystem;
 import org.apache.flink.runtime.jobmanager.HighAvailabilityMode;
 import org.apache.flink.util.FileUtils;
+import org.apache.flink.util.OperatingSystem;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -41,7 +42,9 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -63,6 +66,11 @@ public class HDFSTest {
 	private MiniDFSCluster hdfsCluster;
 	private org.apache.hadoop.fs.Path hdPath;
 	protected org.apache.hadoop.fs.FileSystem hdfs;
+
+	@BeforeClass
+	public static void verifyOS() {
+		Assume.assumeTrue("HDFS cluster cannot be started on Windows without extensions.", !OperatingSystem.isWindows());
+	}
 
 	@Before
 	public void createHDFS() {

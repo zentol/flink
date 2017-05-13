@@ -33,8 +33,11 @@ import org.apache.flink.streaming.runtime.streamrecord.StreamRecord;
 import org.apache.flink.streaming.runtime.tasks.OperatorStateHandles;
 import org.apache.flink.streaming.util.OneInputStreamOperatorTestHarness;
 import org.apache.flink.streaming.util.OperatorSnapshotUtil;
+import org.apache.flink.util.OperatingSystem;
 import org.apache.hadoop.fs.Path;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,6 +60,11 @@ public class BucketingSinkFrom12MigrationTest {
 	private static final String PENDING_SUFFIX = ".pending";
 	private static final String IN_PROGRESS_SUFFIX = ".in-progress";
 	private static final String VALID_LENGTH_SUFFIX = ".valid";
+
+	@BeforeClass
+	public static void verifyOS() {
+		Assume.assumeTrue("HDFS cluster cannot be started on Windows without extensions.", !OperatingSystem.isWindows());
+	}
 
 	/**
 	 * Manually run this to write binary snapshot data. Remove @Ignore to run.
