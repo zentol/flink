@@ -19,6 +19,7 @@
 package org.apache.flink.util;
 
 import org.apache.flink.core.testutils.CheckedThread;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -101,6 +102,7 @@ public class FileUtilsTest {
 	}
 
 	@Test
+	@Ignore
 	public void testDeleteDirectoryConcurrently() throws Exception {
 		final File parent = tmp.newFolder();
 

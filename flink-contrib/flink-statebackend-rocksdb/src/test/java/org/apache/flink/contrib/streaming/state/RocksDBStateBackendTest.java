@@ -38,6 +38,7 @@ import org.apache.flink.runtime.state.StateBackendTestBase;
 import org.apache.flink.runtime.state.VoidNamespace;
 import org.apache.flink.runtime.state.VoidNamespaceSerializer;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -76,6 +77,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  * Tests for the partitioned state part of {@link RocksDBStateBackend}.
  */
 @RunWith(Parameterized.class)
+@Ignore
 public class RocksDBStateBackendTest extends StateBackendTestBase<RocksDBStateBackend> {
 
 	private OneShotLatch blocker;
