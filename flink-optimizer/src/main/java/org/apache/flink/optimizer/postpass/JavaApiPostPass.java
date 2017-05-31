@@ -164,7 +164,7 @@ public class JavaApiPostPass implements OptimizerPostPass {
 			SingleInputOperator<?, ?, ?> singleInputOperator = (SingleInputOperator<?, ?, ?>) sn.getOptimizerNode().getOperator();
 
 			// parameterize the node's driver strategy
-			for (int i=0;i<sn.getDriverStrategy().getNumRequiredComparators();i++) {
+			for (int i = 0; i < sn.getDriverStrategy().getNumRequiredComparators(); i++) {
 				sn.setComparator(createComparator(singleInputOperator.getOperatorInfo().getInputType(), sn.getKeys(i),
 						getSortOrders(sn.getKeys(i), sn.getSortOrders(i))), i);
 			}

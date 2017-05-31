@@ -100,12 +100,12 @@ public abstract class OperatorDescriptorDual implements AbstractOperatorDescript
 			return false;
 		}
 		else {
-			for (int i=0; i<numRelevantFields; i++) {
+			for (int i = 0; i < numRelevantFields; i++) {
 				int pField1 = fields1.get(i);
 				int pField2 = fields2.get(i);
 				// check if position of both produced fields is the same in both requested fields
 				int j;
-				for (j=0; j<this.keys1.size(); j++) {
+				for (j = 0; j < this.keys1.size(); j++) {
 					if (this.keys1.get(j) == pField1 && this.keys2.get(j) == pField2) {
 						break;
 					}

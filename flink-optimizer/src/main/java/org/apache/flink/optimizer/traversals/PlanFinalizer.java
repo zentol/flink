@@ -109,7 +109,7 @@ public class PlanFinalizer implements Visitor<PlanNode> {
 						}
 					}
 					if (c.getTempMode() != TempMode.NONE) {
-						final double relativeMem = 1.0/ this.memoryConsumerWeights;
+						final double relativeMem = 1.0 / this.memoryConsumerWeights;
 						c.setRelativeTempMemory(relativeMem);
 						if (Optimizer.LOG.isDebugEnabled()) {
 							Optimizer.LOG.debug("Assigned " + relativeMem + " of total memory to each instance of the temp " +

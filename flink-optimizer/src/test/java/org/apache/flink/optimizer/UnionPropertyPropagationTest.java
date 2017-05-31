@@ -103,7 +103,7 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 		DataSet<String> source = env.readTextFile(IN_FILE);
 		DataSet<Tuple2<String, Integer>> lastUnion = source.flatMap(new DummyFlatMap());
 
-		for (int i = 1; i< numInputs; i++){
+		for (int i = 1; i < numInputs; i++){
 			lastUnion = lastUnion.union(source.flatMap(new DummyFlatMap()));
 		}
 

@@ -301,7 +301,7 @@ public abstract class GenericFlatTypePostPass<X, T extends AbstractSchema<X>> im
 
 			if (createUtilities) {
 				// parameterize the node's driver strategy
-				for (int i=0;i<sn.getDriverStrategy().getNumRequiredComparators();i++) {
+				for (int i = 0; i < sn.getDriverStrategy().getNumRequiredComparators(); i++) {
 					try {
 						sn.setComparator(createComparator(sn.getKeys(i), sn.getSortOrders(i), schema), i);
 					} catch (MissingFieldTypeInfoException e) {

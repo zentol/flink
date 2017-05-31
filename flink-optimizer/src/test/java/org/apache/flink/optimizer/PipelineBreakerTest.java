@@ -188,7 +188,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
 
-				Configuration conf= new Configuration();
+				Configuration conf = new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST);
 				initialSource
 					.map(new IdentityMapper<Long>())
@@ -213,7 +213,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
 
-				Configuration conf= new Configuration();
+				Configuration conf = new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND);
 				initialSource
 					.map(new IdentityMapper<Long>())
@@ -239,7 +239,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
 
-				Configuration conf= new Configuration();
+				Configuration conf = new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST);
 				initialSource
 					.map(new IdentityMapper<Long>())
@@ -265,7 +265,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
 
-				Configuration conf= new Configuration();
+				Configuration conf = new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND);
 				initialSource
 					.map(new IdentityMapper<Long>())

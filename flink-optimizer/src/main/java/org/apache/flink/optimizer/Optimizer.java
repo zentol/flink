@@ -105,7 +105,7 @@ public class Optimizer {
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
-	public static final String HINT_SHIP_STRATEGY_REPARTITION= "SHIP_REPARTITION";
+	public static final String HINT_SHIP_STRATEGY_REPARTITION = "SHIP_REPARTITION";
 
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a hash-partition strategy.

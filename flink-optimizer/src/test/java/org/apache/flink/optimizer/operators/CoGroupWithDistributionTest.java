@@ -57,7 +57,7 @@ public class CoGroupWithDistributionTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
+		DualInputPlanNode coGroup = (DualInputPlanNode) sink.getInput().getSource();
 		Channel input1 = coGroup.getInput1();
 		Channel input2 = coGroup.getInput2();
 		assertEquals(ShipStrategyType.FORWARD, input1.getShipStrategy());
@@ -83,7 +83,7 @@ public class CoGroupWithDistributionTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
+		DualInputPlanNode coGroup = (DualInputPlanNode) sink.getInput().getSource();
 		Channel input1 = coGroup.getInput1();
 		Channel input2 = coGroup.getInput2();
 		assertEquals(ShipStrategyType.PARTITION_HASH, input1.getShipStrategy());

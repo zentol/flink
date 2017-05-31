@@ -596,7 +596,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 
 		// overwrite default estimates with hints, if given
 		if (getOperator() == null || getOperator().getCompilerHints() == null) {
-			return ;
+			return;
 		}
 
 		CompilerHints hints = getOperator().getCompilerHints();

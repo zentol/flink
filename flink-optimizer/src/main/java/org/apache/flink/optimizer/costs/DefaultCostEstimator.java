@@ -159,7 +159,7 @@ public class DefaultCostEstimator extends CostEstimator {
 		long ps = probeSideInput.getEstimatedOutputSize();
 
 		if (bs > 0 && ps > 0) {
-			long overall = 2*bs + ps;
+			long overall = 2 * bs + ps;
 			costs.addDiskCost(overall);
 			costs.addCpuCost((long) (overall * HASHING_CPU_FACTOR));
 		} else {
@@ -187,7 +187,7 @@ public class DefaultCostEstimator extends CostEstimator {
 		long ps = probeSideInput.getEstimatedOutputSize();
 
 		if (bs > 0 && ps > 0) {
-			long overall = 2*bs + costWeight*ps;
+			long overall = 2 * bs + costWeight * ps;
 			costs.addDiskCost(overall);
 			costs.addCpuCost((long) (overall * HASHING_CPU_FACTOR));
 		} else {
