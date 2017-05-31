@@ -46,7 +46,7 @@ public class OptimizedPlan implements FlinkPlan, Visitable<PlanNode>  {
 	/** The original program (as a dataflow plan). */
 	private final Plan originalProgram;
 
-	/** Name of the job */
+	/** Name of the job. */
 	private final String jobName;
 
 	/**

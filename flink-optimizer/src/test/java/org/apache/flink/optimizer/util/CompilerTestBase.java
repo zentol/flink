@@ -209,7 +209,7 @@ public abstract class CompilerTestBase extends TestLogger implements java.io.Ser
 	}
 
 	/**
-	 * Collects all DataSources of a plan to add statistics
+	 * Collects all DataSources of a plan to add statistics.
 	 *
 	 */
 	public static class SourceCollectorVisitor implements Visitor<Operator<?>> {

@@ -40,14 +40,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
-* Tests that validate optimizer choice when using hash joins inside of iterations
+* Tests that validate optimizer choice when using hash joins inside of iterations.
 */
 @SuppressWarnings("serial")
 public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 
 	/**
 	 * This tests whether a HYBRIDHASH_BUILD_SECOND is correctly transformed to a HYBRIDHASH_BUILD_SECOND_CACHED
-	 * when inside of an iteration an on the static path
+	 * when inside of an iteration an on the static path.
 	 */
 	@Test
 	public void testRightSide() {
@@ -75,7 +75,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 	}
 
 	/**
-	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant
+	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant.
 	 */
 	@Test
 	public void testRightSideCountercheck() {
@@ -104,7 +104,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 
 	/**
 	 * This tests whether a HYBRIDHASH_BUILD_FIRST is correctly transformed to a HYBRIDHASH_BUILD_FIRST_CACHED
-	 * when inside of an iteration an on the static path
+	 * when inside of an iteration an on the static path.
 	 */
 	@Test
 	public void testLeftSide() {
@@ -132,7 +132,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 	}
 
 	/**
-	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant
+	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant.
 	 */
 	@Test
 	public void testLeftSideCountercheck() {

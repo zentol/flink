@@ -558,21 +558,21 @@ public abstract class PlanNode implements Visitable<PlanNode>, DumpableNode<Plan
 	}
 
 	public enum FeedbackPropertiesMeetRequirementsReport {
-		/** Indicates that the path is irrelevant */
+		/** Indicates that the path is irrelevant. */
 		NO_PARTIAL_SOLUTION,
 
 		/** Indicates that the question whether the properties are met has been determined pending
-		 * dependent on global and local properties */
+		 * dependent on global and local properties. */
 		PENDING,
 
 		/** Indicates that the question whether the properties are met has been determined pending
-		 * dependent on global properties only */
+		 * dependent on global properties only. */
 		PENDING_LOCAL_MET,
 
-		/** Indicates that the question whether the properties are met has been determined true */
+		/** Indicates that the question whether the properties are met has been determined true. */
 		MET,
 
-		/** Indicates that the question whether the properties are met has been determined false */
+		/** Indicates that the question whether the properties are met has been determined false. */
 		NOT_MET
 	}
 }

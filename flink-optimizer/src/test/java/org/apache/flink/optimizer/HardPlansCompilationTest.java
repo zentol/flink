@@ -32,10 +32,7 @@ import org.apache.flink.optimizer.util.CompilerTestBase;
 import org.junit.Test;
 
 /**
- * This class tests plans that once failed because of a bug:
- * <ul>
- *   <li> Ticket 158
- * </ul>
+ * This class tests plans that once failed because of a bug.
  */
 @SuppressWarnings({"serial"})
 public class HardPlansCompilationTest extends CompilerTestBase {

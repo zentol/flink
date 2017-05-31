@@ -47,7 +47,7 @@ public class JobGraphGeneratorTest {
 
 	/**
 	 * Verifies that the resources are merged correctly for chained operators when
-	 * generating job graph
+	 * generating job graph.
 	 */
 	@Test
 	public void testResourcesForChainedOperators() throws Exception {
@@ -126,7 +126,7 @@ public class JobGraphGeneratorTest {
 
 	/**
 	 * Verifies that the resources are set onto each job vertex correctly when generating job graph
-	 * which covers the delta iteration case
+	 * which covers the delta iteration case.
 	 */
 	@Test
 	public void testResourcesForDeltaIteration() throws Exception{
