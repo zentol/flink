@@ -46,9 +46,9 @@ public class CustomPartitioningGlobalOptimizationTest extends CompilerTestBase {
 	public void testJoinReduceCombination() {
 		try {
 			final Partitioner<Long> partitioner = new TestPartitionerLong();
-			
+
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input1 = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 			DataSet<Tuple3<Long, Long, Long>> input2 = env.fromElements(new Tuple3<Long, Long, Long>(0L, 0L, 0L));
 
@@ -64,20 +64,20 @@ public class CustomPartitioningGlobalOptimizationTest extends CompilerTestBase {
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer = (SingleInputPlanNode) sink.getInput().getSource();
-			
-			assertTrue("Reduce is not chained, property reuse does not happen", 
+
+			assertTrue("Reduce is not chained, property reuse does not happen",
 					reducer.getInput().getSource() instanceof DualInputPlanNode);
-			
+
 			DualInputPlanNode join = (DualInputPlanNode) reducer.getInput().getSource();
-			
+
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, join.getInput1().getShipStrategy());
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, join.getInput2().getShipStrategy());
 			assertEquals(partitioner, join.getInput1().getPartitioner());
 			assertEquals(partitioner, join.getInput2().getPartitioner());
-			
+
 			assertEquals(ShipStrategyType.FORWARD, reducer.getInput().getShipStrategy());
 		}
 		catch (Exception e) {
@@ -85,9 +85,9 @@ public class CustomPartitioningGlobalOptimizationTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static class TestPartitionerLong implements Partitioner<Long> {
 		@Override
 		public int partition(Long key, int numPartitions) {

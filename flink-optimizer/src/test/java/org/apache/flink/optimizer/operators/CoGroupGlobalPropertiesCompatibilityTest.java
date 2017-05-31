@@ -39,24 +39,24 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 		try {
 			final FieldList keysLeft = new FieldList(1, 4);
 			final FieldList keysRight = new FieldList(3, 1);
-			
+
 			CoGroupDescriptor descr = new CoGroupDescriptor(keysLeft, keysRight);
-			
+
 			// test compatible hash partitioning
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setHashPartitioned(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setHashPartitioned(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setHashPartitioned(keysLeft);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setHashPartitioned(keysRight);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test compatible custom partitioning
 			{
 				Partitioner<Object> part = new Partitioner<Object>() {
@@ -65,20 +65,20 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 						return 0;
 					}
 				};
-				
+
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setCustomPartitioned(keysLeft, part);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setCustomPartitioned(keysRight, part);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test custom partitioning matching any partitioning
 			{
 				Partitioner<Object> part = new Partitioner<Object>() {
@@ -87,23 +87,23 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 						return 0;
 					}
 				};
-				
+
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
 
 			TestDistribution dist1 = new TestDistribution(1);
 			TestDistribution dist2 = new TestDistribution(1);
-			
+
 			// test compatible range partitioning with one ordering
 			{
 				Ordering ordering1 = new Ordering();
@@ -114,7 +114,7 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 				for (int field : keysRight) {
 					ordering2.appendOrdering(field, null, Order.ASCENDING);
 				}
-				
+
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setRangePartitioned(ordering1, dist1);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
@@ -152,13 +152,13 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void checkInompatiblePartitionings() {
 		try {
 			final FieldList keysLeft = new FieldList(1);
 			final FieldList keysRight = new FieldList(3);
-			
+
 			final Partitioner<Object> part = new Partitioner<Object>() {
 				@Override
 				public int partition(Object key, int numPartitions) {
@@ -171,36 +171,36 @@ public class CoGroupGlobalPropertiesCompatibilityTest {
 					return 0;
 				}
 			};
-			
+
 			CoGroupDescriptor descr = new CoGroupDescriptor(keysLeft, keysRight);
-			
+
 			// test incompatible hash with custom partitioning
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setHashPartitioned(keysLeft);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertFalse(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test incompatible custom partitionings
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part2);
-				
+
 				assertFalse(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
 

@@ -57,7 +57,7 @@ public class JoinTranslationTest extends CompilerTestBase {
 			fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBroadcastHashSecondTest() {
 		try {
@@ -71,7 +71,7 @@ public class JoinTranslationTest extends CompilerTestBase {
 			fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testPartitionHashFirstTest() {
 		try {
@@ -85,7 +85,7 @@ public class JoinTranslationTest extends CompilerTestBase {
 			fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testPartitionHashSecondTest() {
 		try {
@@ -99,7 +99,7 @@ public class JoinTranslationTest extends CompilerTestBase {
 			fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testPartitionSortMergeTest() {
 		try {
@@ -113,7 +113,7 @@ public class JoinTranslationTest extends CompilerTestBase {
 			fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testOptimizerChoosesTest() {
 		try {
@@ -131,14 +131,14 @@ public class JoinTranslationTest extends CompilerTestBase {
 
 	private DualInputPlanNode createPlanAndGetJoinNode(JoinHint hint) {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<Long> i1 = env.generateSequence(1, 1000);
 		DataSet<Long> i2 = env.generateSequence(1, 1000);
-		
+
 		i1.join(i2, hint).where(new IdentityKeySelector<Long>()).equalTo(new IdentityKeySelector<Long>()).output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-		
+
 		Plan plan = env.createProgramPlan();
-		
+
 		// set statistics to the sources
 		plan.accept(new Visitor<Operator<?>>() {
 			@Override
@@ -147,21 +147,21 @@ public class JoinTranslationTest extends CompilerTestBase {
 					GenericDataSourceBase<?, ?> source = (GenericDataSourceBase<?, ?>) visitable;
 					setSourceStatistics(source, 10000000, 1000);
 				}
-				
+
 				return true;
 			}
-			
+
 			@Override
 			public void postVisit(Operator<?> visitable) {}
 		});
-		
+
 		OptimizedPlan op = compileWithStats(plan);
-		
+
 		return (DualInputPlanNode) ((SinkPlanNode) op.getDataSinks().iterator().next()).getInput().getSource();
 	}
 
 	private static final class IdentityKeySelector<T> implements KeySelector<T, T> {
-		
+
 		@Override
 		public T getKey(T value) {
 			return value;

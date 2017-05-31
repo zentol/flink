@@ -45,35 +45,35 @@ public class SortPartialReuseTest extends CompilerTestBase {
 	public void testPartialPartitioningReuse() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			@SuppressWarnings("unchecked")
 			DataSet<Tuple3<Long, Long, Long>> input = env.fromElements(new Tuple3<Long, Long, Long>(0L, 0L, 0L));
-			
+
 			input
 				.partitionByHash(0)
 				.map(new IdentityMapper<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1", "2")
-				
+
 				.groupBy(0, 1)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1", "2")
-				
+
 				.groupBy(0)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long,Long,Long>>())
 
 				.output(new DiscardingOutputFormat<Tuple3<Long, Long, Long>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer2 = (SingleInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode reducer1 = (SingleInputPlanNode) reducer2.getInput().getSource();
-			
+
 			assertEquals(ShipStrategyType.FORWARD, sink.getInput().getShipStrategy());
 
 			// should be locally forwarding, reusing sort and partitioning
 			assertEquals(ShipStrategyType.FORWARD, reducer2.getInput().getShipStrategy());
 			assertEquals(LocalStrategy.NONE, reducer2.getInput().getLocalStrategy());
-			
+
 			assertEquals(ShipStrategyType.FORWARD, reducer1.getInput().getShipStrategy());
 			assertEquals(LocalStrategy.COMBININGSORT, reducer1.getInput().getLocalStrategy());
 		}
@@ -82,47 +82,47 @@ public class SortPartialReuseTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testCustomPartitioningNotReused() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			@SuppressWarnings("unchecked")
 			DataSet<Tuple3<Long, Long, Long>> input = env.fromElements(new Tuple3<Long, Long, Long>(0L, 0L, 0L));
-			
+
 			input
 				.partitionCustom(new Partitioner<Long>() {
 					@Override
 					public int partition(Long key, int numPartitions) { return 0; }
 				}, 0)
 				.map(new IdentityMapper<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1", "2")
-				
+
 				.groupBy(0, 1)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1", "2")
-				
+
 				.groupBy(1)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long,Long,Long>>())
 
 				.output(new DiscardingOutputFormat<Tuple3<Long, Long, Long>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer2 = (SingleInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode combiner = (SingleInputPlanNode) reducer2.getInput().getSource();
 			SingleInputPlanNode reducer1 = (SingleInputPlanNode) combiner.getInput().getSource();
-			
+
 			assertEquals(ShipStrategyType.FORWARD, sink.getInput().getShipStrategy());
 
 			// should be locally forwarding, reusing sort and partitioning
 			assertEquals(ShipStrategyType.PARTITION_HASH, reducer2.getInput().getShipStrategy());
 			assertEquals(LocalStrategy.COMBININGSORT, reducer2.getInput().getLocalStrategy());
-			
+
 			assertEquals(ShipStrategyType.FORWARD, combiner.getInput().getShipStrategy());
 			assertEquals(LocalStrategy.NONE, combiner.getInput().getLocalStrategy());
-			
+
 			assertEquals(ShipStrategyType.FORWARD, reducer1.getInput().getShipStrategy());
 			assertEquals(LocalStrategy.COMBININGSORT, reducer1.getInput().getLocalStrategy());
 		}

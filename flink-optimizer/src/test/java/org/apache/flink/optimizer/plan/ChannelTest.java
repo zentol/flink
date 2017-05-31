@@ -29,12 +29,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ChannelTest {
-	
+
 	@Test
 	public void testGetEstimatesNoReplicationFactor() {
 		final long NUM_RECORD = 1001;
 		final long SIZE = 467131;
-		
+
 		DataSourceNode source = getSourceNode();
 		SourcePlanNode planNode = new SourcePlanNode(source, "test node");
 		Channel channel = new Channel(planNode);
@@ -42,21 +42,21 @@ public class ChannelTest {
 		// no estimates here
 		Assert.assertEquals(-1, channel.getEstimatedOutputSize());
 		Assert.assertEquals(-1, channel.getEstimatedNumRecords());
-		
+
 		// set estimates
 		source.setEstimatedNumRecords(NUM_RECORD);
 		source.setEstimatedOutputSize(SIZE);
 		Assert.assertEquals(SIZE, channel.getEstimatedOutputSize());
 		Assert.assertEquals(NUM_RECORD, channel.getEstimatedNumRecords());
 	}
-	
+
 	@Test
 	public void testGetEstimatesWithReplicationFactor() {
 		final long NUM_RECORD = 1001;
 		final long SIZE = 467131;
-		
+
 		final int REPLICATION = 23;
-		
+
 		DataSourceNode source = getSourceNode();
 		SourcePlanNode planNode = new SourcePlanNode(source, "test node");
 		Channel channel = new Channel(planNode);
@@ -65,7 +65,7 @@ public class ChannelTest {
 		// no estimates here
 		Assert.assertEquals(-1, channel.getEstimatedOutputSize());
 		Assert.assertEquals(-1, channel.getEstimatedNumRecords());
-		
+
 		// set estimates
 		source.setEstimatedNumRecords(NUM_RECORD);
 		source.setEstimatedOutputSize(SIZE);
@@ -79,10 +79,10 @@ public class ChannelTest {
 //				new UnaryOperatorInformation<String, String>(BasicTypeInfo.STRING_TYPE_INFO, BasicTypeInfo.STRING_TYPE_INFO),
 //				"map"));
 //	}
-	
+
 	private static final DataSourceNode getSourceNode() {
 		return new DataSourceNode(new GenericDataSourceBase<String, TextInputFormat>(
-				new TextInputFormat(new Path("/ignored")), 
+				new TextInputFormat(new Path("/ignored")),
 				new OperatorInformation<String>(BasicTypeInfo.STRING_TYPE_INFO),
 				"source"));
 	}

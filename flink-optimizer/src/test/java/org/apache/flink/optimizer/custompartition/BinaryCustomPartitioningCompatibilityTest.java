@@ -51,20 +51,20 @@ public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase 
 					return 0;
 				}
 			};
-			
+
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input1 = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 			DataSet<Tuple3<Long, Long, Long>> input2 = env.fromElements(new Tuple3<Long, Long, Long>(0L, 0L, 0L));
-			
+
 			input1.partitionCustom(partitioner, 1)
 				.join(input2.partitionCustom(partitioner, 0))
 				.where(1).equalTo(0)
 				.output(new DiscardingOutputFormat<Tuple2<Tuple2<Long, Long>, Tuple3<Long, Long, Long>>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode partitioner1 = (SingleInputPlanNode) join.getInput1().getSource();
@@ -72,12 +72,12 @@ public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase 
 
 			assertEquals(ShipStrategyType.FORWARD, join.getInput1().getShipStrategy());
 			assertEquals(ShipStrategyType.FORWARD, join.getInput2().getShipStrategy());
-			
+
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, partitioner1.getInput().getShipStrategy());
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, partitioner2.getInput().getShipStrategy());
 			assertEquals(partitioner, partitioner1.getInput().getPartitioner());
 			assertEquals(partitioner, partitioner2.getInput().getPartitioner());
-			
+
 			new JobGraphGenerator().compileJobGraph(op);
 		}
 		catch (Exception e) {
@@ -85,7 +85,7 @@ public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase 
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testCompatiblePartitioningCoGroup() {
 		try {
@@ -95,21 +95,21 @@ public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase 
 					return 0;
 				}
 			};
-			
+
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input1 = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 			DataSet<Tuple3<Long, Long, Long>> input2 = env.fromElements(new Tuple3<Long, Long, Long>(0L, 0L, 0L));
-			
+
 			input1.partitionCustom(partitioner, 1)
 				.coGroup(input2.partitionCustom(partitioner, 0))
 				.where(1).equalTo(0)
 				.with(new DummyCoGroupFunction<Tuple2<Long, Long>, Tuple3<Long, Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple2<Tuple2<Long, Long>, Tuple3<Long, Long, Long>>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			DualInputPlanNode coGroup = (DualInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode partitioner1 = (SingleInputPlanNode) coGroup.getInput1().getSource();
@@ -117,12 +117,12 @@ public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase 
 
 			assertEquals(ShipStrategyType.FORWARD, coGroup.getInput1().getShipStrategy());
 			assertEquals(ShipStrategyType.FORWARD, coGroup.getInput2().getShipStrategy());
-			
+
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, partitioner1.getInput().getShipStrategy());
 			assertEquals(ShipStrategyType.PARTITION_CUSTOM, partitioner2.getInput().getShipStrategy());
 			assertEquals(partitioner, partitioner1.getInput().getPartitioner());
 			assertEquals(partitioner, partitioner2.getInput().getPartitioner());
-			
+
 			new JobGraphGenerator().compileJobGraph(op);
 		}
 		catch (Exception e) {

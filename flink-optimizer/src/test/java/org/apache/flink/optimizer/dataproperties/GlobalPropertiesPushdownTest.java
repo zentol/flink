@@ -35,11 +35,11 @@ public class GlobalPropertiesPushdownTest {
 		try {
 			RequestedGlobalProperties req = new RequestedGlobalProperties();
 			req.setAnyPartitioning(new FieldSet(3, 1));
-			
+
 			RequestedGlobalProperties preserved = req.filterBySemanticProperties(getAllPreservingSemProps(), 0);
 			assertEquals(PartitioningProperty.ANY_PARTITIONING, preserved.getPartitioning());
 			assertTrue(preserved.getPartitionedFields().isValidSubset(new FieldSet(1, 3)));
-			
+
 			RequestedGlobalProperties nonPreserved = req.filterBySemanticProperties(getNonePreservingSemProps(), 0);
 			assertTrue(nonPreserved == null || nonPreserved.isTrivial());
 		}
@@ -48,17 +48,17 @@ public class GlobalPropertiesPushdownTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testHashPartitioningPushedDown() {
 		try {
 			RequestedGlobalProperties req = new RequestedGlobalProperties();
 			req.setHashPartitioned(new FieldSet(3, 1));
-			
+
 			RequestedGlobalProperties preserved = req.filterBySemanticProperties(getAllPreservingSemProps(), 0);
 			assertEquals(PartitioningProperty.HASH_PARTITIONED, preserved.getPartitioning());
 			assertTrue(preserved.getPartitionedFields().isValidSubset(new FieldSet(1, 3)));
-			
+
 			RequestedGlobalProperties nonPreserved = req.filterBySemanticProperties(getNonePreservingSemProps(), 0);
 			assertTrue(nonPreserved == null || nonPreserved.isTrivial());
 		}
@@ -67,13 +67,13 @@ public class GlobalPropertiesPushdownTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testCustomPartitioningNotPushedDown() {
 		try {
 			RequestedGlobalProperties req = new RequestedGlobalProperties();
 			req.setCustomPartitioned(new FieldSet(3, 1), new MockPartitioner());
-			
+
 			RequestedGlobalProperties pushedDown = req.filterBySemanticProperties(getAllPreservingSemProps(), 0);
 			assertTrue(pushedDown == null || pushedDown.isTrivial());
 		}
@@ -82,13 +82,13 @@ public class GlobalPropertiesPushdownTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testForcedReblancingNotPushedDown() {
 		try {
 			RequestedGlobalProperties req = new RequestedGlobalProperties();
 			req.setForceRebalancing();
-			
+
 			RequestedGlobalProperties pushedDown = req.filterBySemanticProperties(getAllPreservingSemProps(), 0);
 			assertTrue(pushedDown == null || pushedDown.isTrivial());
 		}
@@ -97,13 +97,13 @@ public class GlobalPropertiesPushdownTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private static SemanticProperties getAllPreservingSemProps() {
 		return new SingleInputSemanticProperties.AllFieldsForwardedProperties();
 	}
-	
+
 	private static SemanticProperties getNonePreservingSemProps() {
 		return new SingleInputSemanticProperties();
 	}

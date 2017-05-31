@@ -47,21 +47,21 @@ import static org.junit.Assert.fail;
 * strategies.
 */
 public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final String ITERATION_NAME = "Test Workset Iteration";
 	private static final String JOIN_WITH_INVARIANT_NAME = "Test Join Invariant";
 	private static final String JOIN_WITH_SOLUTION_SET = "Test Join SolutionSet";
 	private static final String NEXT_WORKSET_REDUCER_NAME = "Test Reduce Workset";
 	private static final String SOLUTION_DELTA_MAPPER_NAME = "Test Map Delta";
-	
+
 	private final FieldList list0 = new FieldList(0);
 
 	@Test
 	public void testRecordApiWithDeferredSoltionSetUpdateWithMapper() {
 		Plan plan = getTestPlan(false, true);
-		
+
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
@@ -70,44 +70,44 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
 		}
-		
+
 		OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 		DualInputPlanNode joinWithInvariantNode = resolver.getNode(JOIN_WITH_INVARIANT_NAME);
 		DualInputPlanNode joinWithSolutionSetNode = resolver.getNode(JOIN_WITH_SOLUTION_SET);
 		SingleInputPlanNode worksetReducer = resolver.getNode(NEXT_WORKSET_REDUCER_NAME);
 		SingleInputPlanNode deltaMapper = resolver.getNode(SOLUTION_DELTA_MAPPER_NAME);
-		
-		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop, 
+
+		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop,
 		// the in-loop partitioning is before the final reducer
-		
+
 		// verify joinWithInvariant
-		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy()); 
+		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.PARTITION_HASH, joinWithInvariantNode.getInput2().getShipStrategy());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput1());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput2());
-		
+
 		// verify joinWithSolutionSet
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput2().getShipStrategy());
-		
+
 		// verify reducer
 		assertEquals(ShipStrategyType.PARTITION_HASH, worksetReducer.getInput().getShipStrategy());
 		assertEquals(list0, worksetReducer.getKeys(0));
-		
+
 		// currently, the system may partition before or after the mapper
 		ShipStrategyType ss1 = deltaMapper.getInput().getShipStrategy();
 		ShipStrategyType ss2 = deltaMapper.getOutgoingChannels().get(0).getShipStrategy();
-		
+
 		assertTrue( (ss1 == ShipStrategyType.FORWARD && ss2 == ShipStrategyType.PARTITION_HASH) ||
 					(ss2 == ShipStrategyType.FORWARD && ss1 == ShipStrategyType.PARTITION_HASH) );
-		
+
 		new JobGraphGenerator().compileJobGraph(oPlan);
 	}
-	
+
 	@Test
 	public void testRecordApiWithDeferredSoltionSetUpdateWithNonPreservingJoin() {
 		Plan plan = getTestPlan(false, false);
-		
+
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
@@ -116,25 +116,25 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
 		}
-		
+
 		OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 		DualInputPlanNode joinWithInvariantNode = resolver.getNode(JOIN_WITH_INVARIANT_NAME);
 		DualInputPlanNode joinWithSolutionSetNode = resolver.getNode(JOIN_WITH_SOLUTION_SET);
 		SingleInputPlanNode worksetReducer = resolver.getNode(NEXT_WORKSET_REDUCER_NAME);
-		
-		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop, 
+
+		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop,
 		// the in-loop partitioning is before the final reducer
-		
+
 		// verify joinWithInvariant
-		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy()); 
+		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.PARTITION_HASH, joinWithInvariantNode.getInput2().getShipStrategy());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput1());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput2());
-		
+
 		// verify joinWithSolutionSet
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput2().getShipStrategy());
-		
+
 		// verify reducer
 		assertEquals(ShipStrategyType.PARTITION_HASH, worksetReducer.getInput().getShipStrategy());
 		assertEquals(list0, worksetReducer.getKeys(0));
@@ -143,14 +143,14 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		assertEquals(2, joinWithSolutionSetNode.getOutgoingChannels().size());
 		assertEquals(ShipStrategyType.PARTITION_HASH, joinWithSolutionSetNode.getOutgoingChannels().get(0).getShipStrategy());
 		assertEquals(ShipStrategyType.PARTITION_HASH, joinWithSolutionSetNode.getOutgoingChannels().get(1).getShipStrategy());
-		
+
 		new JobGraphGenerator().compileJobGraph(oPlan);
 	}
-	
+
 	@Test
 	public void testRecordApiWithDirectSoltionSetUpdate() {
 		Plan plan = getTestPlan(true, false);
-		
+
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
@@ -159,25 +159,25 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
 		}
-		
+
 		OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 		DualInputPlanNode joinWithInvariantNode = resolver.getNode(JOIN_WITH_INVARIANT_NAME);
 		DualInputPlanNode joinWithSolutionSetNode = resolver.getNode(JOIN_WITH_SOLUTION_SET);
 		SingleInputPlanNode worksetReducer = resolver.getNode(NEXT_WORKSET_REDUCER_NAME);
-		
-		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop, 
+
+		// iteration preserves partitioning in reducer, so the first partitioning is out of the loop,
 		// the in-loop partitioning is before the final reducer
-		
+
 		// verify joinWithInvariant
-		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy()); 
+		assertEquals(ShipStrategyType.FORWARD, joinWithInvariantNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.PARTITION_HASH, joinWithInvariantNode.getInput2().getShipStrategy());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput1());
 		assertEquals(list0, joinWithInvariantNode.getKeysForInput2());
-		
+
 		// verify joinWithSolutionSet
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput1().getShipStrategy());
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getInput2().getShipStrategy());
-		
+
 		// verify reducer
 		assertEquals(ShipStrategyType.FORWARD, worksetReducer.getInput().getShipStrategy());
 		assertEquals(list0, worksetReducer.getKeys(0));
@@ -185,10 +185,10 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		// verify solution delta
 		assertEquals(1, joinWithSolutionSetNode.getOutgoingChannels().size());
 		assertEquals(ShipStrategyType.FORWARD, joinWithSolutionSetNode.getOutgoingChannels().get(0).getShipStrategy());
-		
+
 		new JobGraphGenerator().compileJobGraph(oPlan);
 	}
-	
+
 	private Plan getTestPlan(boolean joinPreservesSolutionSet, boolean mapBeforeSolutionDelta) {
 
 		// construct the plan

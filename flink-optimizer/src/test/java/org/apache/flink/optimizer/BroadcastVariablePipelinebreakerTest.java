@@ -42,22 +42,22 @@ public class BroadcastVariablePipelinebreakerTest extends CompilerTestBase {
 	public void testNoBreakerForIndependentVariable() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<String> source1 = env.fromElements("test");
 			DataSet<String> source2 = env.fromElements("test");
-			
+
 			source1.map(new IdentityMapper<String>()).withBroadcastSet(source2, "some name")
 					.output(new DiscardingOutputFormat<String>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode mapper = (SingleInputPlanNode) sink.getInput().getSource();
-			
+
 			assertEquals(TempMode.NONE, mapper.getInput().getTempMode());
 			assertEquals(TempMode.NONE, mapper.getBroadcastInputs().get(0).getTempMode());
-			
+
 			assertEquals(DataExchangeMode.PIPELINED, mapper.getInput().getDataExchangeMode());
 			assertEquals(DataExchangeMode.PIPELINED, mapper.getBroadcastInputs().get(0).getDataExchangeMode());
 		}
@@ -66,20 +66,20 @@ public class BroadcastVariablePipelinebreakerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	 @Test
 	public void testBreakerForDependentVariable() {
 			try {
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-				
+
 				DataSet<String> source1 = env.fromElements("test");
-				
+
 				source1.map(new IdentityMapper<String>()).map(new IdentityMapper<String>()).withBroadcastSet(source1, "some name")
 						.output(new DiscardingOutputFormat<String>());
-				
+
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);
-				
+
 				SinkPlanNode sink = op.getDataSinks().iterator().next();
 				SingleInputPlanNode mapper = (SingleInputPlanNode) sink.getInput().getSource();
 				SingleInputPlanNode beforeMapper = (SingleInputPlanNode) mapper.getInput().getSource();

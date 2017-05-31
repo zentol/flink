@@ -42,21 +42,21 @@ public class WorksetIterationCornerCasesTest extends CompilerTestBase {
 	public void testWorksetIterationNotDependingOnSolutionSet() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input = env.generateSequence(1, 100).map(new Duplicator<Long>());
-			
+
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = input.iterateDelta(input, 100, 1);
-			
+
 			DataSet<Tuple2<Long, Long>> iterEnd = iteration.getWorkset().map(new TestMapper<Tuple2<Long,Long>>());
 			iteration.closeWith(iterEnd, iterEnd)
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			WorksetIterationPlanNode wipn = (WorksetIterationPlanNode) op.getDataSinks().iterator().next().getInput().getSource();
 			assertTrue(wipn.getSolutionSetPlanNode().getOutgoingChannels().isEmpty());
-			
+
 			JobGraphGenerator jgg = new JobGraphGenerator();
 			jgg.compileJobGraph(op);
 		}
@@ -65,14 +65,14 @@ public class WorksetIterationCornerCasesTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	private static final class Duplicator<T> implements MapFunction<T, Tuple2<T, T>> {
 		@Override
 		public Tuple2<T, T> map(T value) {
 			return new Tuple2<T, T>(value, value);
 		}
 	}
-	
+
 	private static final class TestMapper<T> implements MapFunction<T, T> {
 		@Override
 		public T map(T value) {

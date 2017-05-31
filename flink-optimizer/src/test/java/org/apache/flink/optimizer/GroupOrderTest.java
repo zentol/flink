@@ -71,28 +71,28 @@ public class GroupOrderTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
 		}
-		
+
 		OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 		SinkPlanNode sinkNode = resolver.getNode("Sink");
 		SingleInputPlanNode reducer = resolver.getNode("Reduce");
-		
+
 		// verify the strategies
 		Assert.assertEquals(ShipStrategyType.FORWARD, sinkNode.getInput().getShipStrategy());
 		Assert.assertEquals(ShipStrategyType.PARTITION_HASH, reducer.getInput().getShipStrategy());
-		
+
 		Channel c = reducer.getInput();
 		Assert.assertEquals(LocalStrategy.SORT, c.getLocalStrategy());
-		
+
 		FieldList ship = new FieldList(1);
 		FieldList local = new FieldList(1, 3);
 		Assert.assertEquals(ship, c.getShipStrategyKeys());
 		Assert.assertEquals(local, c.getLocalStrategyKeys());
 		Assert.assertTrue(c.getLocalStrategySortOrder()[0] == reducer.getSortOrders(0)[0]);
-		
+
 		// check that we indeed sort descending
 		Assert.assertEquals(false, c.getLocalStrategySortOrder()[1]);
 	}
-	
+
 	@Test
 	public void testCoGroupWithGroupOrder() {
 		// construct the plan
@@ -119,38 +119,38 @@ public class GroupOrderTest extends CompilerTestBase {
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
 		}
-		
+
 		OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 		SinkPlanNode sinkNode = resolver.getNode("Sink");
 		DualInputPlanNode coGroupNode = resolver.getNode("CoGroup");
-		
+
 		// verify the strategies
 		Assert.assertEquals(ShipStrategyType.FORWARD, sinkNode.getInput().getShipStrategy());
 		Assert.assertEquals(ShipStrategyType.PARTITION_HASH, coGroupNode.getInput1().getShipStrategy());
 		Assert.assertEquals(ShipStrategyType.PARTITION_HASH, coGroupNode.getInput2().getShipStrategy());
-		
+
 		Channel c1 = coGroupNode.getInput1();
 		Channel c2 = coGroupNode.getInput2();
-		
+
 		Assert.assertEquals(LocalStrategy.SORT, c1.getLocalStrategy());
 		Assert.assertEquals(LocalStrategy.SORT, c2.getLocalStrategy());
-		
+
 		FieldList ship1 = new FieldList(3, 0);
 		FieldList ship2 = new FieldList(6, 0);
-		
+
 		FieldList local1 = new FieldList(3, 0, 5);
 		FieldList local2 = new FieldList(6, 0, 1, 4);
-		
+
 		Assert.assertEquals(ship1, c1.getShipStrategyKeys());
 		Assert.assertEquals(ship2, c2.getShipStrategyKeys());
 		Assert.assertEquals(local1, c1.getLocalStrategyKeys());
 		Assert.assertEquals(local2, c2.getLocalStrategyKeys());
-		
+
 		Assert.assertTrue(c1.getLocalStrategySortOrder()[0] == coGroupNode.getSortOrders()[0]);
 		Assert.assertTrue(c1.getLocalStrategySortOrder()[1] == coGroupNode.getSortOrders()[1]);
 		Assert.assertTrue(c2.getLocalStrategySortOrder()[0] == coGroupNode.getSortOrders()[0]);
 		Assert.assertTrue(c2.getLocalStrategySortOrder()[1] == coGroupNode.getSortOrders()[1]);
-		
+
 		// check that the local group orderings are correct
 		Assert.assertEquals(false, c1.getLocalStrategySortOrder()[2]);
 		Assert.assertEquals(false, c2.getLocalStrategySortOrder()[2]);

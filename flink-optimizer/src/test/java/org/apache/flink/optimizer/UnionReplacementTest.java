@@ -56,12 +56,12 @@ public class UnionReplacementTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			DataSet<String> input1 = env.fromElements("test1");
 			DataSet<String> input2 = env.fromElements("test2");
-	
+
 			DataSet<String> union = input1.union(input2);
-	
+
 			union.output(new DiscardingOutputFormat<String>());
 			union.output(new DiscardingOutputFormat<String>());
-	
+
 			Plan plan = env.createProgramPlan();
 			OptimizedPlan oPlan = compileNoStats(plan);
 			JobGraphGenerator jobGen = new JobGraphGenerator();

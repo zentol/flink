@@ -39,17 +39,17 @@ public class JoinOnConflictingPartitioningsTest extends CompilerTestBase {
 	public void testRejectJoinOnHashAndRangePartitioning() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
-			
+
 			Configuration cfg = new Configuration();
 			cfg.setString(Optimizer.HINT_SHIP_STRATEGY_FIRST_INPUT, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_HASH);
 			cfg.setString(Optimizer.HINT_SHIP_STRATEGY_SECOND_INPUT, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_RANGE);
-			
+
 			input.join(input).where(0).equalTo(0)
 				.withParameters(cfg)
 				.output(new DiscardingOutputFormat<Tuple2<Tuple2<Long, Long>, Tuple2<Long, Long>>>());
-			
+
 			Plan p = env.createProgramPlan();
 			try {
 				compileNoStats(p);

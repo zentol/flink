@@ -40,7 +40,7 @@ public class NumberFormattingTest {
 		assertEquals("143.55", PlanJSONDumpGenerator.formatNumber(143.55));
 		assertEquals("143.65", PlanJSONDumpGenerator.formatNumber(143.65));
 		assertEquals("143.66", PlanJSONDumpGenerator.formatNumber(143.655));
-		
+
 		assertEquals("1.13 K", PlanJSONDumpGenerator.formatNumber(1126.0));
 		assertEquals("11.13 K", PlanJSONDumpGenerator.formatNumber(11126.0));
 		assertEquals("118.13 K", PlanJSONDumpGenerator.formatNumber(118126.0));

@@ -110,7 +110,7 @@ public class PipelineBreakingTest {
 	/**
 	 * Tests that branching plans, where the branches are not re-joined,
 	 * do not place pipeline breakers.
-	 * 
+	 *
 	 * <pre>
 	 *                      /---> (filter) -> (sink)
 	 *                     /
@@ -197,7 +197,7 @@ public class PipelineBreakingTest {
 
 	/**
 	 * Tests that branches that are re-joined have place pipeline breakers.
-	 * 
+	 *
 	 * <pre>
 	 *                                         /-> (sink)
 	 *                                        /
@@ -228,18 +228,18 @@ public class PipelineBreakingTest {
 
 			DataSet<Tuple2<Long, Long>> reduced = data.groupBy(0).reduce(new SelectOneReducer<Tuple2<Long, Long>>());
 			reduced.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-			
+
 			DataSet<Tuple2<Long, Long>> filtered = data.filter(new FilterFunction<Tuple2<Long, Long>>() {
 				@Override
 				public boolean filter(Tuple2<Long, Long> value) throws Exception {
 					return false;
 				}
 			});
-			
+
 			DataSet<Tuple2<Long, Long>> joined = reduced.join(filtered)
 					.where(1).equalTo(1)
 					.with(new DummyFlatJoinFunction<Tuple2<Long, Long>>());
-			
+
 			joined.flatMap(new IdentityFlatMapper<Tuple2<Long, Long>>())
 					.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 

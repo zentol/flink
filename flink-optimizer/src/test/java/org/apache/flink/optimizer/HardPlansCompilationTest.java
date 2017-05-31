@@ -39,12 +39,12 @@ import org.junit.Test;
  */
 @SuppressWarnings({"serial"})
 public class HardPlansCompilationTest extends CompilerTestBase {
-	
+
 	/**
 	 * Source -> Map -> Reduce -> Cross -> Reduce -> Cross -> Reduce ->
 	 * |--------------------------/                  /
 	 * |--------------------------------------------/
-	 * 
+	 *
 	 * First cross has SameKeyFirst output contract
 	 */
 	@Test

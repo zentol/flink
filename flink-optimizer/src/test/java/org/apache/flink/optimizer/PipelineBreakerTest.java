@@ -56,59 +56,59 @@ public class PipelineBreakerTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(ExecutionMode.PIPELINED);
 			env.setParallelism(64);
-			
+
 			DataSet<Long> source = env.generateSequence(1, 10).map(new IdentityMapper<Long>());
-			
+
 			DataSet<Long> result = source.map(new IdentityMapper<Long>())
 										.map(new IdentityMapper<Long>())
 											.withBroadcastSet(source, "bc");
-			
+
 			result.output(new DiscardingOutputFormat<Long>());
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode mapper = (SingleInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode mapperInput = (SingleInputPlanNode) mapper.getInput().getSource();
-			
+
 			assertEquals(TempMode.NONE, mapper.getInput().getTempMode());
 			assertEquals(TempMode.NONE, mapper.getBroadcastInputs().get(0).getTempMode());
-			
+
 			assertEquals(DataExchangeMode.BATCH, mapperInput.getInput().getDataExchangeMode());
 			assertEquals(DataExchangeMode.BATCH, mapper.getBroadcastInputs().get(0).getDataExchangeMode());
-			
+
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testPipelineBreakerBroadcastedAllReduce() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(ExecutionMode.PIPELINED);
 			env.setParallelism(64);
-			
+
 			DataSet<Long> sourceWithMapper = env.generateSequence(1, 10).map(new IdentityMapper<Long>());
-			
+
 			DataSet<Long> bcInput1 = sourceWithMapper
 										.map(new IdentityMapper<Long>())
 										.reduce(new SelectOneReducer<Long>());
 			DataSet<Long> bcInput2 = env.generateSequence(1, 10);
-			
+
 			DataSet<Long> result = sourceWithMapper
 					.map(new IdentityMapper<Long>())
 							.withBroadcastSet(bcInput1, "bc1")
 							.withBroadcastSet(bcInput2, "bc2");
-			
+
 			result.output(new DiscardingOutputFormat<Long>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode mapper = (SingleInputPlanNode) sink.getInput().getSource();
 
@@ -122,9 +122,9 @@ public class PipelineBreakerTest extends CompilerTestBase {
 	}
 
 	/**
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * <pre>
 	 *                                +----------- ITERATION ---------+
 	 *                                |                               |
@@ -146,30 +146,30 @@ public class PipelineBreakerTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(ExecutionMode.PIPELINED);
 			env.setParallelism(64);
-			
+
 			DataSet<Long> initialSource = env.generateSequence(1, 10);
 			IterativeDataSet<Long> iteration = initialSource.iterate(100);
 
 			DataSet<Long> sourceWithMapper = env.generateSequence(1, 10).map(new IdentityMapper<Long>());
-			
+
 			DataSet<Long> bcInput1 = sourceWithMapper
 										.map(new IdentityMapper<Long>())
 										.reduce(new SelectOneReducer<Long>());
-			
+
 			DataSet<Long> result = sourceWithMapper
 					.map(new IdentityMapper<Long>())
 							.withBroadcastSet(iteration, "bc2")
 							.withBroadcastSet(bcInput1, "bc1");
 
 			iteration.closeWith(result).output(new DiscardingOutputFormat<Long>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			BulkIterationPlanNode iterationPlanNode = (BulkIterationPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode mapper = (SingleInputPlanNode) iterationPlanNode.getRootOfStepFunction();
-			
+
 			assertEquals(TempMode.CACHED, mapper.getInput().getTempMode());
 			assertEquals(DataExchangeMode.BATCH, mapper.getInput().getDataExchangeMode());
 		}
@@ -178,41 +178,41 @@ public class PipelineBreakerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testPipelineBreakerWithCross() {
 		try {
 			{
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 				env.setParallelism(64);
-				
+
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
-				
+
 				Configuration conf= new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST);
 				initialSource
 					.map(new IdentityMapper<Long>())
 					.cross(initialSource).withParameters(conf)
 					.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-				
+
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);
 				SinkPlanNode sink = op.getDataSinks().iterator().next();
 				DualInputPlanNode cross = (DualInputPlanNode) sink.getInput().getSource();
 				SingleInputPlanNode mapper = (SingleInputPlanNode) cross.getInput1().getSource();
-				
+
 				assertEquals(TempMode.NONE, mapper.getInput().getTempMode());
 				assertEquals(TempMode.NONE, cross.getInput2().getTempMode());
 				assertEquals(DataExchangeMode.BATCH, mapper.getInput().getDataExchangeMode());
 				assertEquals(DataExchangeMode.BATCH, cross.getInput2().getDataExchangeMode());
 			}
-			
+
 			{
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 				env.setParallelism(64);
-				
+
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
-				
+
 				Configuration conf= new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND);
 				initialSource
@@ -222,7 +222,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);
-				
+
 				SinkPlanNode sink = op.getDataSinks().iterator().next();
 				DualInputPlanNode cross = (DualInputPlanNode) sink.getInput().getSource();
 				SingleInputPlanNode mapper = (SingleInputPlanNode) cross.getInput1().getSource();
@@ -232,13 +232,13 @@ public class PipelineBreakerTest extends CompilerTestBase {
 				assertEquals(DataExchangeMode.BATCH, mapper.getInput().getDataExchangeMode());
 				assertEquals(DataExchangeMode.BATCH, cross.getInput2().getDataExchangeMode());
 			}
-			
+
 			{
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 				env.setParallelism(64);
-				
+
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
-				
+
 				Configuration conf= new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST);
 				initialSource
@@ -248,7 +248,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);
-				
+
 				SinkPlanNode sink = op.getDataSinks().iterator().next();
 				DualInputPlanNode cross = (DualInputPlanNode) sink.getInput().getSource();
 				SingleInputPlanNode mapper = (SingleInputPlanNode) cross.getInput1().getSource();
@@ -258,13 +258,13 @@ public class PipelineBreakerTest extends CompilerTestBase {
 				assertEquals(DataExchangeMode.BATCH, mapper.getInput().getDataExchangeMode());
 				assertEquals(DataExchangeMode.BATCH, cross.getInput2().getDataExchangeMode());
 			}
-			
+
 			{
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 				env.setParallelism(64);
-				
+
 				DataSet<Long> initialSource = env.generateSequence(1, 10);
-				
+
 				Configuration conf= new Configuration();
 				conf.setString(Optimizer.HINT_LOCAL_STRATEGY, Optimizer.HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND);
 				initialSource
@@ -274,7 +274,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);
-				
+
 				SinkPlanNode sink = op.getDataSinks().iterator().next();
 				DualInputPlanNode cross = (DualInputPlanNode) sink.getInput().getSource();
 				SingleInputPlanNode mapper = (SingleInputPlanNode) cross.getInput1().getSource();

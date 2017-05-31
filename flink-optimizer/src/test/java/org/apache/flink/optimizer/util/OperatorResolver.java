@@ -36,14 +36,14 @@ import java.util.Set;
  * Utility to get operator instances from plans via name.
  */
 public class OperatorResolver implements Visitor<Operator<?>> {
-	
+
 	private final Map<String, List<Operator<?>>> map;
 	private Set<Operator<?>> seen;
-	
+
 	public OperatorResolver(Plan p) {
 		this.map = new HashMap<String, List<Operator<?>>>();
 		this.seen = new HashSet<Operator<?>>();
-		
+
 		p.accept(this);
 		this.seen = null;
 	}
@@ -59,7 +59,7 @@ public class OperatorResolver implements Visitor<Operator<?>> {
 			return (T) nodes.get(0);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends Operator<?>> T getNode(String name, Class<? extends RichFunction> stubClass) {
 		List<Operator<?>> nodes = this.map.get(name);
@@ -83,7 +83,7 @@ public class OperatorResolver implements Visitor<Operator<?>> {
 			}
 		}
 	}
-	
+
 	public List<Operator<?>> getNodes(String name) {
 		List<Operator<?>> nodes = this.map.get(name);
 		if (nodes == null || nodes.isEmpty()) {
@@ -104,7 +104,7 @@ public class OperatorResolver implements Visitor<Operator<?>> {
 				this.map.put(name, list);
 			}
 			list.add(visitable);
-			
+
 			// recurse into bulk iterations
 			if (visitable instanceof BulkIterationBase) {
 				((BulkIterationBase) visitable).getNextPartialSolution().accept(this);
@@ -112,7 +112,7 @@ public class OperatorResolver implements Visitor<Operator<?>> {
 				((DeltaIterationBase) visitable).getSolutionSetDelta().accept(this);
 				((DeltaIterationBase) visitable).getNextWorkset().accept(this);
 			}
-			
+
 			return true;
 		} else {
 			return false;

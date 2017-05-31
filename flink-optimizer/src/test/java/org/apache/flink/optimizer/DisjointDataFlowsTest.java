@@ -36,16 +36,16 @@ public class DisjointDataFlowsTest extends CompilerTestBase {
 	public void testDisjointFlows() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			// generate two different flows
 			env.generateSequence(1, 10)
 					.output(new DiscardingOutputFormat<Long>());
 			env.generateSequence(1, 10)
 					.output(new DiscardingOutputFormat<Long>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			new JobGraphGenerator().compileJobGraph(op);
 		}
 		catch (Exception e) {

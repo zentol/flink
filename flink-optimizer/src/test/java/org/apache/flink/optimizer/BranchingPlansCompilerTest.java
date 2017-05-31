@@ -63,7 +63,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	@Test
 	public void testCostComputationWithMultipleDataSinks() {
 		final int SINKS = 5;
-	
+
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(DEFAULT_PARALLELISM);
@@ -90,12 +90,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * <pre>
-	 *                (SRC A)  
+	 *                (SRC A)
 	 *                   |
 	 *                (MAP A)
-	 *             /         \   
+	 *             /         \
 	 *          (MAP B)      (MAP C)
 	 *           /           /     \
 	 *        (SINK A)    (SINK B)  (SINK C)
@@ -160,7 +160,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	 *                |  |  |   \          |  |  |  | MATCH6
 	 *                |  |  | MATCH2       |  |  |  |  |  |
 	 *                |  |  |  |   \       +--+--+--+--+--+
-	 *                |  |  |  | MATCH1            MAP 
+	 *                |  |  |  | MATCH1            MAP
 	 *                \  |  |  |  |  | /-----------/
 	 *                (DATA SOURCE ONE)
 	 * </pre>
@@ -227,9 +227,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
 
 	 *              (SINK A)
@@ -300,7 +300,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testBranchEachContractType() {
@@ -354,9 +354,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			Plan plan = env.createProgramPlan();
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			JobGraphGenerator jobGen = new JobGraphGenerator();
-			
+
 			//Compile plan to verify that no error is thrown
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -397,7 +397,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			OptimizedPlan oPlan = compileNoStats(plan);
 
 			JobGraphGenerator jobGen = new JobGraphGenerator();
-			
+
 			//Compile plan to verify that no error is thrown
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -405,12 +405,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
-	 *             (SRC A)     
-	 *             /     \      
+	 *             (SRC A)
+	 *             /     \
 	 *        (SINK A)    (SINK B)
 	 * </pre>
 	 */
@@ -430,25 +430,25 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			Plan plan = env.createProgramPlan();
 			OptimizedPlan oPlan = compileNoStats(plan);
-			
+
 			// ---------- check the optimizer plan ----------
-			
+
 			// number of sinks
 			Assert.assertEquals("Wrong number of data sinks.", 2, oPlan.getDataSinks().size());
-			
+
 			// sinks contain all sink paths
 			Set<String> allSinks = new HashSet<String>();
 			allSinks.add(outPath1);
 			allSinks.add(outPath2);
-			
+
 			for (SinkPlanNode n : oPlan.getDataSinks()) {
 				String path = ((TextOutputFormat<String>)n.getSinkNode().getOperator()
 						.getFormatWrapper().getUserCodeObject()).getOutputFilePath().toString();
 				Assert.assertTrue("Invalid data sink.", allSinks.remove(path));
 			}
-			
+
 			// ---------- compile plan to job graph to verify that no error is thrown ----------
-			
+
 			JobGraphGenerator jobGen = new JobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
 		} catch (Exception e) {
@@ -456,15 +456,15 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * <pre>
 	 *     (SINK 3) (SINK 1)   (SINK 2) (SINK 4)
 	 *         \     /             \     /
 	 *         (SRC A)             (SRC B)
 	 * </pre>
-	 * 
+	 *
 	 * NOTE: this case is currently not caught by the compiler. we should enable the test once it is caught.
 	 */
 	@Test
@@ -490,7 +490,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		compileNoStats(plan);
 
 	}
-	
+
 	@Test
 	public void testBranchAfterIteration() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
@@ -515,7 +515,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBranchBeforeIteration() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
@@ -707,7 +707,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBranchingBroadcastVariable() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
@@ -716,17 +716,17 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		DataSet<String> input1 = env.readTextFile(IN_FILE).name("source1");
 		DataSet<String> input2 = env.readTextFile(IN_FILE).name("source2");
 		DataSet<String> input3 = env.readTextFile(IN_FILE).name("source3");
-		
+
 		DataSet<String> result1 = input1
 				.map(new IdentityMapper<String>())
 				.reduceGroup(new Top1GroupReducer<String>())
 					.withBroadcastSet(input3, "bc");
-		
+
 		DataSet<String> result2 = input2
 				.map(new IdentityMapper<String>())
 				.reduceGroup(new Top1GroupReducer<String>())
 					.withBroadcastSet(input3, "bc");
-		
+
 		result1.join(result2)
 				.where(new IdentityKeyExtractor<String>())
 				.equalTo(new IdentityKeyExtractor<String>())
@@ -740,9 +740,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.withBroadcastSet(input1, "bc2")
 				.withBroadcastSet(result1, "bc3")
 				.output(new DiscardingOutputFormat<String>());
-		
+
 		Plan plan = env.createProgramPlan();
-		
+
 		try{
 			compileNoStats(plan);
 		}catch(Exception e){
@@ -750,13 +750,13 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBCVariableClosure() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		
+
 		DataSet<String> input = env.readTextFile(IN_FILE).name("source1");
-		
+
 		DataSet<String> reduced = input
 				.map(new IdentityMapper<String>())
 				.reduceGroup(new Top1GroupReducer<String>());
@@ -764,12 +764,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		DataSet<String> initialSolution = input.map(new IdentityMapper<String>()).withBroadcastSet(reduced, "bc");
 
 		IterativeDataSet<String> iteration = initialSolution.iterate(100);
-		
+
 		iteration.closeWith(iteration.map(new IdentityMapper<String>()).withBroadcastSet(reduced, "red"))
 				.output(new DiscardingOutputFormat<String>());
-		
+
 		Plan plan = env.createProgramPlan();
-		
+
 		try{
 			compileNoStats(plan);
 		}catch(Exception e){
@@ -777,31 +777,31 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testMultipleIterations() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(100);
-		
+
 		DataSet<String> input = env.readTextFile(IN_FILE).name("source1");
-		
+
 		DataSet<String> reduced = input
 				.map(new IdentityMapper<String>())
 				.reduceGroup(new Top1GroupReducer<String>());
-			
+
 		IterativeDataSet<String> iteration1 = input.iterate(100);
 		IterativeDataSet<String> iteration2 = input.iterate(20);
 		IterativeDataSet<String> iteration3 = input.iterate(17);
-		
+
 		iteration1.closeWith(iteration1.map(new IdentityMapper<String>()).withBroadcastSet(reduced, "bc1"))
 				.output(new DiscardingOutputFormat<String>());
 		iteration2.closeWith(iteration2.reduceGroup(new Top1GroupReducer<String>()).withBroadcastSet(reduced, "bc2"))
 				.output(new DiscardingOutputFormat<String>());
 		iteration3.closeWith(iteration3.reduceGroup(new IdentityGroupReducer<String>()).withBroadcastSet(reduced, "bc3"))
 				.output(new DiscardingOutputFormat<String>());
-		
+
 		Plan plan = env.createProgramPlan();
-		
+
 		try{
 			compileNoStats(plan);
 		}catch(Exception e){
@@ -809,14 +809,14 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testMultipleIterationsWithClosueBCVars() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(100);
 
 		DataSet<String> input = env.readTextFile(IN_FILE).name("source1");
-			
+
 		IterativeDataSet<String> iteration1 = input.iterate(100);
 		IterativeDataSet<String> iteration2 = input.iterate(20);
 		IterativeDataSet<String> iteration3 = input.iterate(17);
@@ -827,9 +827,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 				.output(new DiscardingOutputFormat<String>());
 		iteration3.closeWith(iteration3.reduceGroup(new IdentityGroupReducer<String>()))
 				.output(new DiscardingOutputFormat<String>());
-		
+
 		Plan plan = env.createProgramPlan();
-		
+
 		try{
 			compileNoStats(plan);
 		}catch(Exception e){
@@ -837,7 +837,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Assert.fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBranchesOnlyInBCVariables1() {
 		try{
@@ -846,12 +846,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			DataSet<Long> input = env.generateSequence(1, 10);
 			DataSet<Long> bc_input = env.generateSequence(1, 10);
-			
+
 			input
 				.map(new IdentityMapper<Long>()).withBroadcastSet(bc_input, "name1")
 				.map(new IdentityMapper<Long>()).withBroadcastSet(bc_input, "name2")
 				.output(new DiscardingOutputFormat<Long>());
-			
+
 			Plan plan = env.createProgramPlan();
 			compileNoStats(plan);
 		}
@@ -860,7 +860,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testBranchesOnlyInBCVariables2() {
 		try{
@@ -868,30 +868,30 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			env.setParallelism(100);
 
 			DataSet<Tuple2<Long, Long>> input = env.generateSequence(1, 10).map(new Duplicator<Long>()).name("proper input");
-			
+
 			DataSet<Long> bc_input1 = env.generateSequence(1, 10).name("BC input 1");
 			DataSet<Long> bc_input2 = env.generateSequence(1, 10).name("BC input 1");
-			
+
 			DataSet<Tuple2<Long, Long>> joinInput1 =
 					input.map(new IdentityMapper<Tuple2<Long,Long>>())
 						.withBroadcastSet(bc_input1.map(new IdentityMapper<Long>()), "bc1")
 						.withBroadcastSet(bc_input2, "bc2");
-			
+
 			DataSet<Tuple2<Long, Long>> joinInput2 =
 					input.map(new IdentityMapper<Tuple2<Long,Long>>())
 						.withBroadcastSet(bc_input1, "bc1")
 						.withBroadcastSet(bc_input2, "bc2");
-			
+
 			DataSet<Tuple2<Long, Long>> joinResult = joinInput1
 				.join(joinInput2, JoinHint.REPARTITION_HASH_FIRST).where(0).equalTo(1)
 				.with(new DummyFlatJoinFunction<Tuple2<Long,Long>>());
-			
+
 			input
 				.map(new IdentityMapper<Tuple2<Long,Long>>())
 					.withBroadcastSet(bc_input1, "bc1")
 				.union(joinResult)
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-			
+
 			Plan plan = env.createProgramPlan();
 			compileNoStats(plan);
 		}
@@ -900,9 +900,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	private static final class Duplicator<T> implements MapFunction<T, Tuple2<T, T>> {
-		
+
 		@Override
 		public Tuple2<T, T> map(T value) {
 			return new Tuple2<T, T>(value, value);

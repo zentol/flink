@@ -56,11 +56,11 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 			Plan plan = env.createProgramPlan();
 			OptimizedPlan oPlan = compileWithStats(plan);
 			OptimizerPlanNodeResolver resolver = new OptimizerPlanNodeResolver(oPlan);
-			
+
 			DualInputPlanNode crossPlanNode = resolver.getNode("Cross");
 			Channel in1 = crossPlanNode.getInput1();
 			Channel in2 = crossPlanNode.getInput2();
-			
+
 			assertEquals(ShipStrategyType.FORWARD, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.BROADCAST, in2.getShipStrategy());
 		} catch(CompilerException ce) {
@@ -68,7 +68,7 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 			fail("The Flink optimizer is unable to compile this plan correctly.");
 		}
 	}
-	
+
 	@Test
 	public void testCrossWithLarge() {
 		// construct the plan
@@ -84,11 +84,11 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 			Plan plan = env.createProgramPlan();
 			OptimizedPlan oPlan = compileNoStats(plan);
 			OptimizerPlanNodeResolver resolver = new OptimizerPlanNodeResolver(oPlan);
-			
+
 			DualInputPlanNode crossPlanNode = resolver.getNode("Cross");
 			Channel in1 = crossPlanNode.getInput1();
 			Channel in2 = crossPlanNode.getInput2();
-			
+
 			assertEquals(ShipStrategyType.BROADCAST, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.FORWARD, in2.getShipStrategy());
 		} catch(CompilerException ce) {

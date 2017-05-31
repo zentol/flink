@@ -122,7 +122,7 @@ public class UnionClosedBranchingTest extends CompilerTestBase {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.getConfig().setExecutionMode(executionMode);
 		env.setParallelism(4);
-		
+
 		DataSet<Tuple1<Integer>> src1 = env.fromElements(new Tuple1<>(0), new Tuple1<>(1));
 
 		DataSet<Tuple1<Integer>> src2 = env.fromElements(new Tuple1<>(0), new Tuple1<>(1));

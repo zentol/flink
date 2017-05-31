@@ -40,18 +40,18 @@ public class CoGroupOnConflictingPartitioningsTest extends CompilerTestBase {
 	public void testRejectCoGroupOnHashAndRangePartitioning() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
-			
+
 			Configuration cfg = new Configuration();
 			cfg.setString(Optimizer.HINT_SHIP_STRATEGY_FIRST_INPUT, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_HASH);
 			cfg.setString(Optimizer.HINT_SHIP_STRATEGY_SECOND_INPUT, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_RANGE);
-			
+
 			input.coGroup(input).where(0).equalTo(0)
 				.with(new DummyCoGroupFunction<Tuple2<Long, Long>, Tuple2<Long, Long>>())
 				.withParameters(cfg)
 				.output(new DiscardingOutputFormat<Tuple2<Tuple2<Long, Long>, Tuple2<Long, Long>>>());
-			
+
 			Plan p = env.createProgramPlan();
 			try {
 				compileNoStats(p);

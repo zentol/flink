@@ -52,19 +52,19 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 	@Test
 	public void testRightSide() {
 		try {
-			
+
 			Plan plan = getTestPlanRightStatic(Optimizer.HINT_LOCAL_STRATEGY_HASH_BUILD_SECOND);
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 			DualInputPlanNode innerJoin = resolver.getNode("DummyJoiner");
-			
+
 			// verify correct join strategy
-			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_SECOND_CACHED, innerJoin.getDriverStrategy()); 
+			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_SECOND_CACHED, innerJoin.getDriverStrategy());
 			assertEquals(TempMode.NONE, innerJoin.getInput1().getTempMode());
 			assertEquals(TempMode.NONE, innerJoin.getInput2().getTempMode());
-		
+
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}
 		catch (Exception e) {
@@ -73,26 +73,26 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			fail("Test errored: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant
 	 */
 	@Test
 	public void testRightSideCountercheck() {
 		try {
-			
+
 			Plan plan = getTestPlanRightStatic(Optimizer.HINT_LOCAL_STRATEGY_HASH_BUILD_FIRST);
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 			DualInputPlanNode innerJoin = resolver.getNode("DummyJoiner");
-			
+
 			// verify correct join strategy
-			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_FIRST, innerJoin.getDriverStrategy()); 
+			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_FIRST, innerJoin.getDriverStrategy());
 			assertEquals(TempMode.NONE, innerJoin.getInput1().getTempMode());
 			assertEquals(TempMode.CACHED, innerJoin.getInput2().getTempMode());
-		
+
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}
 		catch (Exception e) {
@@ -101,7 +101,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			fail("Test errored: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This tests whether a HYBRIDHASH_BUILD_FIRST is correctly transformed to a HYBRIDHASH_BUILD_FIRST_CACHED
 	 * when inside of an iteration an on the static path
@@ -109,19 +109,19 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 	@Test
 	public void testLeftSide() {
 		try {
-			
+
 			Plan plan = getTestPlanLeftStatic(Optimizer.HINT_LOCAL_STRATEGY_HASH_BUILD_FIRST);
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 			DualInputPlanNode innerJoin = resolver.getNode("DummyJoiner");
-			
+
 			// verify correct join strategy
 			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_FIRST_CACHED, innerJoin.getDriverStrategy());
 			assertEquals(TempMode.NONE, innerJoin.getInput1().getTempMode());
 			assertEquals(TempMode.NONE, innerJoin.getInput2().getTempMode());
-		
+
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}
 		catch (Exception e) {
@@ -130,26 +130,26 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			fail("Test errored: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This test makes sure that only a HYBRIDHASH on the static path is transformed to the cached variant
 	 */
 	@Test
 	public void testLeftSideCountercheck() {
 		try {
-			
+
 			Plan plan = getTestPlanLeftStatic(Optimizer.HINT_LOCAL_STRATEGY_HASH_BUILD_SECOND);
-			
+
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 			DualInputPlanNode innerJoin = resolver.getNode("DummyJoiner");
-			
+
 			// verify correct join strategy
 			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_SECOND, innerJoin.getDriverStrategy());
 			assertEquals(TempMode.CACHED, innerJoin.getInput1().getTempMode());
 			assertEquals(TempMode.NONE, innerJoin.getInput2().getTempMode());
-		
+
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}
 		catch (Exception e) {
@@ -158,7 +158,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			fail("Test errored: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * This test simulates a join of a big left side with a small right side inside of an iteration, where the small side is on a static path.
 	 * Currently the best execution plan is a HYBRIDHASH_BUILD_SECOND_CACHED, where the small side is hashed and cached.
@@ -167,12 +167,12 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 	@Test
 	public void testCorrectChoosing() {
 		try {
-			
+
 			Plan plan = getTestPlanRightStatic("");
-			
+
 			SourceCollectorVisitor sourceCollector = new SourceCollectorVisitor();
 			plan.accept(sourceCollector);
-			
+
 			for(GenericDataSourceBase<?, ?> s : sourceCollector.getSources()) {
 				if(s.getName().equals("bigFile")) {
 					this.setSourceStatistics(s, 10000000, 1000);
@@ -183,15 +183,15 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			}
 
 			OptimizedPlan oPlan = compileNoStats(plan);
-	
+
 			OptimizerPlanNodeResolver resolver = getOptimizerPlanNodeResolver(oPlan);
 			DualInputPlanNode innerJoin = resolver.getNode("DummyJoiner");
-			
+
 			// verify correct join strategy
 			assertEquals(DriverStrategy.HYBRIDHASH_BUILD_SECOND_CACHED, innerJoin.getDriverStrategy());
 			assertEquals(TempMode.NONE, innerJoin.getInput1().getTempMode());
 			assertEquals(TempMode.NONE, innerJoin.getInput2().getTempMode());
-		
+
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}
 		catch (Exception e) {
@@ -200,62 +200,62 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			fail("Test errored: " + e.getMessage());
 		}
 	}
-	
+
 	private Plan getTestPlanRightStatic(String strategy) {
-		
+
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		
+
 		DataSet<Tuple3<Long, Long, Long>> bigInput = env.readCsvFile("file://bigFile").types(Long.class, Long.class, Long.class).name("bigFile");
-		
+
 		DataSet<Tuple3<Long, Long, Long>> smallInput = env.readCsvFile("file://smallFile").types(Long.class, Long.class, Long.class).name("smallFile");
-		
+
 		IterativeDataSet<Tuple3<Long, Long, Long>> iteration = bigInput.iterate(10);
-		
+
 		Configuration joinStrategy = new Configuration();
 		joinStrategy.setString(Optimizer.HINT_SHIP_STRATEGY, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_HASH);
-		
+
 		if(!strategy.equals("")) {
 			joinStrategy.setString(Optimizer.HINT_LOCAL_STRATEGY, strategy);
 		}
-		
+
 		DataSet<Tuple3<Long, Long, Long>> inner = iteration.join(smallInput).where(0).equalTo(0).with(new DummyJoiner()).name("DummyJoiner").withParameters(joinStrategy);
 
 		DataSet<Tuple3<Long, Long, Long>> output = iteration.closeWith(inner);
-		
+
 		output.output(new DiscardingOutputFormat<Tuple3<Long, Long, Long>>());
-		
+
 		return env.createProgramPlan();
-		
+
 	}
-	
+
 	private Plan getTestPlanLeftStatic(String strategy) {
-		
+
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		
+
 		@SuppressWarnings("unchecked")
 		DataSet<Tuple3<Long, Long, Long>> bigInput = env.fromElements(new Tuple3<Long, Long, Long>(1L, 2L, 3L),
 				new Tuple3<Long, Long, Long>(1L, 2L, 3L),new Tuple3<Long, Long, Long>(1L, 2L, 3L)).name("Big");
-		
+
 		@SuppressWarnings("unchecked")
 		DataSet<Tuple3<Long, Long, Long>> smallInput = env.fromElements(new Tuple3<Long, Long, Long>(1L, 2L, 3L)).name("Small");
-		
+
 		IterativeDataSet<Tuple3<Long, Long, Long>> iteration = bigInput.iterate(10);
-		
+
 		Configuration joinStrategy = new Configuration();
 		joinStrategy.setString(Optimizer.HINT_LOCAL_STRATEGY, strategy);
-		
+
 		DataSet<Tuple3<Long, Long, Long>> inner = smallInput.join(iteration).where(0).equalTo(0).with(new DummyJoiner()).name("DummyJoiner").withParameters(joinStrategy);
 
 		DataSet<Tuple3<Long, Long, Long>> output = iteration.closeWith(inner);
-		
+
 		output.output(new DiscardingOutputFormat<Tuple3<Long,Long,Long>>());
-		
+
 		return env.createProgramPlan();
-		
+
 	}
-	
+
 	private static class DummyJoiner extends RichJoinFunction<Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>> {
 
 		@Override

@@ -23,7 +23,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.util.Collector;
 
 public class DummyCoGroupFunction<L, R> extends RichCoGroupFunction<L, R, Tuple2<L, R>> {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override

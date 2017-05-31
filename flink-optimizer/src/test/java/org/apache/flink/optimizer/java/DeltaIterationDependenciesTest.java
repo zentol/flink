@@ -50,12 +50,12 @@ public class DeltaIterationDependenciesTest extends CompilerTestBase {
 			DataSet<Tuple2<Long, Long>> nextWorkset = deltaIteration.getSolutionSet().join(input)
 														.where(0).equalTo(0)
 														.projectFirst(1).projectSecond(1);
-			
+
 
 			DataSet<Tuple2<Long, Long>> result = deltaIteration.closeWith(delta, nextWorkset);
 
 			result.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-			
+
 			Plan p = env.createProgramPlan();
 			try {
 				compileNoStats(p);

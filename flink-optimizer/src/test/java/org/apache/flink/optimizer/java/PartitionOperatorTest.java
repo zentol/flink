@@ -53,19 +53,19 @@ public class PartitionOperatorTest extends CompilerTestBase {
 	public void testPartitionCustomOperatorPreservesFields() {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-			
+
 			DataSet<Tuple2<Long, Long>> data = env.fromCollection(Collections.singleton(new Tuple2<>(0L, 0L)));
-			
+
 			data.partitionCustom(new Partitioner<Long>() {
 					public int partition(Long key, int numPartitions) { return key.intValue(); }
 				}, 1)
 				.groupBy(1)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
-			
+
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
-			
+
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer = (SingleInputPlanNode) sink.getInput().getSource();
 			SingleInputPlanNode partitioner = (SingleInputPlanNode) reducer.getInput().getSource();

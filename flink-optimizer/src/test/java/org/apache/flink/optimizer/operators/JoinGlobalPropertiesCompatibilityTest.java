@@ -41,22 +41,22 @@ public class JoinGlobalPropertiesCompatibilityTest {
 			final FieldList keysRight = new FieldList(3, 1);
 
 			SortMergeInnerJoinDescriptor descr = new SortMergeInnerJoinDescriptor(keysLeft, keysRight);
-			
+
 			// test compatible hash partitioning
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setHashPartitioned(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setHashPartitioned(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setHashPartitioned(keysLeft);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setHashPartitioned(keysRight);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test compatible custom partitioning
 			{
 				Partitioner<Object> part = new Partitioner<Object>() {
@@ -65,20 +65,20 @@ public class JoinGlobalPropertiesCompatibilityTest {
 						return 0;
 					}
 				};
-				
+
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setCustomPartitioned(keysLeft, part);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setCustomPartitioned(keysRight, part);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test custom partitioning matching any partitioning
 			{
 				Partitioner<Object> part = new Partitioner<Object>() {
@@ -87,17 +87,17 @@ public class JoinGlobalPropertiesCompatibilityTest {
 						return 0;
 					}
 				};
-				
+
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertTrue(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
 
@@ -151,13 +151,13 @@ public class JoinGlobalPropertiesCompatibilityTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void checkInompatiblePartitionings() {
 		try {
 			final FieldList keysLeft = new FieldList(1);
 			final FieldList keysRight = new FieldList(3);
-			
+
 			final Partitioner<Object> part = new Partitioner<Object>() {
 				@Override
 				public int partition(Object key, int numPartitions) {
@@ -170,36 +170,36 @@ public class JoinGlobalPropertiesCompatibilityTest {
 					return 0;
 				}
 			};
-			
+
 			SortMergeInnerJoinDescriptor descr = new SortMergeInnerJoinDescriptor(keysLeft, keysRight);
-			
+
 			// test incompatible hash with custom partitioning
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setHashPartitioned(keysLeft);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part);
-				
+
 				assertFalse(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
-			
+
 			// test incompatible custom partitionings
 			{
 				RequestedGlobalProperties reqLeft = new RequestedGlobalProperties();
 				reqLeft.setAnyPartitioning(keysLeft);
 				RequestedGlobalProperties reqRight = new RequestedGlobalProperties();
 				reqRight.setAnyPartitioning(keysRight);
-				
+
 				GlobalProperties propsLeft = new GlobalProperties();
 				propsLeft.setCustomPartitioned(keysLeft, part);
 				GlobalProperties propsRight = new GlobalProperties();
 				propsRight.setCustomPartitioned(keysRight, part2);
-				
+
 				assertFalse(descr.areCompatible(reqLeft, reqRight, propsLeft, propsRight));
 			}
 

@@ -22,7 +22,7 @@ import org.apache.flink.api.common.functions.CoGroupFunction;
 import org.apache.flink.util.Collector;
 
 public class IdentityCoGrouper<T> implements CoGroupFunction<T, T, T> {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
