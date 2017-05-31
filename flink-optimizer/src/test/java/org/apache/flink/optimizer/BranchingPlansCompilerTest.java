@@ -442,7 +442,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			allSinks.add(outPath2);
 
 			for (SinkPlanNode n : oPlan.getDataSinks()) {
-				String path = ((TextOutputFormat<String>)n.getSinkNode().getOperator()
+				String path = ((TextOutputFormat<String>) n.getSinkNode().getOperator()
 						.getFormatWrapper().getUserCodeObject()).getOutputFilePath().toString();
 				Assert.assertTrue("Invalid data sink.", allSinks.remove(path));
 			}

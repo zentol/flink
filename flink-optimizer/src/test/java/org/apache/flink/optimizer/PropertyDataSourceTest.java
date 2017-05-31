@@ -812,8 +812,8 @@ public class PropertyDataSourceTest extends CompilerTestBase {
 
 		// check the optimized Plan
 		SinkPlanNode sinkNode = oPlan.getDataSinks().iterator().next();
-		SourcePlanNode sourceNode1 = (SourcePlanNode) ((NAryUnionPlanNode)sinkNode.getPredecessor()).getListOfInputs().get(0).getSource();
-		SourcePlanNode sourceNode2 = (SourcePlanNode) ((NAryUnionPlanNode)sinkNode.getPredecessor()).getListOfInputs().get(1).getSource();
+		SourcePlanNode sourceNode1 = (SourcePlanNode) ((NAryUnionPlanNode) sinkNode.getPredecessor()).getListOfInputs().get(0).getSource();
+		SourcePlanNode sourceNode2 = (SourcePlanNode) ((NAryUnionPlanNode) sinkNode.getPredecessor()).getListOfInputs().get(1).getSource();
 
 		GlobalProperties gprops1 = sourceNode1.getGlobalProperties();
 		LocalProperties lprops1 = sourceNode1.getLocalProperties();
@@ -860,8 +860,8 @@ public class PropertyDataSourceTest extends CompilerTestBase {
 
 		// check the optimized Plan
 		SinkPlanNode sinkNode = oPlan.getDataSinks().iterator().next();
-		SourcePlanNode sourceNode1 = (SourcePlanNode) ((NAryUnionPlanNode)sinkNode.getPredecessor()).getListOfInputs().get(0).getSource();
-		SourcePlanNode sourceNode2 = (SourcePlanNode) ((NAryUnionPlanNode)sinkNode.getPredecessor()).getListOfInputs().get(1).getSource();
+		SourcePlanNode sourceNode1 = (SourcePlanNode) ((NAryUnionPlanNode) sinkNode.getPredecessor()).getListOfInputs().get(0).getSource();
+		SourcePlanNode sourceNode2 = (SourcePlanNode) ((NAryUnionPlanNode) sinkNode.getPredecessor()).getListOfInputs().get(1).getSource();
 
 		GlobalProperties gprops1 = sourceNode1.getGlobalProperties();
 		LocalProperties lprops1 = sourceNode1.getLocalProperties();

@@ -97,7 +97,7 @@ public class PartitionOperatorTest extends CompilerTestBase {
 
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer = (SingleInputPlanNode) sink.getInput().getSource();
-			SingleInputPlanNode partitionNode = (SingleInputPlanNode)reducer.getInput().getSource();
+			SingleInputPlanNode partitionNode = (SingleInputPlanNode) reducer.getInput().getSource();
 			SingleInputPlanNode partitionIDRemover = (SingleInputPlanNode) partitionNode.getInput().getSource();
 
 			assertEquals(ShipStrategyType.FORWARD, reducer.getInput().getShipStrategy());
@@ -157,7 +157,7 @@ public class PartitionOperatorTest extends CompilerTestBase {
 
 			SinkPlanNode sink = op.getDataSinks().iterator().next();
 			SingleInputPlanNode reducer = (SingleInputPlanNode) sink.getInput().getSource();
-			SingleInputPlanNode partitionNode = (SingleInputPlanNode)reducer.getInput().getSource();
+			SingleInputPlanNode partitionNode = (SingleInputPlanNode) reducer.getInput().getSource();
 			SingleInputPlanNode partitionIDRemover = (SingleInputPlanNode) partitionNode.getInput().getSource();
 
 			assertEquals(ShipStrategyType.FORWARD, reducer.getInput().getShipStrategy());

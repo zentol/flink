@@ -62,7 +62,7 @@ public class TestDistribution implements DataDistribution {
 	@Override
 	public boolean equals(Object obj) {
 		boolean isEqual = true;
-		TestDistribution dist = (TestDistribution)obj;
+		TestDistribution dist = (TestDistribution) obj;
 		if (this.boundary != dist.boundary) {
 			isEqual = false;
 		}

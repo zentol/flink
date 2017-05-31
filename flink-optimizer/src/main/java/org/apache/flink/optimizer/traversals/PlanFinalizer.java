@@ -90,7 +90,7 @@ public class PlanFinalizer implements Visitor<PlanNode> {
 				// assign memory to the driver strategy of the node
 				final int consumerWeight = node.getMemoryConsumerWeight();
 				if (consumerWeight > 0) {
-					final double relativeMem = (double)consumerWeight / this.memoryConsumerWeights;
+					final double relativeMem = (double) consumerWeight / this.memoryConsumerWeights;
 					node.setRelativeMemoryPerSubtask(relativeMem);
 					if (Optimizer.LOG.isDebugEnabled()) {
 						Optimizer.LOG.debug("Assigned " + relativeMem + " of total memory to each subtask of " +

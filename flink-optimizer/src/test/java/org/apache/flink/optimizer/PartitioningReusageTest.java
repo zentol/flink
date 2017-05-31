@@ -59,7 +59,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 
@@ -80,7 +80,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 
@@ -103,7 +103,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 
@@ -126,7 +126,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -149,7 +149,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -171,7 +171,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -194,7 +194,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -219,7 +219,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -244,7 +244,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -269,7 +269,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -294,7 +294,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -319,7 +319,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -344,7 +344,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -369,7 +369,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidJoinInputProperties(join);
 	}
@@ -389,7 +389,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 
@@ -410,7 +410,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 
@@ -433,7 +433,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 
@@ -456,7 +456,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -478,7 +478,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -500,7 +500,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -522,7 +522,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -546,7 +546,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -570,7 +570,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -594,7 +594,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -618,7 +618,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -642,7 +642,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -666,7 +666,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}
@@ -690,7 +690,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode coGroup= (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode coGroup= (DualInputPlanNode) sink.getInput().getSource();
 
 		checkValidCoGroupInputProperties(coGroup);
 	}

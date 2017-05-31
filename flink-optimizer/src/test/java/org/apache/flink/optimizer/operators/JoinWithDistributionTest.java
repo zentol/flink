@@ -56,7 +56,7 @@ public class JoinWithDistributionTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 		Channel input1 = join.getInput1();
 		Channel input2 = join.getInput2();
 		assertEquals(ShipStrategyType.FORWARD, input1.getShipStrategy());
@@ -82,7 +82,7 @@ public class JoinWithDistributionTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileWithStats(plan);
 
 		SinkPlanNode sink = oPlan.getDataSinks().iterator().next();
-		DualInputPlanNode join = (DualInputPlanNode)sink.getInput().getSource();
+		DualInputPlanNode join = (DualInputPlanNode) sink.getInput().getSource();
 		Channel input1 = join.getInput1();
 		Channel input2 = join.getInput2();
 		assertEquals(ShipStrategyType.PARTITION_HASH, input1.getShipStrategy());

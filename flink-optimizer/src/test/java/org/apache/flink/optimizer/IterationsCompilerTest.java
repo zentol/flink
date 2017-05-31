@@ -163,7 +163,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 			assertTrue(op.getDataSinks().iterator().next().getInput().getSource() instanceof WorksetIterationPlanNode);
 
 			WorksetIterationPlanNode wipn = (WorksetIterationPlanNode) op.getDataSinks().iterator().next().getInput().getSource();
-			BulkIterationPlanNode bipn = (BulkIterationPlanNode)wipn.getInput1().getSource();
+			BulkIterationPlanNode bipn = (BulkIterationPlanNode) wipn.getInput1().getSource();
 
 			// the hash partitioning has been pushed out of the delta iteration into the bulk iteration
 			assertEquals(ShipStrategyType.FORWARD, wipn.getInput1().getShipStrategy());

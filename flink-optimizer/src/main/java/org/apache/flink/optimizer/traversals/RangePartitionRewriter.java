@@ -97,7 +97,7 @@ public class RangePartitionRewriter implements Visitor<PlanNode> {
 	public void postVisit(PlanNode node) {
 
 		if (node instanceof IterationPlanNode) {
-			IterationPlanNode iNode = (IterationPlanNode)node;
+			IterationPlanNode iNode = (IterationPlanNode) node;
 			if (!visitedIterationNodes.contains(iNode)) {
 				visitedIterationNodes.add(iNode);
 				iNode.acceptForStepFunction(this);
