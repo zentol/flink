@@ -370,7 +370,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 			for (PlanNode candidate : candidates) {
 				for (PlanNode terminationCandidate : terminationCriterionCandidates) {
 					if (singleRoot.areBranchCompatible(candidate, terminationCandidate)) {
-						BulkIterationPlanNode node = new BulkIterationPlanNode(this, "BulkIteration ("+this.getOperator().getName()+")", in, pspn, candidate, terminationCandidate);
+						BulkIterationPlanNode node = new BulkIterationPlanNode(this, "BulkIteration (" + this.getOperator().getName() + ")", in, pspn, candidate, terminationCandidate);
 						GlobalProperties gProps = candidate.getGlobalProperties().clone();
 						LocalProperties lProps = candidate.getLocalProperties().clone();
 						node.initProperties(gProps, lProps);

@@ -45,7 +45,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 	public SingleInputPlanNode instantiate(Channel in, SingleInputNode node) {
 		if (in.getShipStrategy() == ShipStrategyType.FORWARD) {
 			// locally connected, directly instantiate
-			return new SingleInputPlanNode(node, "Reduce ("+node.getOperator().getName()+")",
+			return new SingleInputPlanNode(node, "Reduce (" + node.getOperator().getName() + ")",
 											in, DriverStrategy.ALL_REDUCE);
 		} else {
 			// non forward case.plug in a combiner
@@ -57,7 +57,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 			combinerNode.setParallelism(in.getSource().getParallelism());
 
 			SingleInputPlanNode combiner = new SingleInputPlanNode(combinerNode,
-					"Combine ("+node.getOperator().getName()+")", toCombiner, DriverStrategy.ALL_REDUCE);
+					"Combine (" + node.getOperator().getName() + ")", toCombiner, DriverStrategy.ALL_REDUCE);
 			combiner.setCosts(new Costs(0, 0));
 			combiner.initProperties(toCombiner.getGlobalProperties(), toCombiner.getLocalProperties());
 
@@ -67,7 +67,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 			toReducer.setLocalStrategy(in.getLocalStrategy(), in.getLocalStrategyKeys(),
 										in.getLocalStrategySortOrder());
 
-			return new SingleInputPlanNode(node, "Reduce ("+node.getOperator().getName()+")",
+			return new SingleInputPlanNode(node, "Reduce (" + node.getOperator().getName() + ")",
 											toReducer, DriverStrategy.ALL_REDUCE);
 		}
 	}

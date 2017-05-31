@@ -371,7 +371,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		DataSet<Tuple1<String>> source2 = env.readCsvFile("/some/otherpath").types(String.class);
 
 		DataSink<Tuple2<Tuple1<String>, Tuple1<String>>> out = source1
-				.join(source2).where("*").equalTo("*").setParallelism(DEFAULT_PARALLELISM+2)
+				.join(source2).where("*").equalTo("*").setParallelism(DEFAULT_PARALLELISM + 2)
 				.writeAsText("/some/newpath");
 
 		Plan plan = env.createProgramPlan();
@@ -397,7 +397,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		DataSet<Tuple1<String>> source2 = env.readCsvFile("/some/otherpath").types(String.class);
 
 		DataSink<Tuple2<Tuple1<String>, Tuple1<String>>> out = source1
-				.map(new IdMap()).setParallelism(DEFAULT_PARALLELISM+1)
+				.map(new IdMap()).setParallelism(DEFAULT_PARALLELISM + 1)
 				.join(source2).where("*").equalTo("*")
 				.writeAsText("/some/newpath");
 

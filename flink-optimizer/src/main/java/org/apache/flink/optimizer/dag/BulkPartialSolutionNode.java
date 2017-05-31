@@ -48,7 +48,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		} else {
 			this.cachedPlans = Collections.<PlanNode>singletonList(new BulkPartialSolutionPlanNode(this,
-					"PartialSolution ("+this.getOperator().getName()+")", gProps, lProps, initialInput));
+					"PartialSolution (" + this.getOperator().getName() + ")", gProps, lProps, initialInput));
 		}
 	}
 

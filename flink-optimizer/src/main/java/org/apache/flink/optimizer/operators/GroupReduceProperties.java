@@ -84,7 +84,7 @@ public final class GroupReduceProperties extends OperatorDescriptorSingle {
 
 	@Override
 	public SingleInputPlanNode instantiate(Channel in, SingleInputNode node) {
-		return new SingleInputPlanNode(node, "GroupReduce ("+node.getOperator().getName()+")", in, DriverStrategy.SORTED_GROUP_REDUCE, this.keyList);
+		return new SingleInputPlanNode(node, "GroupReduce (" + node.getOperator().getName() + ")", in, DriverStrategy.SORTED_GROUP_REDUCE, this.keyList);
 	}
 
 	@Override

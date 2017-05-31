@@ -207,7 +207,7 @@ public class DataSourceNode extends OptimizerNode {
 			return this.cachedPlans;
 		}
 
-		SourcePlanNode candidate = new SourcePlanNode(this, "DataSource ("+this.getOperator().getName()+")",
+		SourcePlanNode candidate = new SourcePlanNode(this, "DataSource (" + this.getOperator().getName() + ")",
 				this.gprops, this.lprops);
 
 		if (!replicatedInput) {

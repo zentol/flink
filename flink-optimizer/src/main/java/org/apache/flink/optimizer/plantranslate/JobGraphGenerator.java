@@ -971,7 +971,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 			// instantiate the head vertex and give it a no-op driver as the driver strategy.
 			// everything else happens in the post visit, after the input (the initial partial solution)
 			// is connected.
-			headVertex = new JobVertex("PartialSolution ("+iteration.getNodeName()+")");
+			headVertex = new JobVertex("PartialSolution (" + iteration.getNodeName() + ")");
 			headVertex.setResources(iteration.getMinResources(), iteration.getPreferredResources());
 			headVertex.setInvokableClass(IterationHeadTask.class);
 			headConfig = new TaskConfig(headVertex.getConfiguration());
@@ -1040,7 +1040,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 			// instantiate the head vertex and give it a no-op driver as the driver strategy.
 			// everything else happens in the post visit, after the input (the initial partial solution)
 			// is connected.
-			headVertex = new JobVertex("IterationHead("+iteration.getNodeName()+")");
+			headVertex = new JobVertex("IterationHead(" + iteration.getNodeName() + ")");
 			headVertex.setResources(iteration.getMinResources(), iteration.getPreferredResources());
 			headVertex.setInvokableClass(IterationHeadTask.class);
 			headConfig = new TaskConfig(headVertex.getConfiguration());

@@ -142,7 +142,7 @@ public class SingleInputPlanNode extends PlanNode {
 	public void setDriverKeyInfo(FieldList keys, boolean[] sortOrder, int id) {
 		if (id < 0 || id >= driverKeys.length) {
 			throw new CompilerException("Invalid id for driver key information. DriverStrategy requires only "
-											+super.getDriverStrategy().getNumRequiredComparators()+" comparators.");
+											+ super.getDriverStrategy().getNumRequiredComparators() + " comparators.");
 		}
 		this.driverKeys[id] = keys;
 		this.driverSortOrders[id] = sortOrder;

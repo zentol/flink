@@ -708,7 +708,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 			FieldList pFields1 = inProps1.getPartitioningFields();
 			FieldList pFields2 = inProps2.getPartitioningFields();
 
-			assertTrue("Inputs are not the same number of fields. Input 1: "+pFields1+", Input 2: "+pFields2,
+			assertTrue("Inputs are not the same number of fields. Input 1: " + pFields1 + ", Input 2: " + pFields2,
 					pFields1.size() == pFields2.size());
 
 			FieldList reqPFields1 = join.getKeysForInput1();
@@ -725,10 +725,10 @@ public class PartitioningReusageTest extends CompilerTestBase {
 				int pos2 = getPosInFieldList(f2, reqPFields2);
 
 				if (pos1 < 0) {
-					fail("Input 1 is partitioned on field "+f1+" which is not contained in the key set "+reqPFields1);
+					fail("Input 1 is partitioned on field " + f1 + " which is not contained in the key set " + reqPFields1);
 				}
 				if (pos2 < 0) {
-					fail("Input 2 is partitioned on field "+f2+" which is not contained in the key set "+reqPFields2);
+					fail("Input 2 is partitioned on field " + f2 + " which is not contained in the key set " + reqPFields2);
 				}
 				if (pos1 != pos2) {
 					fail("Inputs are not partitioned on the same key fields");
@@ -762,7 +762,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 			FieldList pFields1 = inProps1.getPartitioningFields();
 			FieldList pFields2 = inProps2.getPartitioningFields();
 
-			assertTrue("Inputs are not the same number of fields. Input 1: "+pFields1+", Input 2: "+pFields2,
+			assertTrue("Inputs are not the same number of fields. Input 1: " + pFields1 + ", Input 2: " + pFields2,
 					pFields1.size() == pFields2.size());
 
 			FieldList reqPFields1 = coGroup.getKeysForInput1();
@@ -779,10 +779,10 @@ public class PartitioningReusageTest extends CompilerTestBase {
 				int pos2 = getPosInFieldList(f2, reqPFields2);
 
 				if (pos1 < 0) {
-					fail("Input 1 is partitioned on field "+f1+" which is not contained in the key set "+reqPFields1);
+					fail("Input 1 is partitioned on field " + f1 + " which is not contained in the key set " + reqPFields1);
 				}
 				if (pos2 < 0) {
-					fail("Input 2 is partitioned on field "+f2+" which is not contained in the key set "+reqPFields2);
+					fail("Input 2 is partitioned on field " + f2 + " which is not contained in the key set " + reqPFields2);
 				}
 				if (pos1 != pos2) {
 					fail("Inputs are not partitioned on the same key fields");
