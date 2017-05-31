@@ -365,7 +365,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 		}
 	}
 
-	public static class CombineReducer implements
+	private static class CombineReducer implements
 		GroupReduceFunction<Tuple2<String, Double>, Tuple2<String, Double>>,
 		GroupCombineFunction<Tuple2<String, Double>, Tuple2<String, Double>> {
 
@@ -376,7 +376,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 		public void combine(Iterable<Tuple2<String, Double>> values, Collector<Tuple2<String, Double>> out) {}
 	}
 
-	public static class CombineReducer2 implements
+	private static class CombineReducer2 implements
 		GroupReduceFunction<Long, Long>,
 		GroupCombineFunction<Long, Long> {
 

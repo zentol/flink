@@ -289,11 +289,17 @@ public class CoGroupCustomPartitioningTest extends CompilerTestBase {
 		}
 	}
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo2 {
 		public int a;
 		public int b;
 	}
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo3 {
 		public int a;
 		public int b;

@@ -32,7 +32,7 @@ import org.apache.flink.optimizer.plan.DualInputPlanNode;
 import java.util.List;
 
 /**
- *
+ * Bass class for all optimizer descriptions of an operator with 2 keys.
  */
 public abstract class OperatorDescriptorDual implements AbstractOperatorDescriptor {
 

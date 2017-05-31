@@ -161,7 +161,7 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 		});
 	}
 
-	public static final class DummyFlatMap extends RichFlatMapFunction<String, Tuple2<String, Integer>> {
+	private static final class DummyFlatMap extends RichFlatMapFunction<String, Tuple2<String, Integer>> {
 
 		private static final long serialVersionUID = 1L;
 

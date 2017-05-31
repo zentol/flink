@@ -30,6 +30,9 @@ import org.apache.flink.runtime.operators.DriverStrategy;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Optimizer description for a filter operator.
+ */
 public class FilterDescriptor extends OperatorDescriptorSingle {
 
 	@Override

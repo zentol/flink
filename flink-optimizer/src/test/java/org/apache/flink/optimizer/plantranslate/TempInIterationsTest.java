@@ -36,11 +36,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests whether temps barriers are correctly set in within iterations.
+ */
 public class TempInIterationsTest {
 
-	/*
-	 * Tests whether temps barriers are correctly set in within iterations
-	 */
 	@Test
 	public void testTempInIterationTest() throws Exception {
 

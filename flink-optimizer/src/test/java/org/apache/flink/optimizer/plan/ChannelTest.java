@@ -28,6 +28,9 @@ import org.apache.flink.optimizer.dag.DataSourceNode;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Tests for the {@link Channel}.
+ */
 public class ChannelTest {
 
 	@Test

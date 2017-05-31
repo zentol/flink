@@ -21,6 +21,9 @@ package org.apache.flink.optimizer.testfunctions;
 import org.apache.flink.api.common.functions.RichFlatJoinFunction;
 import org.apache.flink.util.Collector;
 
+/**
+ * Test {@link RichFlatJoinFunction} that emits null for every incoming record.
+ */
 public class DummyFlatJoinFunction<T> extends RichFlatJoinFunction<T, T, T> {
 
 	private static final long serialVersionUID = 1L;

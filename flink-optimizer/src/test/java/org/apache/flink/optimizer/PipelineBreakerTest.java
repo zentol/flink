@@ -122,8 +122,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
-	 *
+	 * Test for the below topology.
 	 *
 	 * <pre>
 	 *                                +----------- ITERATION ---------+

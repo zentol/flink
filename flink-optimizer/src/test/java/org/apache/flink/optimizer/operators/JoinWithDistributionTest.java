@@ -90,7 +90,7 @@ public class JoinWithDistributionTest extends CompilerTestBase {
 
 	}
 
-	public static class JoinFunc implements JoinFunction<Tuple3<Integer, Integer, Integer>,
+	private static class JoinFunc implements JoinFunction<Tuple3<Integer, Integer, Integer>,
 			Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 
 		@Override

@@ -149,21 +149,21 @@ public class SemanticPropertiesAPIToPlanTest extends CompilerTestBase {
 		});
 	}
 
-	public static class MockMapper implements MapFunction<Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
+	private static class MockMapper implements MapFunction<Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 		@Override
 		public Tuple3<Integer, Integer, Integer> map(Tuple3<Integer, Integer, Integer> value) throws Exception {
 			return null;
 		}
 	}
 
-	public static class MockReducer implements ReduceFunction<Tuple3<Integer, Integer, Integer>> {
+	private static class MockReducer implements ReduceFunction<Tuple3<Integer, Integer, Integer>> {
 		@Override
 		public Tuple3<Integer, Integer, Integer> reduce(Tuple3<Integer, Integer, Integer> value1, Tuple3<Integer, Integer, Integer> value2) throws Exception {
 			return null;
 		}
 	}
 
-	public static class MockJoin implements JoinFunction<Tuple3<Integer, Integer, Integer>,
+	private static class MockJoin implements JoinFunction<Tuple3<Integer, Integer, Integer>,
 			Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 
 		@Override

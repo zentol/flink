@@ -20,6 +20,10 @@ package org.apache.flink.optimizer.testfunctions;
 
 import org.apache.flink.api.common.functions.RichMapFunction;
 
+/**
+ * A {@link RichMapFunction} that forwards incoming records.
+ * @param <T>
+ */
 public class IdentityMapper<T> extends RichMapFunction<T, T> {
 
 	private static final long serialVersionUID = 1L;

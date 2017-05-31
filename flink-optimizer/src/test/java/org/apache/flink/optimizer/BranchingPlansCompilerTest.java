@@ -90,6 +90,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
 	 *
 	 * <pre>
 	 *                (SRC A)
@@ -143,6 +144,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
+	 *
 	 * <pre>
 	 *                              SINK
 	 *                               |
@@ -229,9 +232,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
 	 *
 	 * <pre>
-
 	 *              (SINK A)
 	 *                  |    (SINK B)    (SINK C)
 	 *                CROSS    /          /
@@ -407,6 +410,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
 	 *
 	 * <pre>
 	 *             (SRC A)
@@ -581,6 +585,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
+	 *
 	 * <pre>
 	 *       (SRC A)         (SRC B)          (SRC C)
 	 *      /       \       /                /       \
@@ -621,6 +627,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
+	 *
 	 * <pre>
 	 *                  +----Iteration-------+
 	 *                  |                    |
@@ -668,6 +676,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	}
 
 	/**
+	 * Test for the below topology.
+	 *
 	 * <pre>
 	 *             +---------Iteration-------+
 	 *             |                         |

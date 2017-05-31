@@ -30,6 +30,9 @@ import org.apache.flink.optimizer.util.Utils;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Base class for all optimizer descriptions of a sort-merge join operator.
+ */
 public abstract class AbstractSortMergeJoinDescriptor extends AbstractJoinDescriptor {
 
 	public AbstractSortMergeJoinDescriptor(FieldList keys1, FieldList keys2) {

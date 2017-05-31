@@ -881,6 +881,9 @@ public class PropertyDataSourceTest extends CompilerTestBase {
 		Assert.assertTrue(!gprops1.getCustomPartitioner().equals(gprops2.getCustomPartitioner()));
 	}
 
+	/**
+	 * Test pojo.
+	 */
 	public static class SomePojo {
 		public double doubleField;
 		public int intField;

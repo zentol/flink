@@ -21,10 +21,15 @@ package org.apache.flink.optimizer.testfunctions;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 
+/**
+ * A {@link FlatMapFunction} that forwards incoming records.
+ */
 public class IdentityFlatMapper<T> implements FlatMapFunction<T, T> {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void flatMap(T value, Collector<T> out) {}
+	public void flatMap(T value, Collector<T> out) {
+		out.collect(value);
+	}
 }

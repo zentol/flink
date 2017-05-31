@@ -31,6 +31,9 @@ import org.apache.flink.runtime.operators.DriverStrategy;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Optimizer description for a flatMap operator.
+ */
 public class FlatMapDescriptor extends OperatorDescriptorSingle {
 
 	@Override

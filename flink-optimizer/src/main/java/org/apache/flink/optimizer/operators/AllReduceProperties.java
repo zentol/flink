@@ -34,6 +34,9 @@ import org.apache.flink.runtime.operators.shipping.ShipStrategyType;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Optimizer description of an all-reduce operator.
+ */
 public final class AllReduceProperties extends OperatorDescriptorSingle {
 
 	@Override

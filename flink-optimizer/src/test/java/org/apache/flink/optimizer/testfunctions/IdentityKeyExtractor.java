@@ -20,6 +20,9 @@ package org.apache.flink.optimizer.testfunctions;
 
 import org.apache.flink.api.java.functions.KeySelector;
 
+/**
+ * A {@link KeySelector} that returns the entire record as the key.
+ */
 public class IdentityKeyExtractor<T> implements KeySelector<T, T> {
 
 	private static final long serialVersionUID = 1L;

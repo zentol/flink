@@ -91,7 +91,7 @@ public class CoGroupWithDistributionTest extends CompilerTestBase {
 
 	}
 
-	public static class CoGroupFunc implements CoGroupFunction<Tuple3<Integer, Integer, Integer>,
+	private static class CoGroupFunc implements CoGroupFunction<Tuple3<Integer, Integer, Integer>,
 			Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 
 		@Override

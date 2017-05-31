@@ -262,6 +262,9 @@ public class CustomPartitioningTest extends CompilerTestBase {
 
 	// --------------------------------------------------------------------------------------------
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo {
 		public int a;
 		public int b;

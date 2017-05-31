@@ -42,12 +42,12 @@ import org.junit.Test;
 @SuppressWarnings("serial")
 public class CoGroupSolutionSetFirstTest extends CompilerTestBase {
 
-	public static class SimpleCGroup extends RichCoGroupFunction<Tuple1<Integer>, Tuple1<Integer>, Tuple1<Integer>> {
+	private static class SimpleCGroup extends RichCoGroupFunction<Tuple1<Integer>, Tuple1<Integer>, Tuple1<Integer>> {
 		@Override
 		public void coGroup(Iterable<Tuple1<Integer>> first, Iterable<Tuple1<Integer>> second, Collector<Tuple1<Integer>> out) {}
 	}
 
-	public static class SimpleMap extends RichMapFunction<Tuple1<Integer>, Tuple1<Integer>> {
+	private static class SimpleMap extends RichMapFunction<Tuple1<Integer>, Tuple1<Integer>> {
 		@Override
 		public Tuple1<Integer> map(Tuple1<Integer> value) throws Exception {
 			return null;

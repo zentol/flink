@@ -225,18 +225,27 @@ public class GroupingPojoTranslationTest extends CompilerTestBase {
 
 	// --------------------------------------------------------------------------------------------
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo2 {
 		public int a;
 		public int b;
 
 	}
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo3 {
 		public int a;
 		public int b;
 		public int c;
 	}
 
+	/**
+	 * Test pojo.
+	 */
 	public static class Pojo4 {
 		public int a;
 		public int b;

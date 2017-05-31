@@ -59,6 +59,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+/**
+ * Tests for the compilation of iterations.
+ */
 @SuppressWarnings({"serial", "unchecked"})
 public class IterationsCompilerTest extends CompilerTestBase {
 
@@ -504,7 +507,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 
 	// --------------------------------------------------------------------------------------------
 
-	public static final class Join222 extends RichJoinFunction<Tuple2<Long, Long>, Tuple2<Long, Long>, Tuple2<Long, Long>> {
+	private static final class Join222 extends RichJoinFunction<Tuple2<Long, Long>, Tuple2<Long, Long>, Tuple2<Long, Long>> {
 
 		@Override
 		public Tuple2<Long, Long> join(Tuple2<Long, Long> vertexWithComponent, Tuple2<Long, Long> edge) {
@@ -512,13 +515,13 @@ public class IterationsCompilerTest extends CompilerTestBase {
 		}
 	}
 
-	public static final class FlatMapJoin extends RichFlatMapFunction<Tuple2<Tuple2<Long, Long>, Tuple2<Long, Long>>, Tuple2<Long, Long>> {
+	private static final class FlatMapJoin extends RichFlatMapFunction<Tuple2<Tuple2<Long, Long>, Tuple2<Long, Long>>, Tuple2<Long, Long>> {
 
 		@Override
 		public void flatMap(Tuple2<Tuple2<Long, Long>, Tuple2<Long, Long>> value, Collector<Tuple2<Long, Long>> out) {}
 	}
 
-	public static final class DummyMap extends RichMapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>> {
+	private static final class DummyMap extends RichMapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>> {
 
 		@Override
 		public Tuple2<Long, Long> map(Tuple2<Long, Long> value) throws Exception {
@@ -527,14 +530,14 @@ public class IterationsCompilerTest extends CompilerTestBase {
 	}
 
 	@ForwardedFields("0")
-	public static final class Reduce101 extends RichGroupReduceFunction<Tuple1<Long>, Tuple1<Long>> {
+	private static final class Reduce101 extends RichGroupReduceFunction<Tuple1<Long>, Tuple1<Long>> {
 
 		@Override
 		public void reduce(Iterable<Tuple1<Long>> values, Collector<Tuple1<Long>> out) {}
 	}
 
 	@ForwardedFields("0")
-	public static final class DuplicateValue extends RichMapFunction<Tuple1<Long>, Tuple2<Long, Long>> {
+	private static final class DuplicateValue extends RichMapFunction<Tuple1<Long>, Tuple2<Long, Long>> {
 
 		@Override
 		public Tuple2<Long, Long> map(Tuple1<Long> value) throws Exception {
@@ -542,7 +545,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 		}
 	}
 
-	public static final class DuplicateValueScalar<T> extends RichMapFunction<T, Tuple2<T, T>> {
+	private static final class DuplicateValueScalar<T> extends RichMapFunction<T, Tuple2<T, T>> {
 
 		@Override
 		public Tuple2<T, T> map(T value) {
@@ -550,7 +553,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 		}
 	}
 
-	public static final class IdFilter<T> implements FilterFunction<T> {
+	private static final class IdFilter<T> implements FilterFunction<T> {
 		@Override
 		public boolean filter(T value) {
 			return true;

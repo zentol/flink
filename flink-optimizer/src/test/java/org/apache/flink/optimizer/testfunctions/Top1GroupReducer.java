@@ -22,6 +22,9 @@ import org.apache.flink.api.common.functions.GroupCombineFunction;
 import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.util.Collector;
 
+/**
+ * A combinable {@link GroupReduceFunction} that only forwards the first record.
+ */
 public class Top1GroupReducer<T>
 	implements GroupReduceFunction<T, T>, GroupCombineFunction<T, T> {
 

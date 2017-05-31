@@ -21,6 +21,9 @@ package org.apache.flink.optimizer.testfunctions;
 import org.apache.flink.api.common.functions.RichMapPartitionFunction;
 import org.apache.flink.util.Collector;
 
+/**
+ * A {@link RichMapPartitionFunction} that forwards all incoming records.
+ */
 public class IdentityPartitionerMapper<T> extends RichMapPartitionFunction<T, T> {
 
 	private static final long serialVersionUID = 1L;

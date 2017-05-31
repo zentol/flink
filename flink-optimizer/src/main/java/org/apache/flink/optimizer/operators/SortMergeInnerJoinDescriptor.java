@@ -21,6 +21,9 @@ package org.apache.flink.optimizer.operators;
 import org.apache.flink.api.common.operators.util.FieldList;
 import org.apache.flink.runtime.operators.DriverStrategy;
 
+/**
+ * Optimizer description for a sort-merge inner join operator.
+ */
 public class SortMergeInnerJoinDescriptor extends AbstractSortMergeJoinDescriptor {
 
 	public SortMergeInnerJoinDescriptor(FieldList keys1, FieldList keys2) {

@@ -460,7 +460,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		OptimizedPlan oPlan = compileNoStats(plan);
 	}
 
-	public static class IdMap<T> implements MapFunction<T, T> {
+	private static class IdMap<T> implements MapFunction<T, T> {
 
 		@Override
 		public T map(T value) throws Exception {
@@ -468,7 +468,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		}
 	}
 
-	public static class NoFilter<T> implements FilterFunction<T> {
+	private static class NoFilter<T> implements FilterFunction<T> {
 
 		@Override
 		public boolean filter(T value) throws Exception {
@@ -476,7 +476,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		}
 	}
 
-	public static class IdFlatMap<T> implements FlatMapFunction<T, T> {
+	private static class IdFlatMap<T> implements FlatMapFunction<T, T> {
 
 		@Override
 		public void flatMap(T value, Collector<T> out) throws Exception {
@@ -484,7 +484,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		}
 	}
 
-	public static class IdPMap<T> implements MapPartitionFunction<T, T> {
+	private static class IdPMap<T> implements MapPartitionFunction<T, T> {
 
 		@Override
 		public void mapPartition(Iterable<T> values, Collector<T> out) throws Exception {
@@ -494,7 +494,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 		}
 	}
 
-	public static class LastReduce<T> implements ReduceFunction<T> {
+	private static class LastReduce<T> implements ReduceFunction<T> {
 
 		@Override
 		public T reduce(T value1, T value2) throws Exception {

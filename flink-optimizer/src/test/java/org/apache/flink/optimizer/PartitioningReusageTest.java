@@ -811,14 +811,14 @@ public class PartitioningReusageTest extends CompilerTestBase {
 
 	}
 
-	public static class MockMapper implements MapFunction<Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
+	private static class MockMapper implements MapFunction<Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 		@Override
 		public Tuple3<Integer, Integer, Integer> map(Tuple3<Integer, Integer, Integer> value) throws Exception {
 			return null;
 		}
 	}
 
-	public static class MockJoin implements JoinFunction<Tuple3<Integer, Integer, Integer>,
+	private static class MockJoin implements JoinFunction<Tuple3<Integer, Integer, Integer>,
 			Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 
 		@Override
@@ -827,7 +827,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		}
 	}
 
-	public static class MockCoGroup implements CoGroupFunction<Tuple3<Integer, Integer, Integer>,
+	private static class MockCoGroup implements CoGroupFunction<Tuple3<Integer, Integer, Integer>,
 				Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 
 		@Override

@@ -21,6 +21,9 @@ package org.apache.flink.optimizer.testfunctions;
 import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.util.Collector;
 
+/**
+ * A {@link GroupReduceFunction} that forwards all incoming records.
+ */
 public class IdentityGroupReducer<T> implements GroupReduceFunction<T, T> {
 
 	private static final long serialVersionUID = 1L;

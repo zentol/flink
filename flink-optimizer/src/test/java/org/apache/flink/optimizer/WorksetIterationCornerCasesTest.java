@@ -35,6 +35,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+/**
+ * Tests for corner cases in relation to work sets.
+ */
 @SuppressWarnings("serial")
 public class WorksetIterationCornerCasesTest extends CompilerTestBase {
 

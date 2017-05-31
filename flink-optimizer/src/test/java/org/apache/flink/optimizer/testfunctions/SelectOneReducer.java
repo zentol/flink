@@ -20,6 +20,9 @@ package org.apache.flink.optimizer.testfunctions;
 
 import org.apache.flink.api.common.functions.RichReduceFunction;
 
+/**
+ * a {@link RichReduceFunction} that always returns the first record.
+ */
 public class SelectOneReducer<T> extends RichReduceFunction<T> {
 
 	private static final long serialVersionUID = 1L;

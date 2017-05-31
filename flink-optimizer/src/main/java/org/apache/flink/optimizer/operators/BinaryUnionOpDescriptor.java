@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Optimizer description of a binary union operator.
  */
 public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
 

@@ -20,6 +20,9 @@ package org.apache.flink.optimizer.testfunctions;
 
 import org.apache.flink.api.common.functions.JoinFunction;
 
+/**
+ * A {@link JoinFunction} that always returns the first element.
+ */
 public class IdentityJoiner<T> implements JoinFunction<T, T, T> {
 
 	private static final long serialVersionUID = 1L;

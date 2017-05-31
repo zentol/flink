@@ -20,6 +20,9 @@ package org.apache.flink.optimizer.testfunctions;
 
 import org.apache.flink.api.common.functions.CrossFunction;
 
+/**
+ * A {@link CrossFunction} that always returns the first element.
+ */
 public class IdentityCrosser<T> implements CrossFunction<T, T, T> {
 
 	private static final long serialVersionUID = 1L;

@@ -43,6 +43,9 @@ import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests for the {@link JobGraphGenerator}.
+ */
 public class JobGraphGeneratorTest {
 
 	/**

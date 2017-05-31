@@ -42,6 +42,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Optimizer description for a reduce operator.
+ */
 public final class ReduceProperties extends OperatorDescriptorSingle {
 	private static final Logger LOG = LoggerFactory.getLogger(ReduceProperties.class);
 

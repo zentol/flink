@@ -41,6 +41,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+/**
+ * Tests for the compilation of iterations.
+ */
 @SuppressWarnings("serial")
 public class IterationCompilerTest extends CompilerTestBase {
 
