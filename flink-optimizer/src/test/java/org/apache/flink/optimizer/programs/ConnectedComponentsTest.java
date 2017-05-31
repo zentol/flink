@@ -248,8 +248,9 @@ public class ConnectedComponentsTest extends CompilerTestBase {
 					.where(0).equalTo(0)
 					.with(new FlatJoinFunction<Tuple2<Long, Long>, Tuple2<Long, Long>, Tuple2<Long, Long>>() {
 						@Override
-						public void join(Tuple2<Long, Long> current, Tuple2<Long, Long> candidate,
-										 Collector<Tuple2<Long, Long>> out) {
+						public void join(
+								Tuple2<Long, Long> current, Tuple2<Long, Long> candidate,
+								Collector<Tuple2<Long, Long>> out) {
 							if (candidate.f1 < current.f1) {
 								out.collect(candidate);
 							}
@@ -263,8 +264,9 @@ public class ConnectedComponentsTest extends CompilerTestBase {
 					.where(0).equalTo(0)
 					.with(new FlatJoinFunction<Tuple2<Long, Long>, Tuple2<Long, Long>, Tuple2<Long, Long>>() {
 						@Override
-						public void join(Tuple2<Long, Long> candidate, Tuple2<Long, Long> current,
-										 Collector<Tuple2<Long, Long>> out) {
+						public void join(
+								Tuple2<Long, Long> candidate, Tuple2<Long, Long> current,
+								Collector<Tuple2<Long, Long>> out) {
 							if (candidate.f1 < current.f1) {
 								out.collect(candidate);
 							}

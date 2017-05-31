@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 public class CoGroupWithDistributionTest extends CompilerTestBase {
 
 	@Test
-	 public void coGroupWithSameDistributionTest() throws Exception {
+	public void coGroupWithSameDistributionTest() throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple3<Integer, Integer, Integer>> set1 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);
 		DataSet<Tuple3<Integer, Integer, Integer>> set2 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);

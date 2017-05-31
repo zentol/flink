@@ -67,7 +67,7 @@ public class BroadcastVariablePipelinebreakerTest extends CompilerTestBase {
 		}
 	}
 
-	 @Test
+	@Test
 	public void testBreakerForDependentVariable() {
 			try {
 				ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
