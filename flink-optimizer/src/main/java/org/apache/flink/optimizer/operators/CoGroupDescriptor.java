@@ -136,8 +136,7 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
-			GlobalProperties produced1, GlobalProperties produced2)
-	{
+			GlobalProperties produced1, GlobalProperties produced2) {
 
 		if (produced1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 				produced2.getPartitioning() == PartitioningProperty.HASH_PARTITIONED) {
@@ -201,8 +200,7 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 	public GlobalProperties computeGlobalProperties(GlobalProperties in1, GlobalProperties in2) {
 		GlobalProperties gp = GlobalProperties.combine(in1, in2);
 		if (gp.getUniqueFieldCombination() != null && gp.getUniqueFieldCombination().size() > 0 &&
-					gp.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED)
-		{
+					gp.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED) {
 			gp.setAnyPartitioning(gp.getUniqueFieldCombination().iterator().next().toFieldList());
 		}
 		gp.clearUniqueFieldCombinations();

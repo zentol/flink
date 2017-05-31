@@ -157,8 +157,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 		if (solutionSetDelta instanceof TwoInputNode) {
 			TwoInputNode solutionDeltaTwoInput = (TwoInputNode) solutionSetDelta;
 			if (solutionDeltaTwoInput.getFirstPredecessorNode() == this.solutionSetNode ||
-				solutionDeltaTwoInput.getSecondPredecessorNode() == this.solutionSetNode)
-			{
+				solutionDeltaTwoInput.getSecondPredecessorNode() == this.solutionSetNode) {
 				this.solutionDeltaImmediatelyAfterSolutionJoin = true;
 			}
 		}
@@ -313,8 +312,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 	protected void instantiate(OperatorDescriptorDual operator, Channel solutionSetIn, Channel worksetIn,
 			List<Set<? extends NamedChannel>> broadcastPlanChannels, List<PlanNode> target, CostEstimator estimator,
 			RequestedGlobalProperties globPropsReqSolutionSet, RequestedGlobalProperties globPropsReqWorkset,
-			RequestedLocalProperties locPropsReqSolutionSet, RequestedLocalProperties locPropsReqWorkset)
-	{
+			RequestedLocalProperties locPropsReqSolutionSet, RequestedLocalProperties locPropsReqWorkset) {
 		// check for pipeline breaking using hash join with build on the solution set side
 		placePipelineBreakersIfNecessary(DriverStrategy.HYBRIDHASH_BUILD_FIRST, solutionSetIn, worksetIn);
 
@@ -440,13 +438,11 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 
 					// check whether we need a dedicated solution set delta operator, or whether we can update on the fly
 					if (siSolutionDeltaCandidate.getInput().getShipStrategy() == ShipStrategyType.FORWARD &&
-							this.solutionDeltaImmediatelyAfterSolutionJoin)
-					{
+							this.solutionDeltaImmediatelyAfterSolutionJoin) {
 						// we do not need this extra node. we can make the predecessor the delta
 						// sanity check the node and connection
 						if (siSolutionDeltaCandidate.getDriverStrategy() != DriverStrategy.UNARY_NO_OP ||
-								siSolutionDeltaCandidate.getInput().getLocalStrategy() != LocalStrategy.NONE)
-						{
+								siSolutionDeltaCandidate.getInput().getLocalStrategy() != LocalStrategy.NONE) {
 							throw new CompilerException("Invalid Solution set delta node.");
 						}
 

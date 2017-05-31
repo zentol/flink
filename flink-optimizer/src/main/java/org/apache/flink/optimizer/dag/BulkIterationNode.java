@@ -133,8 +133,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 		// check if the root of the step function has the same parallelism as the iteration
 		// or if the step function has any operator at all
 		if (nextPartialSolution.getParallelism() != getParallelism() ||
-			nextPartialSolution == partialSolution || nextPartialSolution instanceof BinaryUnionNode)
-		{
+			nextPartialSolution == partialSolution || nextPartialSolution instanceof BinaryUnionNode) {
 			// add a no-op to the root to express the re-partitioning
 			NoOpNode noop = new NoOpNode();
 			noop.setParallelism(getParallelism());
@@ -275,8 +274,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void instantiateCandidate(OperatorDescriptorSingle dps, Channel in, List<Set<? extends NamedChannel>> broadcastPlanChannels,
-			List<PlanNode> target, CostEstimator estimator, RequestedGlobalProperties globPropsReq, RequestedLocalProperties locPropsReq)
-	{
+			List<PlanNode> target, CostEstimator estimator, RequestedGlobalProperties globPropsReq, RequestedLocalProperties locPropsReq) {
 		// NOTES ON THE ENUMERATION OF THE STEP FUNCTION PLANS:
 		// Whenever we instantiate the iteration, we enumerate new candidates for the step function.
 		// That way, we make sure we have an appropriate plan for each candidate for the initial partial solution,

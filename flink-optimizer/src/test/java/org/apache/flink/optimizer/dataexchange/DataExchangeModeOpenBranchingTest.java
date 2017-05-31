@@ -105,8 +105,7 @@ public class DataExchangeModeOpenBranchingTest extends CompilerTestBase {
 									DataExchangeMode toJoin1,
 									DataExchangeMode toJoin2,
 									DataExchangeMode toJoinSink,
-									DataExchangeMode toDirectSink)
-	{
+									DataExchangeMode toDirectSink) {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(execMode);

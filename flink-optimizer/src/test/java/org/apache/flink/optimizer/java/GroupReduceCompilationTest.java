@@ -251,8 +251,9 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 
 			data
 				.groupBy(new KeySelector<Tuple2<String, Double>, String>() {
-					public String getKey(Tuple2<String, Double> value) { return value.f0; }
-				})
+					public String getKey(Tuple2<String, Double> value) {
+						return value.f0;
+					}})
 				.reduceGroup(new RichGroupReduceFunction<Tuple2<String, Double>, Tuple2<String, Double>>() {
 				public void reduce(Iterable<Tuple2<String, Double>> values, Collector<Tuple2<String, Double>> out) {}
 			}).name("reducer")

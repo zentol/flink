@@ -163,8 +163,7 @@ public class CoGroupRawDescriptor extends OperatorDescriptorDual {
 
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
-			GlobalProperties produced1, GlobalProperties produced2)
-	{
+			GlobalProperties produced1, GlobalProperties produced2) {
 		return produced1.getPartitioning() == produced2.getPartitioning() &&
 				(produced1.getCustomPartitioner() == null ?
 					produced2.getCustomPartitioner() == null :

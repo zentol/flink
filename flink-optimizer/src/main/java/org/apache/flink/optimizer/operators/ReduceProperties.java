@@ -67,8 +67,7 @@ public final class ReduceProperties extends OperatorDescriptorSingle {
 	@Override
 	public SingleInputPlanNode instantiate(Channel in, SingleInputNode node) {
 		if (in.getShipStrategy() == ShipStrategyType.FORWARD ||
-				(node.getBroadcastConnections() != null && !node.getBroadcastConnections().isEmpty()))
-		{
+				(node.getBroadcastConnections() != null && !node.getBroadcastConnections().isEmpty())) {
 			if (in.getSource().getOptimizerNode() instanceof PartitionNode) {
 				LOG.warn("Cannot automatically inject combiner for ReduceFunction. Please add an explicit combiner with combineGroup() in front of the partition operator.");
 			}
@@ -122,8 +121,7 @@ public final class ReduceProperties extends OperatorDescriptorSingle {
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&
-				gProps.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED)
-		{
+				gProps.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED) {
 			gProps.setAnyPartitioning(gProps.getUniqueFieldCombination().iterator().next().toFieldList());
 		}
 		gProps.clearUniqueFieldCombinations();

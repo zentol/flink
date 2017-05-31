@@ -40,8 +40,7 @@ public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
 	}
 
 	public HashJoinBuildFirstProperties(FieldList keys1, FieldList keys2,
-			boolean broadcastFirstAllowed, boolean broadcastSecondAllowed, boolean repartitionAllowed)
-	{
+			boolean broadcastFirstAllowed, boolean broadcastSecondAllowed, boolean repartitionAllowed) {
 		super(keys1, keys2, broadcastFirstAllowed, broadcastSecondAllowed, repartitionAllowed);
 	}
 
@@ -58,8 +57,7 @@ public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
 
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
-			LocalProperties produced1, LocalProperties produced2)
-	{
+			LocalProperties produced1, LocalProperties produced2) {
 		return true;
 	}
 

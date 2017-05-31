@@ -461,12 +461,10 @@ public abstract class TwoInputNode extends OptimizerNode {
 						outer:
 						for (GlobalPropertiesPair gpp : allGlobalPairs) {
 							if (gpp.getProperties1().isMetBy(c1.getGlobalProperties()) &&
-								gpp.getProperties2().isMetBy(c2.getGlobalProperties()) )
-							{
+								gpp.getProperties2().isMetBy(c2.getGlobalProperties()) ) {
 								for (OperatorDescriptorDual desc : getProperties()) {
 									if (desc.areCompatible(gpp.getProperties1(), gpp.getProperties2(),
-											c1.getGlobalProperties(), c2.getGlobalProperties()))
-									{
+											c1.getGlobalProperties(), c2.getGlobalProperties())) {
 										Channel c1Clone = c1.clone();
 										c1Clone.setRequiredGlobalProps(gpp.getProperties1());
 										c2.setRequiredGlobalProps(gpp.getProperties2());
@@ -535,14 +533,12 @@ public abstract class TwoInputNode extends OptimizerNode {
 				for (OperatorDescriptorDual dps: getProperties()) {
 					for (LocalPropertiesPair lpp : dps.getPossibleLocalProperties()) {
 						if (lpp.getProperties1().isMetBy(in1.getLocalProperties()) &&
-							lpp.getProperties2().isMetBy(in2.getLocalProperties()) )
-						{
+							lpp.getProperties2().isMetBy(in2.getLocalProperties()) ) {
 							// valid combination
 							// for non trivial local properties, we need to check that they are co compatible
 							// (such as when some sort order is requested, that both are the same sort order
 							if (dps.areCoFulfilled(lpp.getProperties1(), lpp.getProperties2(),
-								in1.getLocalProperties(), in2.getLocalProperties()))
-							{
+								in1.getLocalProperties(), in2.getLocalProperties())) {
 								// copy, because setting required properties and instantiation may
 								// change the channels and should not affect prior candidates
 								Channel in1Copy = in1.clone();
@@ -566,8 +562,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 	protected void instantiate(OperatorDescriptorDual operator, Channel in1, Channel in2,
 			List<Set<? extends NamedChannel>> broadcastPlanChannels, List<PlanNode> target, CostEstimator estimator,
 			RequestedGlobalProperties globPropsReq1, RequestedGlobalProperties globPropsReq2,
-			RequestedLocalProperties locPropsReq1, RequestedLocalProperties locPropsReq2)
-	{
+			RequestedLocalProperties locPropsReq1, RequestedLocalProperties locPropsReq2) {
 		final PlanNode inputSource1 = in1.getSource();
 		final PlanNode inputSource2 = in2.getSource();
 

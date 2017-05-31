@@ -363,12 +363,14 @@ public class IterationsCompilerTest extends CompilerTestBase {
 								.where(new IdentityKeyExtractor<Long>())
 								.equalTo(new IdentityKeyExtractor<Long>())
 								.with(new JoinFunction<Long, Long, Long>() {
-									public Long join(Long first, Long second) { return null; }
-								});
+									public Long join(Long first, Long second) {
+										return null;
+									}});
 
 			update = update.map(new RichMapFunction<Long, Long>() {
-				public Long map(Long value) { return null; }
-			}).withBroadcastSet(term, "some-name");
+				public Long map(Long value) {
+					return null;
+				}}).withBroadcastSet(term, "some-name");
 
 			DataSet<Long> result = iteration.closeWith(width.union(update).union(lastGradient));
 

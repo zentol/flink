@@ -73,8 +73,9 @@ public class IterationCompilerTest extends CompilerTestBase {
 			DataSet<Tuple2<Long, Long>> input = env.generateSequence(1, 20)
 					.map(new MapFunction<Long, Tuple2<Long, Long>>() {
 						@Override
-						public Tuple2<Long, Long> map(Long value){ return null; }
-					});
+						public Tuple2<Long, Long> map(Long value){
+							return null;
+						}});
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iter = input.iterateDelta(input, 100, 0);
 			iter.closeWith(iter.getWorkset(), iter.getWorkset())
@@ -139,8 +140,9 @@ public class IterationCompilerTest extends CompilerTestBase {
 			DataSet<Tuple2<Long, Long>> input = env.generateSequence(1, 20)
 					.map(new MapFunction<Long, Tuple2<Long, Long>>() {
 						@Override
-						public Tuple2<Long, Long> map(Long value){ return null; }
-					});
+						public Tuple2<Long, Long> map(Long value){
+							return null;
+						}});
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iter = input.iterateDelta(input, 100, 0);
 			iter.closeWith(

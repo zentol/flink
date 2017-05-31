@@ -57,8 +57,9 @@ public class PartitionOperatorTest extends CompilerTestBase {
 			DataSet<Tuple2<Long, Long>> data = env.fromCollection(Collections.singleton(new Tuple2<>(0L, 0L)));
 
 			data.partitionCustom(new Partitioner<Long>() {
-					public int partition(Long key, int numPartitions) { return key.intValue(); }
-				}, 1)
+					public int partition(Long key, int numPartitions) {
+						return key.intValue();
+					}}, 1)
 				.groupBy(1)
 				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());

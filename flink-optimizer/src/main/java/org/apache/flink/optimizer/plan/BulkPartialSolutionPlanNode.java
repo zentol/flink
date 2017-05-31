@@ -49,8 +49,7 @@ public class BulkPartialSolutionPlanNode extends PlanNode {
 
 	public BulkPartialSolutionPlanNode(BulkPartialSolutionNode template, String nodeName,
 			GlobalProperties gProps, LocalProperties lProps,
-			Channel initialInput)
-	{
+			Channel initialInput) {
 		super(template, nodeName, DriverStrategy.NONE);
 
 		this.globalProps = gProps;

@@ -298,8 +298,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 				// operator with the tail, if they have the same parallelism. not merging is currently not
 				// implemented
 				PlanNode root = iterationNode.getRootOfStepFunction();
-				if (root.getParallelism() != node.getParallelism())
-				{
+				if (root.getParallelism() != node.getParallelism()) {
 					throw new CompilerException("Error: The final operator of the step " +
 							"function has a different parallelism than the iteration operator itself.");
 				}
@@ -315,13 +314,11 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 				PlanNode nextWorkSet = iterationNode.getNextWorkSetPlanNode();
 				PlanNode solutionSetDelta  = iterationNode.getSolutionSetDeltaPlanNode();
 
-				if (nextWorkSet.getParallelism() != node.getParallelism())
-				{
+				if (nextWorkSet.getParallelism() != node.getParallelism()) {
 					throw new CompilerException("It is currently not supported that the final operator of the step " +
 							"function has a different parallelism than the iteration operator itself.");
 				}
-				if (solutionSetDelta.getParallelism() != node.getParallelism())
-				{
+				if (solutionSetDelta.getParallelism() != node.getParallelism()) {
 					throw new CompilerException("It is currently not supported that the final operator of the step " +
 							"function has a different parallelism than the iteration operator itself.");
 				}
@@ -613,8 +610,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 	}
 
 	private int translateChannel(Channel input, int inputIndex, JobVertex targetVertex,
-			TaskConfig targetVertexConfig, boolean isBroadcast) throws Exception
-	{
+			TaskConfig targetVertexConfig, boolean isBroadcast) throws Exception {
 		final PlanNode inputPlanNode = input.getSource();
 		final Iterator<Channel> allInChannels;
 
@@ -808,16 +804,14 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 			// cannot chain the nodes that produce the next workset or the next solution set, if they are not the
 			// in a tail
 			if (this.currentIteration != null && this.currentIteration instanceof WorksetIterationPlanNode &&
-					node.getOutgoingChannels().size() > 0)
-			{
+					node.getOutgoingChannels().size() > 0) {
 				WorksetIterationPlanNode wspn = (WorksetIterationPlanNode) this.currentIteration;
 				if (wspn.getSolutionSetDeltaPlanNode() == pred || wspn.getNextWorkSetPlanNode() == pred) {
 					chaining = false;
 				}
 			}
 			// cannot chain the nodes that produce the next workset in a bulk iteration if a termination criterion follows
-			if (this.currentIteration != null && this.currentIteration instanceof BulkIterationPlanNode)
-			{
+			if (this.currentIteration != null && this.currentIteration instanceof BulkIterationPlanNode) {
 				BulkIterationPlanNode wspn = (BulkIterationPlanNode) this.currentIteration;
 				if (node == wspn.getRootOfTerminationCriterion() && wspn.getRootOfStepFunction() == pred){
 					chaining = false;
@@ -1092,8 +1086,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 	private DistributionPattern connectJobVertices(Channel channel, int inputNumber,
 			final JobVertex sourceVertex, final TaskConfig sourceConfig,
 			final JobVertex targetVertex, final TaskConfig targetConfig, boolean isBroadcast)
-	throws CompilerException
-	{
+	throws CompilerException {
 		// ------------ connect the vertices to the job graph --------------
 		final DistributionPattern distributionPattern;
 

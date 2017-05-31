@@ -284,7 +284,10 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 			.withForwardedFields("1->1", "2->2", "0->0");
 
 		DataSet<Tuple3<Long, Long, Long>> nextSolutionSet = mapBeforeSolutionDelta ?
-				joinedWithSolutionSet.map(new RichMapFunction<Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>>() { public Tuple3<Long, Long, Long> map(Tuple3<Long, Long, Long> value) { return value; } })
+				joinedWithSolutionSet.map(new RichMapFunction<Tuple3<Long, Long, Long>, Tuple3<Long, Long, Long>>() {
+					public Tuple3<Long, Long, Long> map(Tuple3<Long, Long, Long> value) {
+						return value;
+					}})
 					.name(SOLUTION_DELTA_MAPPER_NAME).withForwardedFields("0->0", "1->1", "2->2") :
 				joinedWithSolutionSet;
 

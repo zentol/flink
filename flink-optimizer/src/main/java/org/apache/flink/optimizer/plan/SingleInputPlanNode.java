@@ -59,14 +59,12 @@ public class SingleInputPlanNode extends PlanNode {
 	}
 
 	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input,
-			DriverStrategy driverStrategy, FieldList driverKeyFields)
-	{
+			DriverStrategy driverStrategy, FieldList driverKeyFields) {
 		this(template, nodeName, input, driverStrategy, driverKeyFields, getTrueArray(driverKeyFields.size()));
 	}
 
 	public SingleInputPlanNode(OptimizerNode template, String nodeName, Channel input,
-			DriverStrategy driverStrategy, FieldList driverKeyFields, boolean[] driverSortOrders)
-	{
+			DriverStrategy driverStrategy, FieldList driverKeyFields, boolean[] driverSortOrders) {
 		super(template, nodeName, driverStrategy);
 		this.input = input;
 

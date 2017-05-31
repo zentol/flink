@@ -90,8 +90,7 @@ public class DataExchangeModeForwardTest extends CompilerTestBase {
 										DataExchangeMode toKeyExtractor,
 										DataExchangeMode toCombiner,
 										DataExchangeMode toReduce,
-										DataExchangeMode toSink)
-	{
+										DataExchangeMode toSink) {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(execMode);

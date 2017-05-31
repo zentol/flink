@@ -157,8 +157,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 	@Override
 	public void setInput(Map<Operator<?>, OptimizerNode> contractToNode, ExecutionMode defaultExchangeMode)
-			throws CompilerException
-	{
+			throws CompilerException {
 		// see if an internal hint dictates the strategy to use
 		final Configuration conf = getOperator().getParameters();
 		final String shipStrategy = conf.getString(Optimizer.HINT_SHIP_STRATEGY, null);
@@ -378,8 +377,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 	}
 
 	protected void addLocalCandidates(Channel template, List<Set<? extends NamedChannel>> broadcastPlanChannels, RequestedGlobalProperties rgps,
-			List<PlanNode> target, CostEstimator estimator)
-	{
+			List<PlanNode> target, CostEstimator estimator) {
 		for (RequestedLocalProperties ilp : this.inConn.getInterestingProperties().getLocalProperties()) {
 			final Channel in = template.clone();
 			ilp.parameterizeChannel(in);
@@ -399,8 +397,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 	}
 
 	protected void instantiateCandidate(OperatorDescriptorSingle dps, Channel in, List<Set<? extends NamedChannel>> broadcastPlanChannels,
-			List<PlanNode> target, CostEstimator estimator, RequestedGlobalProperties globPropsReq, RequestedLocalProperties locPropsReq)
-	{
+			List<PlanNode> target, CostEstimator estimator, RequestedGlobalProperties globPropsReq, RequestedLocalProperties locPropsReq) {
 		final PlanNode inputSource = in.getSource();
 
 		for (List<NamedChannel> broadcastChannelsCombination: Sets.cartesianProduct(broadcastPlanChannels)) {

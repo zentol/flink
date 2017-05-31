@@ -63,15 +63,13 @@ public class DualInputPlanNode extends PlanNode {
 	}
 
 	public DualInputPlanNode(OptimizerNode template, String nodeName, Channel input1, Channel input2,
-			DriverStrategy diverStrategy, FieldList driverKeyFields1, FieldList driverKeyFields2)
-	{
+			DriverStrategy diverStrategy, FieldList driverKeyFields1, FieldList driverKeyFields2) {
 		this(template, nodeName, input1, input2, diverStrategy, driverKeyFields1, driverKeyFields2,
 									SingleInputPlanNode.getTrueArray(driverKeyFields1.size()));
 	}
 
 	public DualInputPlanNode(OptimizerNode template, String nodeName, Channel input1, Channel input2, DriverStrategy diverStrategy,
-			FieldList driverKeyFields1, FieldList driverKeyFields2, boolean[] driverSortOrders)
-	{
+			FieldList driverKeyFields1, FieldList driverKeyFields2, boolean[] driverSortOrders) {
 		super(template, nodeName, diverStrategy);
 		this.input1 = input1;
 		this.input2 = input2;

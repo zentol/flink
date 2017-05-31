@@ -85,8 +85,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&
-				gProps.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED)
-		{
+				gProps.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED) {
 			gProps.setAnyPartitioning(gProps.getUniqueFieldCombination().iterator().next().toFieldList());
 		}
 		gProps.clearUniqueFieldCombinations();

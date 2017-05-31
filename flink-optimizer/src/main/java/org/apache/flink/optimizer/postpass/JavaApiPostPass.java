@@ -209,8 +209,7 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		// catch the sources of the iterative step functions
 		else if (node instanceof BulkPartialSolutionPlanNode ||
 				node instanceof SolutionSetPlanNode ||
-				node instanceof WorksetPlanNode)
-		{
+				node instanceof WorksetPlanNode) {
 			// Do nothing :D
 		}
 		else if (node instanceof NAryUnionPlanNode){

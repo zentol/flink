@@ -383,13 +383,19 @@ public class DefaultCostEstimatorTest {
 	private static final class UnknownEstimates implements EstimateProvider {
 
 		@Override
-		public long getEstimatedOutputSize() { return -1; }
+		public long getEstimatedOutputSize() {
+			return -1;
+		}
 
 		@Override
-		public long getEstimatedNumRecords() { return -1; }
+		public long getEstimatedNumRecords() {
+			return -1;
+		}
 
 		@Override
-		public float getEstimatedAvgWidthPerOutputRecord() { return -1.0f; }
+		public float getEstimatedAvgWidthPerOutputRecord() {
+			return -1.0f;
+		}
 	}
 
 	private static final class Estimates implements EstimateProvider {

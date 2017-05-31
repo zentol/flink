@@ -154,8 +154,7 @@ public class DataExchangeModeClosedBranchingTest extends CompilerTestBase {
 											DataExchangeMode toFlatMapSink,
 											DataExchangeMode toCoGroup1,
 											DataExchangeMode toCoGroup2,
-											DataExchangeMode toCoGroupSink)
-	{
+											DataExchangeMode toCoGroupSink) {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.getConfig().setExecutionMode(execMode);

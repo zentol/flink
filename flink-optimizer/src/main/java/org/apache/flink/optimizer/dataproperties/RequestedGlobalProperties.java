@@ -352,8 +352,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 		// safety check. Fully replicated input must be preserved.
 		if (channel.getSource().getGlobalProperties().isFullyReplicated() &&
 				!(this.partitioning == PartitioningProperty.FULL_REPLICATION ||
-					this.partitioning == PartitioningProperty.ANY_DISTRIBUTION))
-		{
+					this.partitioning == PartitioningProperty.ANY_DISTRIBUTION)) {
 			throw new CompilerException("Fully replicated input must be preserved " +
 					"and may not be converted into another global property.");
 		}

@@ -64,8 +64,7 @@ public class CoGroupWithSolutionSetFirstDescriptor extends CoGroupDescriptor {
 
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
-			LocalProperties produced1, LocalProperties produced2)
-	{
+			LocalProperties produced1, LocalProperties produced2) {
 		return true;
 	}
 
