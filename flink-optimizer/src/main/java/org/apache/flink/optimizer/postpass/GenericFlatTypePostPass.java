@@ -303,7 +303,7 @@ public abstract class GenericFlatTypePostPass<X, T extends AbstractSchema<X>> im
 				// parameterize the node's driver strategy
 				for (int i=0;i<sn.getDriverStrategy().getNumRequiredComparators();i++) {
 					try {
-						sn.setComparator(createComparator(sn.getKeys(i), sn.getSortOrders(i), schema),i);
+						sn.setComparator(createComparator(sn.getKeys(i), sn.getSortOrders(i), schema), i);
 					} catch (MissingFieldTypeInfoException e) {
 						throw new CompilerPostPassException("Could not set up runtime strategy for node '" +
 								optNode.getOperator().getName() + "'. Missing type information for key field " +

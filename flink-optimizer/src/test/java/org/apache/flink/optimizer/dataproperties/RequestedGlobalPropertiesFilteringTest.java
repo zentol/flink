@@ -51,7 +51,7 @@ public class RequestedGlobalPropertiesFilteringTest {
 	public void testNullProps() {
 
 		RequestedGlobalProperties rgProps = new RequestedGlobalProperties();
-		rgProps.setAnyPartitioning(new FieldSet(0,1,2));
+		rgProps.setAnyPartitioning(new FieldSet(0, 1, 2));
 
 		rgProps.filterBySemanticProperties(null, 0);
 	}
@@ -62,7 +62,7 @@ public class RequestedGlobalPropertiesFilteringTest {
 		SingleInputSemanticProperties sProp = new SingleInputSemanticProperties();
 
 		RequestedGlobalProperties rgProps = new RequestedGlobalProperties();
-		rgProps.setAnyPartitioning(new FieldSet(0,1,2));
+		rgProps.setAnyPartitioning(new FieldSet(0, 1, 2));
 
 		RequestedGlobalProperties filtered = rgProps.filterBySemanticProperties(sProp, 0);
 
@@ -425,7 +425,7 @@ public class RequestedGlobalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sprops, new String[]{"0;1"}, null, null, tupleInfo, tupleInfo);
 
 		RequestedGlobalProperties gprops = new RequestedGlobalProperties();
-		gprops.setHashPartitioned(new FieldSet(0,1));
+		gprops.setHashPartitioned(new FieldSet(0, 1));
 
 		gprops.filterBySemanticProperties(sprops, 1);
 	}

@@ -97,7 +97,7 @@ public class GroupCombineNode extends SingleInputNode {
 
 		// Local properties for GroupCombine may only be preserved on key fields.
 		SingleInputSemanticProperties origProps =
-				((SingleInputOperator<?,?,?>) getOperator()).getSemanticProperties();
+				((SingleInputOperator<?, ?, ?>) getOperator()).getSemanticProperties();
 		SingleInputSemanticProperties filteredProps = new SingleInputSemanticProperties();
 		FieldSet readSet = origProps.getReadFields(0);
 		if (readSet != null) {

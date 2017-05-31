@@ -70,7 +70,7 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://issues.apache.org/jira/browse/FLINK-2540">FLINK-2540</a>
  */
 @RunWith(Parameterized.class)
-@SuppressWarnings({"serial","unchecked"})
+@SuppressWarnings({"serial", "unchecked"})
 public class UnionClosedBranchingTest extends CompilerTestBase {
 
 	@Parameterized.Parameters

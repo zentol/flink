@@ -47,7 +47,7 @@ public class WorksetIterationCornerCasesTest extends CompilerTestBase {
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = input.iterateDelta(input, 100, 1);
 
-			DataSet<Tuple2<Long, Long>> iterEnd = iteration.getWorkset().map(new TestMapper<Tuple2<Long,Long>>());
+			DataSet<Tuple2<Long, Long>> iterEnd = iteration.getWorkset().map(new TestMapper<Tuple2<Long, Long>>());
 			iteration.closeWith(iterEnd, iterEnd)
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 

@@ -87,7 +87,7 @@ public class NestedIterationsTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> inInner = innerIteration.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>());
 
-			DataSet<Tuple2<Long, Long>> innerResult = innerIteration.closeWith(inInner, inInner).map(new IdentityMapper<Tuple2<Long,Long>>());
+			DataSet<Tuple2<Long, Long>> innerResult = innerIteration.closeWith(inInner, inInner).map(new IdentityMapper<Tuple2<Long, Long>>());
 
 			DataSet<Tuple2<Long, Long>> outerResult = outerIteration.closeWith(innerResult, innerResult);
 
@@ -156,7 +156,7 @@ public class NestedIterationsTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> inFirst = firstIteration.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>());
 
-			DataSet<Tuple2<Long, Long>> firstResult = firstIteration.closeWith(inFirst, inFirst).map(new IdentityMapper<Tuple2<Long,Long>>());
+			DataSet<Tuple2<Long, Long>> firstResult = firstIteration.closeWith(inFirst, inFirst).map(new IdentityMapper<Tuple2<Long, Long>>());
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> mainIteration = data2.iterateDelta(data2, 100, 0);
 
@@ -165,7 +165,7 @@ public class NestedIterationsTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> mainResult = mainIteration.closeWith(joined, joined);
 
-			mainResult.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			mainResult.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
 

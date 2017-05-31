@@ -148,7 +148,7 @@ public class ReduceCompilationTest extends CompilerTestBase implements java.io.S
 
 			data
 				.groupBy(1)
-				.reduce(new RichReduceFunction<Tuple2<String,Double>>() {
+				.reduce(new RichReduceFunction<Tuple2<String, Double>>() {
 				@Override
 				public Tuple2<String, Double> reduce(Tuple2<String, Double> value1, Tuple2<String, Double> value2){
 					return null;
@@ -205,10 +205,10 @@ public class ReduceCompilationTest extends CompilerTestBase implements java.io.S
 				.name("source").setParallelism(6);
 
 			data
-				.groupBy(new KeySelector<Tuple2<String,Double>, String>() {
+				.groupBy(new KeySelector<Tuple2<String, Double>, String>() {
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
-				.reduce(new RichReduceFunction<Tuple2<String,Double>>() {
+				.reduce(new RichReduceFunction<Tuple2<String, Double>>() {
 				@Override
 				public Tuple2<String, Double> reduce(Tuple2<String, Double> value1, Tuple2<String, Double> value2){
 					return null;
@@ -272,10 +272,10 @@ public class ReduceCompilationTest extends CompilerTestBase implements java.io.S
 				.name("source").setParallelism(6);
 
 			data
-				.groupBy(new KeySelector<Tuple2<String,Double>, String>() {
+				.groupBy(new KeySelector<Tuple2<String, Double>, String>() {
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
-				.reduce(new RichReduceFunction<Tuple2<String,Double>>() {
+				.reduce(new RichReduceFunction<Tuple2<String, Double>>() {
 					@Override
 					public Tuple2<String, Double> reduce(Tuple2<String, Double> value1, Tuple2<String, Double> value2){
 						return null;

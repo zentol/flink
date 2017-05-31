@@ -39,7 +39,7 @@ public class MapPartitionNodeTest {
 		origProps.addForwardedField(2, 2);
 		origProps.addReadFields(new FieldSet(0, 2, 4, 7));
 
-		MapPartitionOperatorBase<?,?,?> op = mock(MapPartitionOperatorBase.class);
+		MapPartitionOperatorBase<?, ?, ?> op = mock(MapPartitionOperatorBase.class);
 		when(op.getSemanticProperties()).thenReturn(origProps);
 		when(op.getKeyColumns(0)).thenReturn(new int[]{});
 

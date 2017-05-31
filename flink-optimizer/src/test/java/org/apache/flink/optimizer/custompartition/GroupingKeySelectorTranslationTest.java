@@ -53,9 +53,9 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer, Integer>(0, 0))
 					.rebalance().setParallelism(4);
 
-			data.groupBy(new TestKeySelector<Tuple2<Integer,Integer>>())
+			data.groupBy(new TestKeySelector<Tuple2<Integer, Integer>>())
 				.withPartitioner(new TestPartitionerInt())
-				.reduce(new DummyReducer<Tuple2<Integer,Integer>>())
+				.reduce(new DummyReducer<Tuple2<Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple2<Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -85,9 +85,9 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer, Integer>(0, 0))
 					.rebalance().setParallelism(4);
 
-			data.groupBy(new TestKeySelector<Tuple2<Integer,Integer>>())
+			data.groupBy(new TestKeySelector<Tuple2<Integer, Integer>>())
 				.withPartitioner(new TestPartitionerInt())
-					.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Integer,Integer>>())
+					.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple2<Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -115,10 +115,10 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 			DataSet<Tuple3<Integer, Integer, Integer>> data = env.fromElements(new Tuple3<Integer, Integer, Integer>(0, 0, 0))
 					.rebalance().setParallelism(4);
 
-			data.groupBy(new TestKeySelector<Tuple3<Integer,Integer,Integer>>())
+			data.groupBy(new TestKeySelector<Tuple3<Integer, Integer, Integer>>())
 				.withPartitioner(new TestPartitionerInt())
 				.sortGroup(new TestKeySelector<Tuple3<Integer, Integer, Integer>>(), Order.ASCENDING)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Integer,Integer,Integer>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Integer, Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple3<Integer, Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -148,7 +148,7 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 
 			try {
 				data
-					.groupBy(new TestKeySelector<Tuple2<Integer,Integer>>())
+					.groupBy(new TestKeySelector<Tuple2<Integer, Integer>>())
 					.withPartitioner(new TestPartitionerLong());
 				fail("Should throw an exception");
 			}
@@ -170,7 +170,7 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 
 			try {
 				data
-					.groupBy(new TestKeySelector<Tuple3<Integer,Integer,Integer>>())
+					.groupBy(new TestKeySelector<Tuple3<Integer, Integer, Integer>>())
 					.sortGroup(1, Order.ASCENDING)
 					.withPartitioner(new TestPartitionerLong());
 				fail("Should throw an exception");
@@ -193,7 +193,7 @@ public class GroupingKeySelectorTranslationTest extends CompilerTestBase {
 
 			try {
 				data
-					.groupBy(new TestBinaryKeySelector<Tuple3<Integer,Integer,Integer>>())
+					.groupBy(new TestBinaryKeySelector<Tuple3<Integer, Integer, Integer>>())
 					.withPartitioner(new TestPartitionerInt());
 				fail("Should throw an exception");
 			}

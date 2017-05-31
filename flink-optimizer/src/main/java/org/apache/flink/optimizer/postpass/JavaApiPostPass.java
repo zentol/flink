@@ -300,13 +300,13 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		return new RuntimeComparatorFactory<T>(comparator);
 	}
 
-	private static <T1 extends Tuple, T2 extends Tuple> TypePairComparatorFactory<T1,T2> createPairComparator(TypeInformation<?> typeInfo1, TypeInformation<?> typeInfo2) {
+	private static <T1 extends Tuple, T2 extends Tuple> TypePairComparatorFactory<T1, T2> createPairComparator(TypeInformation<?> typeInfo1, TypeInformation<?> typeInfo2) {
 //		@SuppressWarnings("unchecked")
 //		TupleTypeInfo<T1> info1 = (TupleTypeInfo<T1>) typeInfo1;
 //		@SuppressWarnings("unchecked")
 //		TupleTypeInfo<T2> info2 = (TupleTypeInfo<T2>) typeInfo2;
 
-		return new RuntimePairComparatorFactory<T1,T2>();
+		return new RuntimePairComparatorFactory<T1, T2>();
 	}
 
 	private static final boolean[] getSortOrders(FieldList keys, boolean[] orders) {

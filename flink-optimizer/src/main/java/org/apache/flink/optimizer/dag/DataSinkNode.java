@@ -213,7 +213,7 @@ public class DataSinkNode extends OptimizerNode {
 					// no need to check whether the created properties meet what we need in case
 					// of ordering or global ordering, because the only interesting properties we have
 					// are what we require
-					outputPlans.add(new SinkPlanNode(this, "DataSink ("+this.getOperator().getName()+")" ,c));
+					outputPlans.add(new SinkPlanNode(this, "DataSink ("+this.getOperator().getName()+")" , c));
 				}
 			}
 		}

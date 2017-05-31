@@ -42,9 +42,9 @@ public class GroupReduceNodeTest {
 		origProps.addForwardedField(6, 0);
 		origProps.addReadFields(new FieldSet(0, 2, 4, 7));
 
-		GroupReduceOperatorBase<?,?,?> op = mock(GroupReduceOperatorBase.class);
+		GroupReduceOperatorBase<?, ?, ?> op = mock(GroupReduceOperatorBase.class);
 		when(op.getSemanticProperties()).thenReturn(origProps);
-		when(op.getKeyColumns(0)).thenReturn(new int[]{3,2});
+		when(op.getKeyColumns(0)).thenReturn(new int[]{3, 2});
 		when(op.getParameters()).thenReturn(new Configuration());
 
 		GroupReduceNode node = new GroupReduceNode(op);

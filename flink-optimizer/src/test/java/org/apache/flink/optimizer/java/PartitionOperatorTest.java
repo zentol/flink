@@ -88,7 +88,7 @@ public class PartitionOperatorTest extends CompilerTestBase {
 
 			data.partitionByRange(1)
 				.groupBy(1)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long,Long>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
@@ -128,7 +128,7 @@ public class PartitionOperatorTest extends CompilerTestBase {
 
 			rangePartitioned
 				.groupBy(1)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long,Long>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			data

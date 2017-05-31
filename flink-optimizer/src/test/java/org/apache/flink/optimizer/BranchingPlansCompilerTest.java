@@ -308,9 +308,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// construct the plan
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(DEFAULT_PARALLELISM);
-			DataSet<Long> sourceA = env.generateSequence(0,1);
-			DataSet<Long> sourceB = env.generateSequence(0,1);
-			DataSet<Long> sourceC = env.generateSequence(0,1);
+			DataSet<Long> sourceA = env.generateSequence(0, 1);
+			DataSet<Long> sourceB = env.generateSequence(0, 1);
+			DataSet<Long> sourceC = env.generateSequence(0, 1);
 
 			DataSet<Long> map1 = sourceA.map(new IdentityMapper<Long>()).name("Map 1");
 
@@ -371,8 +371,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// construct the plan
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(DEFAULT_PARALLELISM);
-			DataSet<Long> source1 = env.generateSequence(0,1);
-			DataSet<Long> source2 = env.generateSequence(0,1);
+			DataSet<Long> source1 = env.generateSequence(0, 1);
+			DataSet<Long> source2 = env.generateSequence(0, 1);
 
 			DataSet<Long> join1 = source1.join(source2).where("*").equalTo("*")
 					.with(new IdentityJoiner<Long>()).name("Join 1");
@@ -423,7 +423,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			// construct the plan
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(DEFAULT_PARALLELISM);
-			DataSet<Long> source1 = env.generateSequence(0,1);
+			DataSet<Long> source1 = env.generateSequence(0, 1);
 
 			source1.writeAsText(outPath1);
 			source1.writeAsText(outPath2);
@@ -478,8 +478,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> sourceA = env.generateSequence(0,1);
-		DataSet<Long> sourceB = env.generateSequence(0,1);
+		DataSet<Long> sourceA = env.generateSequence(0, 1);
+		DataSet<Long> sourceB = env.generateSequence(0, 1);
 
 		sourceA.writeAsText(out1Path);
 		sourceB.writeAsText(out2Path);
@@ -495,7 +495,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	public void testBranchAfterIteration() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> sourceA = env.generateSequence(0,1);
+		DataSet<Long> sourceA = env.generateSequence(0, 1);
 
 		IterativeDataSet<Long> loopHead = sourceA.iterate(10);
 		DataSet<Long> loopTail = loopHead.map(new IdentityMapper<Long>()).name("Mapper");
@@ -520,8 +520,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	public void testBranchBeforeIteration() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> source1 = env.generateSequence(0,1);
-		DataSet<Long> source2 = env.generateSequence(0,1);
+		DataSet<Long> source1 = env.generateSequence(0, 1);
+		DataSet<Long> source2 = env.generateSequence(0, 1);
 
 		IterativeDataSet<Long> loopHead = source2.iterate(10).name("Loop");
 		DataSet<Long> loopTail = source1.map(new IdentityMapper<Long>()).withBroadcastSet(loopHead, "BC").name("In-Loop Mapper");
@@ -557,8 +557,8 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	public void testClosure() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> sourceA = env.generateSequence(0,1);
-		DataSet<Long> sourceB = env.generateSequence(0,1);
+		DataSet<Long> sourceA = env.generateSequence(0, 1);
+		DataSet<Long> sourceB = env.generateSequence(0, 1);
 
 		sourceA.output(new DiscardingOutputFormat<Long>());
 		sourceB.output(new DiscardingOutputFormat<Long>());
@@ -595,12 +595,12 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	public void testClosureDeltaIteration() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Tuple2<Long, Long>> sourceA = env.generateSequence(0,1).map(new Duplicator<Long>());
-		DataSet<Tuple2<Long, Long>> sourceB = env.generateSequence(0,1).map(new Duplicator<Long>());
-		DataSet<Tuple2<Long, Long>> sourceC = env.generateSequence(0,1).map(new Duplicator<Long>());
+		DataSet<Tuple2<Long, Long>> sourceA = env.generateSequence(0, 1).map(new Duplicator<Long>());
+		DataSet<Tuple2<Long, Long>> sourceB = env.generateSequence(0, 1).map(new Duplicator<Long>());
+		DataSet<Tuple2<Long, Long>> sourceC = env.generateSequence(0, 1).map(new Duplicator<Long>());
 
-		sourceA.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
-		sourceC.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+		sourceA.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
+		sourceC.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 		DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> loop = sourceA.iterateDelta(sourceB, 10, 0);
 
@@ -608,7 +608,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 		DataSet<Tuple2<Long, Long>> delta = workset.join(loop.getSolutionSet()).where(0).equalTo(0).with(new IdentityJoiner<Tuple2<Long, Long>>()).name("Solution set delta");
 
 		DataSet<Tuple2<Long, Long>> result = loop.closeWith(delta, workset);
-		result.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+		result.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 		Plan plan = env.createProgramPlan();
 
@@ -640,11 +640,11 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	public void testDeltaIterationWithStaticInput() {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Tuple2<Long, Long>> source = env.generateSequence(0,1).map(new Duplicator<Long>());
+		DataSet<Tuple2<Long, Long>> source = env.generateSequence(0, 1).map(new Duplicator<Long>());
 
-		DataSet<Tuple2<Long,Long>> map = source
+		DataSet<Tuple2<Long, Long>> map = source
 				.map(new IdentityMapper<Tuple2<Long, Long>>());
-		DataSet<Tuple2<Long,Long>> reduce = source
+		DataSet<Tuple2<Long, Long>> reduce = source
 				.reduceGroup(new IdentityGroupReducer<Tuple2<Long, Long>>());
 
 		DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> loop = source.iterateDelta(map, 10, 0);
@@ -873,21 +873,21 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			DataSet<Long> bcInput2 = env.generateSequence(1, 10).name("BC input 1");
 
 			DataSet<Tuple2<Long, Long>> joinInput1 =
-					input.map(new IdentityMapper<Tuple2<Long,Long>>())
+					input.map(new IdentityMapper<Tuple2<Long, Long>>())
 						.withBroadcastSet(bcInput1.map(new IdentityMapper<Long>()), "bc1")
 						.withBroadcastSet(bcInput2, "bc2");
 
 			DataSet<Tuple2<Long, Long>> joinInput2 =
-					input.map(new IdentityMapper<Tuple2<Long,Long>>())
+					input.map(new IdentityMapper<Tuple2<Long, Long>>())
 						.withBroadcastSet(bcInput1, "bc1")
 						.withBroadcastSet(bcInput2, "bc2");
 
 			DataSet<Tuple2<Long, Long>> joinResult = joinInput1
 				.join(joinInput2, JoinHint.REPARTITION_HASH_FIRST).where(0).equalTo(1)
-				.with(new DummyFlatJoinFunction<Tuple2<Long,Long>>());
+				.with(new DummyFlatJoinFunction<Tuple2<Long, Long>>());
 
 			input
-				.map(new IdentityMapper<Tuple2<Long,Long>>())
+				.map(new IdentityMapper<Tuple2<Long, Long>>())
 					.withBroadcastSet(bcInput1, "bc1")
 				.union(joinResult)
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());

@@ -81,8 +81,8 @@ public class IterationsCompilerTest extends CompilerTestBase {
 					.map(new IdentityMapper<Tuple2<Long, Long>>()).withBroadcastSet(iter.getWorkset(), "bc data")
 					.join(iter.getSolutionSet()).where(0).equalTo(1).projectFirst(1).projectSecond(1);
 
-			iter.closeWith(result.map(new IdentityMapper<Tuple2<Long,Long>>()), result)
-					.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			iter.closeWith(result.map(new IdentityMapper<Tuple2<Long, Long>>()), result)
+					.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			OptimizedPlan p = compileNoStats(env.createProgramPlan());
 
@@ -114,7 +114,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> depResult = doDeltaIteration(mappedBulk, edges);
 
-			depResult.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			depResult.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
@@ -202,7 +202,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> secondResult = doDeltaIteration(firstResult, edges);
 
-			secondResult.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			secondResult.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
@@ -241,7 +241,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 			// we do two join operations with input1 which is the partial solution
 			// it is cheaper to push the partitioning out so that the feedback channel and the
 			// initial input do the partitioning
-			doBulkIteration(input1, input2).output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			doBulkIteration(input1, input2).output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
@@ -284,7 +284,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 			// Use input1 as partial solution. Partial solution is used in a single join operation --> it is cheaper
 			// to do the hash partitioning between the partial solution node and the join node
 			// instead of pushing the partitioning out
-			doSimpleBulkIteration(input1, input2).output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+			doSimpleBulkIteration(input1, input2).output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 			Plan p = env.createProgramPlan();
 			OptimizedPlan op = compileNoStats(p);
@@ -323,7 +323,7 @@ public class IterationsCompilerTest extends CompilerTestBase {
 			// trivial iteration, since we are interested in the inputs to the iteration
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = initialSolutionSet.iterateDelta(initialWorkset, 100, 0);
 
-			DataSet<Tuple2<Long, Long>> next = iteration.getWorkset().map(new IdentityMapper<Tuple2<Long,Long>>());
+			DataSet<Tuple2<Long, Long>> next = iteration.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>());
 
 			DataSet<Tuple2<Long, Long>> result = iteration.closeWith(next, next);
 

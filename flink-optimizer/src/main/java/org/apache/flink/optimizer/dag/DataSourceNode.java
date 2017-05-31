@@ -222,8 +222,8 @@ public class DataSourceNode extends OptimizerNode {
 		} else {
 			// replicated input
 			final Costs costs = new Costs();
-			InputFormat<?,?> inputFormat =
-					((ReplicatingInputFormat<?,?>) getOperator().getFormatWrapper().getUserCodeObject()).getReplicatedInputFormat();
+			InputFormat<?, ?> inputFormat =
+					((ReplicatingInputFormat<?, ?>) getOperator().getFormatWrapper().getUserCodeObject()).getReplicatedInputFormat();
 			if (FileInputFormat.class.isAssignableFrom(inputFormat.getClass()) &&
 					this.estimatedOutputSize >= 0) {
 				estimator.addFileInputCost(this.estimatedOutputSize * this.getParallelism(), costs);

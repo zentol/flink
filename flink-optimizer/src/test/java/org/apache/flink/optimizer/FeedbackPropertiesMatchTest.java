@@ -1426,7 +1426,7 @@ public class FeedbackPropertiesMatchTest {
 	}
 
 	private static MapNode getMapNode() {
-		return new MapNode(new MapOperatorBase<String, String, MapFunction<String,String>>(new IdentityMapper<String>(), new UnaryOperatorInformation<String, String>(BasicTypeInfo.STRING_TYPE_INFO, BasicTypeInfo.STRING_TYPE_INFO), "map op"));
+		return new MapNode(new MapOperatorBase<String, String, MapFunction<String, String>>(new IdentityMapper<String>(), new UnaryOperatorInformation<String, String>(BasicTypeInfo.STRING_TYPE_INFO, BasicTypeInfo.STRING_TYPE_INFO), "map op"));
 	}
 
 	private static JoinNode getJoinNode() {

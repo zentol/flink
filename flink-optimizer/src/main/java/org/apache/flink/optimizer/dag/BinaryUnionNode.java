@@ -249,7 +249,7 @@ public class BinaryUnionNode extends TwoInputNode {
 						else if (c2.getShipStrategy() == ShipStrategyType.FORWARD && c1.getShipStrategy() != ShipStrategyType.FORWARD) {
 							// adjust c1 to c2
 							c1 = c1.clone();
-							p2.parameterizeChannel(c1,dopChange1, input1Mode, input1breakPipeline);
+							p2.parameterizeChannel(c1, dopChange1, input1Mode, input1breakPipeline);
 						}
 						else if (c1.getShipStrategy() == ShipStrategyType.FORWARD && c2.getShipStrategy() == ShipStrategyType.FORWARD) {
 							boolean adjustC1 = c1.getEstimatedOutputSize() <= 0 || c2.getEstimatedOutputSize() <= 0 ||

@@ -41,7 +41,7 @@ public class DeltaIterationDependenciesTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 
-			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> deltaIteration = input.iterateDelta(input, 10,0);
+			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> deltaIteration = input.iterateDelta(input, 10, 0);
 
 			DataSet<Tuple2<Long, Long>> delta = deltaIteration.getSolutionSet().join(deltaIteration.getWorkset())
 														.where(0).equalTo(0)

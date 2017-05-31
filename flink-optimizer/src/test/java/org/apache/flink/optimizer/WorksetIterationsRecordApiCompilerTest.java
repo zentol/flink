@@ -208,7 +208,7 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 				.with(new IdentityJoiner<Tuple2<Long, Long>>())
 				.name(JOIN_WITH_SOLUTION_SET);
 		if (joinPreservesSolutionSet) {
-			((JoinOperator<?,?,?>)join2).withForwardedFieldsFirst("*");
+			((JoinOperator<?, ?, ?>)join2).withForwardedFieldsFirst("*");
 		}
 
 		DataSet<Tuple2<Long, Long>> nextWorkset = join2.groupBy(0).reduceGroup(new IdentityGroupReducer<Tuple2<Long, Long>>())
@@ -220,7 +220,7 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 					.withForwardedFields("*").name(SOLUTION_DELTA_MAPPER_NAME);
 
 			deltaIt.closeWith(mapper, nextWorkset)
-					.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+					.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 		}
 		else {
 			deltaIt.closeWith(join2, nextWorkset)

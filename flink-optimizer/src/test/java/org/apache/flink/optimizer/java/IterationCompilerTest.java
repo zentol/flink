@@ -144,12 +144,12 @@ public class IterationCompilerTest extends CompilerTestBase {
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iter = input.iterateDelta(input, 100, 0);
 			iter.closeWith(
-					iter.getWorkset().map(new IdentityMapper<Tuple2<Long,Long>>())
+					iter.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>())
 				.union(
-					iter.getWorkset().map(new IdentityMapper<Tuple2<Long,Long>>()))
-				, iter.getWorkset().map(new IdentityMapper<Tuple2<Long,Long>>())
+					iter.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>()))
+				, iter.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>())
 				.union(
-						iter.getWorkset().map(new IdentityMapper<Tuple2<Long,Long>>()))
+						iter.getWorkset().map(new IdentityMapper<Tuple2<Long, Long>>()))
 				)
 			.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 

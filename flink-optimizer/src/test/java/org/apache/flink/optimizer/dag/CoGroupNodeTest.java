@@ -49,10 +49,10 @@ public class CoGroupNodeTest {
 		origProps.addForwardedField(1, 6, 6);
 		origProps.addReadFields(1, new FieldSet(1, 3, 4));
 
-		CoGroupOperatorBase<?,?,?,?> op = mock(CoGroupOperatorBase.class);
+		CoGroupOperatorBase<?, ?, ?, ?> op = mock(CoGroupOperatorBase.class);
 		when(op.getSemanticProperties()).thenReturn(origProps);
-		when(op.getKeyColumns(0)).thenReturn(new int[]{3,2});
-		when(op.getKeyColumns(1)).thenReturn(new int[]{6,3});
+		when(op.getKeyColumns(0)).thenReturn(new int[]{3, 2});
+		when(op.getKeyColumns(1)).thenReturn(new int[]{6, 3});
 		when(op.getParameters()).thenReturn(new Configuration());
 
 		CoGroupNode node = new CoGroupNode(op);

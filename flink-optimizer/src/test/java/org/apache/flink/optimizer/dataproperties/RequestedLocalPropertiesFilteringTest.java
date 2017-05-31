@@ -211,7 +211,7 @@ public class RequestedLocalPropertiesFilteringTest {
 				null, null, null, null, tupleInfo, tupleInfo, tupleInfo);
 
 		RequestedLocalProperties lprops1 = new RequestedLocalProperties();
-		lprops1.setGroupedFields(new FieldSet(0,3,4));
+		lprops1.setGroupedFields(new FieldSet(0, 3, 4));
 
 		RequestedLocalProperties lprops2 = new RequestedLocalProperties();
 		lprops2.setGroupedFields(new FieldSet(7, 1));

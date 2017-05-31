@@ -62,7 +62,7 @@ public class MapPartitionNode extends SingleInputNode {
 
 		// Local properties for MapPartition may not be preserved.
 		SingleInputSemanticProperties origProps =
-				((SingleInputOperator<?,?,?>) getOperator()).getSemanticProperties();
+				((SingleInputOperator<?, ?, ?>) getOperator()).getSemanticProperties();
 		SingleInputSemanticProperties filteredProps = new SingleInputSemanticProperties();
 		FieldSet readSet = origProps.getReadFields(0);
 		if (readSet != null) {

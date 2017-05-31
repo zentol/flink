@@ -53,8 +53,8 @@ public class LocalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, null, null, null, tupleInfo, tupleInfo);
 
 		LocalProperties lProps = LocalProperties.forGrouping(new FieldList(0, 1, 2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
-		lProps = lProps.addUniqueFields(new FieldSet(5,6));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
+		lProps = lProps.addUniqueFields(new FieldSet(5, 6));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
 
@@ -70,7 +70,7 @@ public class LocalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, new String[]{"5"}, null, null, tupleInfo, tupleInfo);
 
 		LocalProperties lProps = LocalProperties.forGrouping(new FieldList(0, 1, 2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
 
@@ -280,13 +280,13 @@ public class LocalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, new String[]{"0;1;2;3;4"}, null, null, tupleInfo, tupleInfo);
 
 		LocalProperties lProps = new LocalProperties();
-		lProps = lProps.addUniqueFields(new FieldSet(0,1,2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
-		lProps = lProps.addUniqueFields(new FieldSet(4,5,6));
+		lProps = lProps.addUniqueFields(new FieldSet(0, 1, 2));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
+		lProps = lProps.addUniqueFields(new FieldSet(4, 5, 6));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
-		FieldSet expected1 = new FieldSet(0,1,2);
-		FieldSet expected2 = new FieldSet(3,4);
+		FieldSet expected1 = new FieldSet(0, 1, 2);
+		FieldSet expected2 = new FieldSet(3, 4);
 
 		assertNull(filtered.getGroupedFields());
 		assertNull(filtered.getOrdering());
@@ -302,14 +302,14 @@ public class LocalPropertiesFilteringTest {
 		SingleInputSemanticProperties sp = new SingleInputSemanticProperties();
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, new String[]{"0;1;2;3;4"}, null, null, tupleInfo, tupleInfo);
 
-		LocalProperties lProps = LocalProperties.forGrouping(new FieldList(1,2));
-		lProps = lProps.addUniqueFields(new FieldSet(0,1,2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
-		lProps = lProps.addUniqueFields(new FieldSet(4,5,6));
+		LocalProperties lProps = LocalProperties.forGrouping(new FieldList(1, 2));
+		lProps = lProps.addUniqueFields(new FieldSet(0, 1, 2));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
+		lProps = lProps.addUniqueFields(new FieldSet(4, 5, 6));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
-		FieldSet expected1 = new FieldSet(0,1,2);
-		FieldSet expected2 = new FieldSet(3,4);
+		FieldSet expected1 = new FieldSet(0, 1, 2);
+		FieldSet expected2 = new FieldSet(3, 4);
 
 		assertNull(filtered.getOrdering());
 		assertNotNull(filtered.getGroupedFields());
@@ -329,13 +329,13 @@ public class LocalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, new String[]{"0->7;1->6;2->5;3->4;4->3"}, null, null, tupleInfo, tupleInfo);
 
 		LocalProperties lProps = new LocalProperties();
-		lProps = lProps.addUniqueFields(new FieldSet(0,1,2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
-		lProps = lProps.addUniqueFields(new FieldSet(4,5,6));
+		lProps = lProps.addUniqueFields(new FieldSet(0, 1, 2));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
+		lProps = lProps.addUniqueFields(new FieldSet(4, 5, 6));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
-		FieldSet expected1 = new FieldSet(5,6,7);
-		FieldSet expected2 = new FieldSet(3,4);
+		FieldSet expected1 = new FieldSet(5, 6, 7);
+		FieldSet expected2 = new FieldSet(3, 4);
 
 		assertNull(filtered.getGroupedFields());
 		assertNull(filtered.getOrdering());
@@ -352,9 +352,9 @@ public class LocalPropertiesFilteringTest {
 		SemanticPropUtil.getSemanticPropsSingleFromString(sp, new String[]{"0;1;4"}, null, null, tupleInfo, tupleInfo);
 
 		LocalProperties lProps = new LocalProperties();
-		lProps = lProps.addUniqueFields(new FieldSet(0,1,2));
-		lProps = lProps.addUniqueFields(new FieldSet(3,4));
-		lProps = lProps.addUniqueFields(new FieldSet(4,5,6));
+		lProps = lProps.addUniqueFields(new FieldSet(0, 1, 2));
+		lProps = lProps.addUniqueFields(new FieldSet(3, 4));
+		lProps = lProps.addUniqueFields(new FieldSet(4, 5, 6));
 
 		LocalProperties filtered = lProps.filterBySemanticProperties(sp, 0);
 
@@ -369,7 +369,7 @@ public class LocalPropertiesFilteringTest {
 		SingleInputSemanticProperties sprops = new SingleInputSemanticProperties();
 		SemanticPropUtil.getSemanticPropsSingleFromString(sprops, new String[]{"0;1"}, null, null, tupleInfo, tupleInfo);
 
-		LocalProperties lprops = LocalProperties.forGrouping(new FieldList(0,1));
+		LocalProperties lprops = LocalProperties.forGrouping(new FieldList(0, 1));
 
 		lprops.filterBySemanticProperties(sprops, 1);
 	}

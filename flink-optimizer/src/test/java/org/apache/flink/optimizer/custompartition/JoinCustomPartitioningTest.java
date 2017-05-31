@@ -240,17 +240,17 @@ public class JoinCustomPartitioningTest extends CompilerTestBase {
 					@Override
 					public int partition(Long key, int numPartitions) { return 0; }
 				}, 0)
-				.map(new IdentityMapper<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1", "2");
+				.map(new IdentityMapper<Tuple3<Long, Long, Long>>()).withForwardedFields("0", "1", "2");
 
 			DataSet<Tuple3<Long, Long, Long>> grouped = partitioned
 				.distinct(0, 1)
 				.groupBy(1)
 				.sortGroup(0, Order.ASCENDING)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long,Long,Long>>()).withForwardedFields("0", "1");
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Long, Long, Long>>()).withForwardedFields("0", "1");
 
 			grouped
 				.join(partitioned, JoinHint.REPARTITION_HASH_FIRST).where(0).equalTo(0)
-				.with(new DummyFlatJoinFunction<Tuple3<Long,Long,Long>>())
+				.with(new DummyFlatJoinFunction<Tuple3<Long, Long, Long>>())
 				.output(new DiscardingOutputFormat<Tuple3<Long, Long, Long>>());
 
 			Plan p = env.createProgramPlan();

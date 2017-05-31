@@ -52,7 +52,7 @@ public class HardPlansCompilationTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> set1 = env.generateSequence(0,1);
+		DataSet<Long> set1 = env.generateSequence(0, 1);
 
 		set1.map(new IdentityMapper<Long>()).name("Map1")
 				.groupBy("*").reduceGroup(new IdentityGroupReducer<Long>()).name("Reduce1")

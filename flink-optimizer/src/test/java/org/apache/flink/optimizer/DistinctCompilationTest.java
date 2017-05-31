@@ -155,7 +155,7 @@ public class DistinctCompilationTest extends CompilerTestBase implements java.io
 					.name("source").setParallelism(6);
 
 			data
-					.distinct(new KeySelector<Tuple2<String,Double>, String>() {
+					.distinct(new KeySelector<Tuple2<String, Double>, String>() {
 						public String getKey(Tuple2<String, Double> value) { return value.f0; }
 					}).name("reducer")
 					.output(new DiscardingOutputFormat<Tuple2<String, Double>>()).name("sink");

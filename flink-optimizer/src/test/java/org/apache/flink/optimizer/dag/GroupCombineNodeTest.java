@@ -42,9 +42,9 @@ public class GroupCombineNodeTest {
 		origProps.addForwardedField(6, 0);
 		origProps.addReadFields(new FieldSet(0, 2, 4, 7));
 
-		GroupCombineOperatorBase<?,?,?> op = mock(GroupCombineOperatorBase.class);
+		GroupCombineOperatorBase<?, ?, ?> op = mock(GroupCombineOperatorBase.class);
 		when(op.getSemanticProperties()).thenReturn(origProps);
-		when(op.getKeyColumns(0)).thenReturn(new int[]{3,2});
+		when(op.getKeyColumns(0)).thenReturn(new int[]{3, 2});
 		when(op.getParameters()).thenReturn(new Configuration());
 
 		GroupCombineNode node = new GroupCombineNode(op);

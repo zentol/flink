@@ -270,7 +270,7 @@ public class PipelineBreakerTest extends CompilerTestBase {
 				initialSource
 					.map(new IdentityMapper<Long>())
 					.cross(initialSource).withParameters(conf)
-					.output(new DiscardingOutputFormat<Tuple2<Long,Long>>());
+					.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
 				Plan p = env.createProgramPlan();
 				OptimizedPlan op = compileNoStats(p);

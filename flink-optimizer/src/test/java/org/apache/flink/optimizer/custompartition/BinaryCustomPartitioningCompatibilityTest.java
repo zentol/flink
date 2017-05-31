@@ -39,7 +39,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@SuppressWarnings({"serial","unchecked"})
+@SuppressWarnings({"serial", "unchecked"})
 public class BinaryCustomPartitioningCompatibilityTest extends CompilerTestBase {
 
 	@Test

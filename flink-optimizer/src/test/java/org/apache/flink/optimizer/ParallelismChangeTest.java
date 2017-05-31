@@ -64,7 +64,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(p);
-		DataSet<Long> set1 = env.generateSequence(0,1).setParallelism(p);
+		DataSet<Long> set1 = env.generateSequence(0, 1).setParallelism(p);
 
 		set1.map(new IdentityMapper<Long>())
 					.withForwardedFields("*").setParallelism(p).name("Map1")
@@ -108,7 +108,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(p);
-		DataSet<Long> set1 = env.generateSequence(0,1).setParallelism(p);
+		DataSet<Long> set1 = env.generateSequence(0, 1).setParallelism(p);
 
 		set1.map(new IdentityMapper<Long>())
 				.withForwardedFields("*").setParallelism(p).name("Map1")
@@ -153,7 +153,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(p);
-		DataSet<Long> set1 = env.generateSequence(0,1).setParallelism(p);
+		DataSet<Long> set1 = env.generateSequence(0, 1).setParallelism(p);
 
 		set1.map(new IdentityMapper<Long>())
 				.withForwardedFields("*").setParallelism(p).name("Map1")
@@ -246,8 +246,8 @@ public class ParallelismChangeTest extends CompilerTestBase {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
 
-		DataSet<Long> set1 = env.generateSequence(0,1).setParallelism(5);
-		DataSet<Long> set2 = env.generateSequence(0,1).setParallelism(7);
+		DataSet<Long> set1 = env.generateSequence(0, 1).setParallelism(5);
+		DataSet<Long> set2 = env.generateSequence(0, 1).setParallelism(7);
 
 		DataSet<Long> reduce1 = set1
 				.groupBy("*").reduceGroup(new IdentityGroupReducer<Long>())

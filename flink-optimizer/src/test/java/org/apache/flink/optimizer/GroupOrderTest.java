@@ -103,7 +103,7 @@ public class GroupOrderTest extends CompilerTestBase {
 		DataSet<Tuple7<Long, Long, Long, Long, Long, Long, Long>> set2 = env.readCsvFile("/tmp/fake2.csv")
 				.types(Long.class, Long.class, Long.class, Long.class, Long.class, Long.class, Long.class);
 
-		set1.coGroup(set2).where(3,0).equalTo(6,0)
+		set1.coGroup(set2).where(3, 0).equalTo(6, 0)
 				.sortFirstGroup(5, Order.DESCENDING)
 				.sortSecondGroup(1, Order.DESCENDING).sortSecondGroup(4, Order.ASCENDING)
 				.with(new IdentityCoGrouper<Tuple7<Long, Long, Long, Long, Long, Long, Long>>()).name("CoGroup")

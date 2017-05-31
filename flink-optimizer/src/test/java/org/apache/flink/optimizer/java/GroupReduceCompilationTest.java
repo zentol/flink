@@ -250,7 +250,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 				.name("source").setParallelism(6);
 
 			data
-				.groupBy(new KeySelector<Tuple2<String,Double>, String>() {
+				.groupBy(new KeySelector<Tuple2<String, Double>, String>() {
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduceGroup(new RichGroupReduceFunction<Tuple2<String, Double>, Tuple2<String, Double>>() {
@@ -308,7 +308,7 @@ public class GroupReduceCompilationTest extends CompilerTestBase implements java
 				.name("source").setParallelism(6);
 
 			GroupReduceOperator<Tuple2<String, Double>, Tuple2<String, Double>> reduced = data
-				.groupBy(new KeySelector<Tuple2<String,Double>, String>() {
+				.groupBy(new KeySelector<Tuple2<String, Double>, String>() {
 					public String getKey(Tuple2<String, Double> value) { return value.f0; }
 				})
 				.reduceGroup(new CombineReducer()).name("reducer");

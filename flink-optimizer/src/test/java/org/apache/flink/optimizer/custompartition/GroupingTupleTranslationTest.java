@@ -82,7 +82,7 @@ public class GroupingTupleTranslationTest extends CompilerTestBase {
 					.rebalance().setParallelism(4);
 
 			data.groupBy(0).withPartitioner(new TestPartitionerInt())
-				.reduce(new DummyReducer<Tuple2<Integer,Integer>>())
+				.reduce(new DummyReducer<Tuple2<Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple2<Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -111,7 +111,7 @@ public class GroupingTupleTranslationTest extends CompilerTestBase {
 					.rebalance().setParallelism(4);
 
 			data.groupBy(0).withPartitioner(new TestPartitionerInt())
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Integer,Integer>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple2<Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple2<Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -141,7 +141,7 @@ public class GroupingTupleTranslationTest extends CompilerTestBase {
 
 			data.groupBy(0).withPartitioner(new TestPartitionerInt())
 				.sortGroup(1, Order.ASCENDING)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Integer,Integer,Integer>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple3<Integer, Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple3<Integer, Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -166,13 +166,13 @@ public class GroupingTupleTranslationTest extends CompilerTestBase {
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-			DataSet<Tuple4<Integer,Integer,Integer, Integer>> data = env.fromElements(new Tuple4<Integer,Integer,Integer,Integer>(0, 0, 0, 0))
+			DataSet<Tuple4<Integer, Integer, Integer, Integer>> data = env.fromElements(new Tuple4<Integer, Integer, Integer, Integer>(0, 0, 0, 0))
 					.rebalance().setParallelism(4);
 
 			data.groupBy(0).withPartitioner(new TestPartitionerInt())
 				.sortGroup(1, Order.ASCENDING)
 				.sortGroup(2, Order.DESCENDING)
-				.reduceGroup(new IdentityGroupReducerCombinable<Tuple4<Integer,Integer,Integer,Integer>>())
+				.reduceGroup(new IdentityGroupReducerCombinable<Tuple4<Integer, Integer, Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple4<Integer, Integer, Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();

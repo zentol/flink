@@ -50,12 +50,12 @@ public class CustomPartitioningTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(parallelism);
 
-			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer,Integer>(0, 0))
+			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer, Integer>(0, 0))
 					.rebalance();
 
 			data
 				.partitionCustom(part, 0)
-				.mapPartition(new IdentityPartitionerMapper<Tuple2<Integer,Integer>>())
+				.mapPartition(new IdentityPartitionerMapper<Tuple2<Integer, Integer>>())
 				.output(new DiscardingOutputFormat<Tuple2<Integer, Integer>>());
 
 			Plan p = env.createProgramPlan();
@@ -93,7 +93,7 @@ public class CustomPartitioningTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(parallelism);
 
-			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer,Integer>(0, 0))
+			DataSet<Tuple2<Integer, Integer>> data = env.fromElements(new Tuple2<Integer, Integer>(0, 0))
 					.rebalance();
 
 			try {

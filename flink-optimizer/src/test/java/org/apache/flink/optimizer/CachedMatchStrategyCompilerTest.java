@@ -236,7 +236,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 
 		@SuppressWarnings("unchecked")
 		DataSet<Tuple3<Long, Long, Long>> bigInput = env.fromElements(new Tuple3<Long, Long, Long>(1L, 2L, 3L),
-				new Tuple3<Long, Long, Long>(1L, 2L, 3L),new Tuple3<Long, Long, Long>(1L, 2L, 3L)).name("Big");
+				new Tuple3<Long, Long, Long>(1L, 2L, 3L), new Tuple3<Long, Long, Long>(1L, 2L, 3L)).name("Big");
 
 		@SuppressWarnings("unchecked")
 		DataSet<Tuple3<Long, Long, Long>> smallInput = env.fromElements(new Tuple3<Long, Long, Long>(1L, 2L, 3L)).name("Small");
@@ -250,7 +250,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 
 		DataSet<Tuple3<Long, Long, Long>> output = iteration.closeWith(inner);
 
-		output.output(new DiscardingOutputFormat<Tuple3<Long,Long,Long>>());
+		output.output(new DiscardingOutputFormat<Tuple3<Long, Long, Long>>());
 
 		return env.createProgramPlan();
 

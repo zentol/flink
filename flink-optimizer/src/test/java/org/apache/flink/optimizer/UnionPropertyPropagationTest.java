@@ -52,8 +52,8 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> sourceA = env.generateSequence(0,1);
-		DataSet<Long> sourceB = env.generateSequence(0,1);
+		DataSet<Long> sourceA = env.generateSequence(0, 1);
+		DataSet<Long> sourceB = env.generateSequence(0, 1);
 
 		DataSet<Long> redA = sourceA.groupBy("*").reduceGroup(new IdentityGroupReducer<Long>());
 		DataSet<Long> redB = sourceB.groupBy("*").reduceGroup(new IdentityGroupReducer<Long>());

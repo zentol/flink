@@ -100,7 +100,7 @@ public class OpenIterationTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 			@SuppressWarnings("unchecked")
-			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L,0L));
+			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = input.iterateDelta(input, 10, 0);
 
@@ -128,7 +128,7 @@ public class OpenIterationTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 			@SuppressWarnings("unchecked")
-			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L,0L));
+			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = input.iterateDelta(input, 10, 0);
 
@@ -156,7 +156,7 @@ public class OpenIterationTest extends CompilerTestBase {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 			@SuppressWarnings("unchecked")
-			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L,0L));
+			DataSet<Tuple2<Long, Long>> input = env.fromElements(new Tuple2<Long, Long>(0L, 0L));
 
 			DeltaIteration<Tuple2<Long, Long>, Tuple2<Long, Long>> iteration = input.iterateDelta(input, 10, 0);
 

@@ -46,7 +46,7 @@ public class DistinctAndGroupingOptimizerTest extends CompilerTestBase {
 
 			@SuppressWarnings("unchecked")
 			DataSet<Tuple2<Long, Long>> data = env.fromElements(new Tuple2<Long, Long>(0L, 0L), new Tuple2<Long, Long>(1L, 1L))
-					.map(new IdentityMapper<Tuple2<Long,Long>>()).setParallelism(4);
+					.map(new IdentityMapper<Tuple2<Long, Long>>()).setParallelism(4);
 
 			data.distinct(0)
 				.groupBy(0)
@@ -82,7 +82,7 @@ public class DistinctAndGroupingOptimizerTest extends CompilerTestBase {
 
 			@SuppressWarnings("unchecked")
 			DataSet<Tuple2<Long, Long>> data = env.fromElements(new Tuple2<Long, Long>(0L, 0L), new Tuple2<Long, Long>(1L, 1L))
-					.map(new IdentityMapper<Tuple2<Long,Long>>()).setParallelism(4);
+					.map(new IdentityMapper<Tuple2<Long, Long>>()).setParallelism(4);
 
 			data.distinct(1)
 				.groupBy(0)

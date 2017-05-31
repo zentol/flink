@@ -43,7 +43,7 @@ public class ReduceAllTest extends CompilerTestBase {
 		// construct the plan
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		env.setParallelism(DEFAULT_PARALLELISM);
-		DataSet<Long> set1 = env.generateSequence(0,1);
+		DataSet<Long> set1 = env.generateSequence(0, 1);
 
 		set1.reduceGroup(new IdentityGroupReducer<Long>()).name("Reduce1")
 				.output(new DiscardingOutputFormat<Long>()).name("Sink");
