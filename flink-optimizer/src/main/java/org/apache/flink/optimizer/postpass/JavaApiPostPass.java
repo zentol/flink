@@ -153,7 +153,7 @@ public class JavaApiPostPass implements OptimizerPostPass {
 			if (!(sn.getOptimizerNode().getOperator() instanceof SingleInputOperator)) {
 
 				// Special case for delta iterations
-				if(sn.getOptimizerNode().getOperator() instanceof NoOpUnaryUdfOp) {
+				if (sn.getOptimizerNode().getOperator() instanceof NoOpUnaryUdfOp) {
 					traverseChannel(sn.getInput());
 					return;
 				} else {
@@ -164,7 +164,7 @@ public class JavaApiPostPass implements OptimizerPostPass {
 			SingleInputOperator<?, ?, ?> singleInputOperator = (SingleInputOperator<?, ?, ?>) sn.getOptimizerNode().getOperator();
 
 			// parameterize the node's driver strategy
-			for(int i=0;i<sn.getDriverStrategy().getNumRequiredComparators();i++) {
+			for (int i=0;i<sn.getDriverStrategy().getNumRequiredComparators();i++) {
 				sn.setComparator(createComparator(singleInputOperator.getOperatorInfo().getInputType(), sn.getKeys(i),
 						getSortOrders(sn.getKeys(i), sn.getSortOrders(i))), i);
 			}
@@ -235,12 +235,12 @@ public class JavaApiPostPass implements OptimizerPostPass {
 
 		TypeInformation<?> type = javaOp.getOperatorInfo().getOutputType();
 
-		if(javaOp instanceof GroupReduceOperatorBase &&
+		if (javaOp instanceof GroupReduceOperatorBase &&
 				(source.getDriverStrategy() == DriverStrategy.SORTED_GROUP_COMBINE || source.getDriverStrategy() == DriverStrategy.ALL_GROUP_REDUCE_COMBINE)) {
 			GroupReduceOperatorBase<?, ?, ?> groupNode = (GroupReduceOperatorBase<?, ?, ?>) javaOp;
 			type = groupNode.getInput().getOperatorInfo().getOutputType();
 		}
-		else if(javaOp instanceof PlanUnwrappingReduceGroupOperator &&
+		else if (javaOp instanceof PlanUnwrappingReduceGroupOperator &&
 				source.getDriverStrategy().equals(DriverStrategy.SORTED_GROUP_COMBINE)) {
 			PlanUnwrappingReduceGroupOperator<?, ?, ?> groupNode = (PlanUnwrappingReduceGroupOperator<?, ?, ?>) javaOp;
 			type = groupNode.getInput().getOperatorInfo().getOutputType();

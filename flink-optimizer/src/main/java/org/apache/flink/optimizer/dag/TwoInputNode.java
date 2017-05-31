@@ -131,7 +131,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 	}
 
 	public OptimizerNode getFirstPredecessorNode() {
-		if(this.input1 != null) {
+		if (this.input1 != null) {
 			return this.input1.getSource();
 		} else {
 			return null;
@@ -139,7 +139,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 	}
 
 	public OptimizerNode getSecondPredecessorNode() {
-		if(this.input2 != null) {
+		if (this.input2 != null) {
 			return this.input2.getSource();
 		} else {
 			return null;
@@ -499,8 +499,8 @@ public abstract class TwoInputNode extends OptimizerNode {
 			}
 		}
 
-		if(outputPlans.isEmpty()) {
-			if(childrenSkippedDueToReplicatedInput) {
+		if (outputPlans.isEmpty()) {
+			if (childrenSkippedDueToReplicatedInput) {
 				throw new CompilerException("No plan meeting the requirements could be created @ " + this
 											+ ". Most likely reason: Invalid use of replicated input.");
 			} else {

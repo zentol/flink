@@ -63,7 +63,7 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 
 			assertEquals(ShipStrategyType.FORWARD, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.BROADCAST, in2.getShipStrategy());
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The Flink optimizer is unable to compile this plan correctly.");
 		}
@@ -91,7 +91,7 @@ public class AdditionalOperatorsTest extends CompilerTestBase {
 
 			assertEquals(ShipStrategyType.BROADCAST, in1.getShipStrategy());
 			assertEquals(ShipStrategyType.FORWARD, in2.getShipStrategy());
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 		}

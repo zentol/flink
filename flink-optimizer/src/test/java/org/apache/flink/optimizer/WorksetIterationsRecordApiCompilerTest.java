@@ -65,7 +65,7 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
@@ -111,7 +111,7 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
@@ -154,7 +154,7 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		OptimizedPlan oPlan;
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
@@ -207,14 +207,14 @@ public class WorksetIterationsRecordApiCompilerTest extends CompilerTestBase {
 		DataSet<Tuple2<Long, Long>> join2 = deltaIt.getSolutionSet().join(join1).where(0).equalTo(0)
 				.with(new IdentityJoiner<Tuple2<Long, Long>>())
 				.name(JOIN_WITH_SOLUTION_SET);
-		if(joinPreservesSolutionSet) {
+		if (joinPreservesSolutionSet) {
 			((JoinOperator<?,?,?>)join2).withForwardedFieldsFirst("*");
 		}
 
 		DataSet<Tuple2<Long, Long>> nextWorkset = join2.groupBy(0).reduceGroup(new IdentityGroupReducer<Tuple2<Long, Long>>())
 				.withForwardedFields("*").name(NEXT_WORKSET_REDUCER_NAME);
 
-		if(mapBeforeSolutionDelta) {
+		if (mapBeforeSolutionDelta) {
 
 			DataSet<Tuple2<Long, Long>> mapper = join2.map(new IdentityMapper<Tuple2<Long, Long>>())
 					.withForwardedFields("*").name(SOLUTION_DELTA_MAPPER_NAME);

@@ -701,7 +701,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		GlobalProperties inProps1 = join.getInput1().getGlobalProperties();
 		GlobalProperties inProps2 = join.getInput2().getGlobalProperties();
 
-		if(inProps1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
+		if (inProps1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 				inProps2.getPartitioning() == PartitioningProperty.HASH_PARTITIONED) {
 
 			// check that both inputs are hash partitioned on the same fields
@@ -714,7 +714,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 			FieldList reqPFields1 = join.getKeysForInput1();
 			FieldList reqPFields2 = join.getKeysForInput2();
 
-			for(int i=0; i<pFields1.size(); i++) {
+			for (int i=0; i<pFields1.size(); i++) {
 
 				// get fields
 				int f1 = pFields1.get(i);
@@ -724,23 +724,23 @@ public class PartitioningReusageTest extends CompilerTestBase {
 				int pos1 = getPosInFieldList(f1, reqPFields1);
 				int pos2 = getPosInFieldList(f2, reqPFields2);
 
-				if(pos1 < 0) {
+				if (pos1 < 0) {
 					fail("Input 1 is partitioned on field "+f1+" which is not contained in the key set "+reqPFields1);
 				}
-				if(pos2 < 0) {
+				if (pos2 < 0) {
 					fail("Input 2 is partitioned on field "+f2+" which is not contained in the key set "+reqPFields2);
 				}
-				if(pos1 != pos2) {
+				if (pos1 != pos2) {
 					fail("Inputs are not partitioned on the same key fields");
 				}
 			}
 
 		}
-		else if(inProps1.getPartitioning() == PartitioningProperty.FULL_REPLICATION &&
+		else if (inProps1.getPartitioning() == PartitioningProperty.FULL_REPLICATION &&
 				inProps2.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED) {
 			// we are good. No need to check for fields
 		}
-		else if(inProps1.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED &&
+		else if (inProps1.getPartitioning() == PartitioningProperty.RANDOM_PARTITIONED &&
 				inProps2.getPartitioning() == PartitioningProperty.FULL_REPLICATION) {
 			// we are good. No need to check for fields
 		}
@@ -755,7 +755,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		GlobalProperties inProps1 = coGroup.getInput1().getGlobalProperties();
 		GlobalProperties inProps2 = coGroup.getInput2().getGlobalProperties();
 
-		if(inProps1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
+		if (inProps1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 				inProps2.getPartitioning() == PartitioningProperty.HASH_PARTITIONED) {
 
 			// check that both inputs are hash partitioned on the same fields
@@ -768,7 +768,7 @@ public class PartitioningReusageTest extends CompilerTestBase {
 			FieldList reqPFields1 = coGroup.getKeysForInput1();
 			FieldList reqPFields2 = coGroup.getKeysForInput2();
 
-			for(int i=0; i<pFields1.size(); i++) {
+			for (int i=0; i<pFields1.size(); i++) {
 
 				// get fields
 				int f1 = pFields1.get(i);
@@ -778,13 +778,13 @@ public class PartitioningReusageTest extends CompilerTestBase {
 				int pos1 = getPosInFieldList(f1, reqPFields1);
 				int pos2 = getPosInFieldList(f2, reqPFields2);
 
-				if(pos1 < 0) {
+				if (pos1 < 0) {
 					fail("Input 1 is partitioned on field "+f1+" which is not contained in the key set "+reqPFields1);
 				}
-				if(pos2 < 0) {
+				if (pos2 < 0) {
 					fail("Input 2 is partitioned on field "+f2+" which is not contained in the key set "+reqPFields2);
 				}
-				if(pos1 != pos2) {
+				if (pos1 != pos2) {
 					fail("Inputs are not partitioned on the same key fields");
 				}
 			}
@@ -799,12 +799,12 @@ public class PartitioningReusageTest extends CompilerTestBase {
 	private int getPosInFieldList(int field, FieldList list) {
 
 		int pos;
-		for(pos=0; pos<list.size(); pos++) {
-			if(field == list.get(pos)) {
+		for (pos=0; pos<list.size(); pos++) {
+			if (field == list.get(pos)) {
 				break;
 			}
 		}
-		if(pos == list.size()) {
+		if (pos == list.size()) {
 			return -1;
 		} else {
 			return pos;

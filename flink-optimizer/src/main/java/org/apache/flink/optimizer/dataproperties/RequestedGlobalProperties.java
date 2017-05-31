@@ -251,7 +251,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 			case HASH_PARTITIONED:
 			case ANY_PARTITIONING:
 				FieldSet newFields;
-				if(this.partitioningFields instanceof FieldList) {
+				if (this.partitioningFields instanceof FieldList) {
 					newFields = new FieldList();
 				} else {
 					newFields = new FieldSet();
@@ -475,7 +475,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	}
 
 	private boolean checkCompatiblePartitioningFields(GlobalProperties props) {
-		if(this.partitioningFields instanceof FieldList) {
+		if (this.partitioningFields instanceof FieldList) {
 			// partitioningFields as FieldList requires strict checking!
 			return props.isExactlyPartitionedOnFields((FieldList)this.partitioningFields);
 		} else {

@@ -65,8 +65,8 @@ public class TempInIterationsTest {
 		JobGraph jg = jgg.compileJobGraph(oPlan);
 
 		boolean solutionSetUpdateChecked = false;
-		for(JobVertex v : jg.getVertices()) {
-			if(v.getName().equals("SolutionSet Delta")) {
+		for (JobVertex v : jg.getVertices()) {
+			if (v.getName().equals("SolutionSet Delta")) {
 
 				// check if input of solution set delta is temped
 				TaskConfig tc = new TaskConfig(v.getConfiguration());

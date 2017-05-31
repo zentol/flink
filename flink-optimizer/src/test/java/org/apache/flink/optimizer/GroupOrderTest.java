@@ -66,7 +66,7 @@ public class GroupOrderTest extends CompilerTestBase {
 
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler
@@ -114,7 +114,7 @@ public class GroupOrderTest extends CompilerTestBase {
 
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly.");
 			return; // silence the compiler

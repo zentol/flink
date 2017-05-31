@@ -65,7 +65,7 @@ public class MapPartitionNode extends SingleInputNode {
 				((SingleInputOperator<?,?,?>) getOperator()).getSemanticProperties();
 		SingleInputSemanticProperties filteredProps = new SingleInputSemanticProperties();
 		FieldSet readSet = origProps.getReadFields(0);
-		if(readSet != null) {
+		if (readSet != null) {
 			filteredProps.addReadFields(readSet);
 		}
 

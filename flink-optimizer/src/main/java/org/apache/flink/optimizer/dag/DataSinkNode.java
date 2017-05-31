@@ -73,7 +73,7 @@ public class DataSinkNode extends OptimizerNode {
 	 * @return The predecessor, or null, if no predecessor has been set.
 	 */
 	public OptimizerNode getPredecessorNode() {
-		if(this.input != null) {
+		if (this.input != null) {
 			return input.getSource();
 		} else {
 			return null;

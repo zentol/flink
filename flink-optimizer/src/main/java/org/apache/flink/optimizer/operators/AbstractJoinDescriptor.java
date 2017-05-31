@@ -130,7 +130,7 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 	{
 		if (requested1.getPartitioning().isPartitionedOnKey() && requested2.getPartitioning().isPartitionedOnKey()) {
 
-			if(produced1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
+			if (produced1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 					produced2.getPartitioning() == PartitioningProperty.HASH_PARTITIONED) {
 
 				// both are hash partitioned, check that partitioning fields are equivalently chosen
@@ -138,7 +138,7 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 						produced1.getPartitioningFields(), produced2.getPartitioningFields());
 
 			}
-			else if(produced1.getPartitioning() == PartitioningProperty.RANGE_PARTITIONED &&
+			else if (produced1.getPartitioning() == PartitioningProperty.RANGE_PARTITIONED &&
 					produced2.getPartitioning() == PartitioningProperty.RANGE_PARTITIONED &&
 					produced1.getDataDistribution() != null && produced2.getDataDistribution() != null) {
 
@@ -147,7 +147,7 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 						produced1.getDataDistribution().equals(produced2.getDataDistribution());
 
 			}
-			else if(produced1.getPartitioning() == PartitioningProperty.CUSTOM_PARTITIONING &&
+			else if (produced1.getPartitioning() == PartitioningProperty.CUSTOM_PARTITIONING &&
 					produced2.getPartitioning() == PartitioningProperty.CUSTOM_PARTITIONING) {
 
 				// both use a custom partitioner. Check that both keys are exactly as specified and that both the same partitioner

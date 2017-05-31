@@ -96,9 +96,9 @@ public class RangePartitionRewriter implements Visitor<PlanNode> {
 	@Override
 	public void postVisit(PlanNode node) {
 
-		if(node instanceof IterationPlanNode) {
+		if (node instanceof IterationPlanNode) {
 			IterationPlanNode iNode = (IterationPlanNode)node;
-			if(!visitedIterationNodes.contains(iNode)) {
+			if (!visitedIterationNodes.contains(iNode)) {
 				visitedIterationNodes.add(iNode);
 				iNode.acceptForStepFunction(this);
 			}
@@ -110,7 +110,7 @@ public class RangePartitionRewriter implements Visitor<PlanNode> {
 			// Make sure we only optimize the DAG for range partition, and do not optimize multi times.
 			if (shipStrategy == ShipStrategyType.PARTITION_RANGE) {
 
-				if(channel.getDataDistribution() == null) {
+				if (channel.getDataDistribution() == null) {
 					if (node.isOnDynamicPath()) {
 						throw new InvalidProgramException("Range Partitioning not supported within iterations if users do not supply the data distribution.");
 					}

@@ -162,7 +162,7 @@ public class LocalProperties implements Cloneable {
 					}
 				} else {
 					// use any field of target fields for now.  We should use something like field equivalence sets in the future.
-					if(targetField.size() > 1) {
+					if (targetField.size() > 1) {
 						LOG.warn("Found that a field is forwarded to more than one target field in " +
 								"semantic forwarded field information. Will only use the field with the lowest index.");
 					}
@@ -188,7 +188,7 @@ public class LocalProperties implements Cloneable {
 					break;
 				} else {
 					// use any field of target fields for now.  We should use something like field equivalence sets in the future.
-					if(targetField.size() > 1) {
+					if (targetField.size() > 1) {
 						LOG.warn("Found that a field is forwarded to more than one target field in " +
 								"semantic forwarded field information. Will only use the field with the lowest index.");
 					}
@@ -210,7 +210,7 @@ public class LocalProperties implements Cloneable {
 						break;
 					} else {
 						// use any field of target fields for now.  We should use something like field equivalence sets in the future.
-						if(targetField.size() > 1) {
+						if (targetField.size() > 1) {
 							LOG.warn("Found that a field is forwarded to more than one target field in " +
 									"semantic forwarded field information. Will only use the field with the lowest index.");
 						}

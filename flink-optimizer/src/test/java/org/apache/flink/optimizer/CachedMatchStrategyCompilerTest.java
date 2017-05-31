@@ -173,11 +173,11 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 			SourceCollectorVisitor sourceCollector = new SourceCollectorVisitor();
 			plan.accept(sourceCollector);
 
-			for(GenericDataSourceBase<?, ?> s : sourceCollector.getSources()) {
-				if(s.getName().equals("bigFile")) {
+			for (GenericDataSourceBase<?, ?> s : sourceCollector.getSources()) {
+				if (s.getName().equals("bigFile")) {
 					this.setSourceStatistics(s, 10000000, 1000);
 				}
-				else if(s.getName().equals("smallFile")) {
+				else if (s.getName().equals("smallFile")) {
 					this.setSourceStatistics(s, 100, 100);
 				}
 			}
@@ -215,7 +215,7 @@ public class CachedMatchStrategyCompilerTest extends CompilerTestBase {
 		Configuration joinStrategy = new Configuration();
 		joinStrategy.setString(Optimizer.HINT_SHIP_STRATEGY, Optimizer.HINT_SHIP_STRATEGY_REPARTITION_HASH);
 
-		if(!strategy.equals("")) {
+		if (!strategy.equals("")) {
 			joinStrategy.setString(Optimizer.HINT_LOCAL_STRATEGY, strategy);
 		}
 

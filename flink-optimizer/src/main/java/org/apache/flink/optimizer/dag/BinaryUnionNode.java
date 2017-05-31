@@ -273,8 +273,8 @@ public class BinaryUnionNode extends TwoInputNode {
 			}
 		}
 
-		if(outputPlans.isEmpty()) {
-			if(childrenSkippedDueToReplicatedInput) {
+		if (outputPlans.isEmpty()) {
+			if (childrenSkippedDueToReplicatedInput) {
 				throw new CompilerException("No plan meeting the requirements could be created @ " + this
 					+ ". Most likely reason: Invalid use of replicated input.");
 			} else {

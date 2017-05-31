@@ -572,9 +572,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -612,9 +612,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -659,9 +659,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -702,7 +702,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			compileNoStats(env.createProgramPlan());
 		}
-		catch(Exception e){
+		catch (Exception e){
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
@@ -743,9 +743,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -770,9 +770,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -802,9 +802,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -830,9 +830,9 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 		Plan plan = env.createProgramPlan();
 
-		try{
+		try {
 			compileNoStats(plan);
-		}catch(Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
@@ -840,7 +840,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 	@Test
 	public void testBranchesOnlyInBCVariables1() {
-		try{
+		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(100);
 
@@ -855,7 +855,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Plan plan = env.createProgramPlan();
 			compileNoStats(plan);
 		}
-		catch(Exception e){
+		catch (Exception e){
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
@@ -863,7 +863,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 	@Test
 	public void testBranchesOnlyInBCVariables2() {
-		try{
+		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 			env.setParallelism(100);
 
@@ -895,7 +895,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			Plan plan = env.createProgramPlan();
 			compileNoStats(plan);
 		}
-		catch(Exception e){
+		catch (Exception e){
 			e.printStackTrace();
 			fail(e.getMessage());
 		}

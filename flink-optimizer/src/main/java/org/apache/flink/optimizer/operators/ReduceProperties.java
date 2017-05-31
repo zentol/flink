@@ -69,7 +69,7 @@ public final class ReduceProperties extends OperatorDescriptorSingle {
 		if (in.getShipStrategy() == ShipStrategyType.FORWARD ||
 				(node.getBroadcastConnections() != null && !node.getBroadcastConnections().isEmpty()))
 		{
-			if(in.getSource().getOptimizerNode() instanceof PartitionNode) {
+			if (in.getSource().getOptimizerNode() instanceof PartitionNode) {
 				LOG.warn("Cannot automatically inject combiner for ReduceFunction. Please add an explicit combiner with combineGroup() in front of the partition operator.");
 			}
 			return new SingleInputPlanNode(node, "Reduce ("+node.getOperator().getName()+")", in,

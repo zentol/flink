@@ -72,7 +72,7 @@ public class CoGroupSolutionSetFirstTest extends CompilerTestBase {
 		OptimizedPlan oPlan = null;
 		try {
 			oPlan = compileNoStats(plan);
-		} catch(CompilerException e) {
+		} catch (CompilerException e) {
 			Assert.fail(e.getMessage());
 		}
 

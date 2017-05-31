@@ -358,8 +358,8 @@ public abstract class SingleInputNode extends OptimizerNode {
 			}
 		}
 
-		if(outputPlans.isEmpty()) {
-			if(childrenSkippedDueToReplicatedInput) {
+		if (outputPlans.isEmpty()) {
+			if (childrenSkippedDueToReplicatedInput) {
 				throw new CompilerException("No plan meeting the requirements could be created @ " + this + ". Most likely reason: Invalid use of replicated input.");
 			} else {
 				throw new CompilerException("No plan meeting the requirements could be created @ " + this + ". Most likely reason: Too restrictive plan hints.");

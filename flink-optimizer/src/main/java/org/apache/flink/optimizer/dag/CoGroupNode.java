@@ -89,25 +89,25 @@ public class CoGroupNode extends TwoInputNode {
 		DualInputSemanticProperties filteredProps = new DualInputSemanticProperties();
 		FieldSet readSet1 = origProps.getReadFields(0);
 		FieldSet readSet2 = origProps.getReadFields(1);
-		if(readSet1 != null) {
+		if (readSet1 != null) {
 			filteredProps.addReadFields(0, readSet1);
 		}
-		if(readSet2 != null) {
+		if (readSet2 != null) {
 			filteredProps.addReadFields(1, readSet2);
 		}
 
 		// preserve only key fields (first input)
-		for(int f : this.keys1) {
+		for (int f : this.keys1) {
 			FieldSet targets = origProps.getForwardingTargetFields(0, f);
-			for(int t : targets) {
+			for (int t : targets) {
 				filteredProps.addForwardedField(0, f, t);
 			}
 		}
 
 		// preserve only key fields (second input)
-		for(int f : this.keys2) {
+		for (int f : this.keys2) {
 			FieldSet targets = origProps.getForwardingTargetFields(1, f);
-			for(int t : targets) {
+			for (int t : targets) {
 				filteredProps.addForwardedField(1, f, t);
 			}
 		}

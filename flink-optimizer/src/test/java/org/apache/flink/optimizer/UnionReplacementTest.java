@@ -150,13 +150,13 @@ public class UnionReplacementTest extends CompilerTestBase {
 
 		// check that all inputs of unions are hash partitioned
 		List<Channel> union123In = ((NAryUnionPlanNode) groupRed1.getInput().getSource()).getListOfInputs();
-		for(Channel i : union123In) {
+		for (Channel i : union123In) {
 			assertTrue("Union input channel should hash partition on 0",
 				i.getShipStrategy().equals(ShipStrategyType.PARTITION_HASH) &&
 					i.getShipStrategyKeys().isExactMatch(new FieldList(0)));
 		}
 		List<Channel> union234In = ((NAryUnionPlanNode) groupRed2.getInput().getSource()).getListOfInputs();
-		for(Channel i : union234In) {
+		for (Channel i : union234In) {
 			assertTrue("Union input channel should hash partition on 0",
 				i.getShipStrategy().equals(ShipStrategyType.PARTITION_HASH) &&
 					i.getShipStrategyKeys().isExactMatch(new FieldList(1)));

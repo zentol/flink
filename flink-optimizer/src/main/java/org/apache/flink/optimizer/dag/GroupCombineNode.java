@@ -100,12 +100,12 @@ public class GroupCombineNode extends SingleInputNode {
 				((SingleInputOperator<?,?,?>) getOperator()).getSemanticProperties();
 		SingleInputSemanticProperties filteredProps = new SingleInputSemanticProperties();
 		FieldSet readSet = origProps.getReadFields(0);
-		if(readSet != null) {
+		if (readSet != null) {
 			filteredProps.addReadFields(readSet);
 		}
 
 		// only add forward field information for key fields
-		if(this.keys != null) {
+		if (this.keys != null) {
 			for (int f : this.keys) {
 				FieldSet targets = origProps.getForwardingTargetFields(0, f);
 				for (int t : targets) {

@@ -488,7 +488,7 @@ public class ReplicatingDataSourceTest extends CompilerTestBase {
 
 		@Override
 		public void mapPartition(Iterable<T> values, Collector<T> out) throws Exception {
-			for(T v : values) {
+			for (T v : values) {
 				out.collect(v);
 			}
 		}

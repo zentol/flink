@@ -821,7 +821,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 				BulkIterationPlanNode wspn = (BulkIterationPlanNode) this.currentIteration;
 				if (node == wspn.getRootOfTerminationCriterion() && wspn.getRootOfStepFunction() == pred){
 					chaining = false;
-				}else if(node.getOutgoingChannels().size() > 0 &&(wspn.getRootOfStepFunction() == pred ||
+				}else if (node.getOutgoingChannels().size() > 0 &&(wspn.getRootOfStepFunction() == pred ||
 						wspn.getRootOfTerminationCriterion() == pred)) {
 					chaining = false;
 				}
@@ -1335,7 +1335,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 		// create the fake output task for termination criterion, if needed
 		final TaskConfig tailConfigOfTerminationCriterion;
 		// If we have a termination criterion and it is not an intermediate node
-		if(rootOfTerminationCriterion != null && rootOfTerminationCriterion.getOutgoingChannels().isEmpty()) {
+		if (rootOfTerminationCriterion != null && rootOfTerminationCriterion.getOutgoingChannels().isEmpty()) {
 			JobVertex rootOfTerminationCriterionVertex = this.vertices.get(rootOfTerminationCriterion);
 
 			if (rootOfTerminationCriterionVertex == null) {

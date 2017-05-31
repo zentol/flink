@@ -54,7 +54,7 @@ public class ReduceAllTest extends CompilerTestBase {
 			OptimizedPlan oPlan = compileNoStats(plan);
 			JobGraphGenerator jobGen = new JobGraphGenerator();
 			jobGen.compileJobGraph(oPlan);
-		} catch(CompilerException ce) {
+		} catch (CompilerException ce) {
 			ce.printStackTrace();
 			fail("The pact compiler is unable to compile this plan correctly");
 		}

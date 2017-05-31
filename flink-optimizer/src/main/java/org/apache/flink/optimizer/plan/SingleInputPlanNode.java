@@ -74,7 +74,7 @@ public class SingleInputPlanNode extends PlanNode {
 		this.driverKeys = new FieldList[driverStrategy.getNumRequiredComparators()];
 		this.driverSortOrders = new boolean[driverStrategy.getNumRequiredComparators()][];
 
-		if(driverStrategy.getNumRequiredComparators() > 0) {
+		if (driverStrategy.getNumRequiredComparators() > 0) {
 			this.driverKeys[0] = driverKeyFields;
 			this.driverSortOrders[0] = driverSortOrders;
 		}
@@ -140,7 +140,7 @@ public class SingleInputPlanNode extends PlanNode {
 	 * @param id The ID of the driver comparator.
 	 */
 	public void setDriverKeyInfo(FieldList keys, boolean[] sortOrder, int id) {
-		if(id < 0 || id >= driverKeys.length) {
+		if (id < 0 || id >= driverKeys.length) {
 			throw new CompilerException("Invalid id for driver key information. DriverStrategy requires only "
 											+super.getDriverStrategy().getNumRequiredComparators()+" comparators.");
 		}

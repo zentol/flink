@@ -89,7 +89,7 @@ public class DataSourceNode extends OptimizerNode {
 
 		SplitDataProperties<?> splitProps = pactContract.getSplitDataProperties();
 
-		if(replicatedInput) {
+		if (replicatedInput) {
 			this.gprops.setFullyReplicated();
 			this.lprops = new LocalProperties();
 		} else if (splitProps != null) {
@@ -210,7 +210,7 @@ public class DataSourceNode extends OptimizerNode {
 		SourcePlanNode candidate = new SourcePlanNode(this, "DataSource ("+this.getOperator().getName()+")",
 				this.gprops, this.lprops);
 
-		if(!replicatedInput) {
+		if (!replicatedInput) {
 			candidate.updatePropertiesWithUniqueSets(getUniqueFields());
 
 			final Costs costs = new Costs();
@@ -257,10 +257,10 @@ public class DataSourceNode extends OptimizerNode {
 		int[] partitionKeys = splitProps.getSplitPartitionKeys();
 		Partitioner<?> partitioner = splitProps.getSplitPartitioner();
 
-		if(partitionKeys != null && partitioner != null) {
+		if (partitionKeys != null && partitioner != null) {
 			this.gprops.setCustomPartitioned(new FieldList(partitionKeys), partitioner);
 		}
-		else if(partitionKeys != null) {
+		else if (partitionKeys != null) {
 			this.gprops.setAnyPartitioning(new FieldList(partitionKeys));
 		}
 		// set local properties
@@ -269,26 +269,26 @@ public class DataSourceNode extends OptimizerNode {
 
 		// more than one split per source tasks possible.
 		// adapt split grouping and sorting
-		if(ordering != null) {
+		if (ordering != null) {
 
 			// sorting falls back to grouping because a source can read multiple,
 			// randomly assigned splits
 			groupingKeys = ordering.getFieldPositions();
 		}
 
-		if(groupingKeys != null && partitionKeys != null) {
+		if (groupingKeys != null && partitionKeys != null) {
 			// check if grouping is also valid across splits, i.e., whether grouping keys are
 			// valid superset of partition keys
 			boolean allFieldsIncluded = true;
-			for(int i : partitionKeys) {
+			for (int i : partitionKeys) {
 				boolean fieldIncluded = false;
-				for(int j : groupingKeys) {
-					if(i == j) {
+				for (int j : groupingKeys) {
+					if (i == j) {
 						fieldIncluded = true;
 						break;
 					}
 				}
-				if(!fieldIncluded) {
+				if (!fieldIncluded) {
 					allFieldsIncluded = false;
 					break;
 				}

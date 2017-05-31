@@ -219,10 +219,10 @@ public abstract class CompilerTestBase extends TestLogger implements java.io.Ser
 		@Override
 		public boolean preVisit(Operator<?> visitable) {
 
-			if(visitable instanceof GenericDataSourceBase) {
+			if (visitable instanceof GenericDataSourceBase) {
 				sources.add((GenericDataSourceBase<?, ?>) visitable);
 			}
-			else if(visitable instanceof BulkIterationBase) {
+			else if (visitable instanceof BulkIterationBase) {
 				((BulkIterationBase<?>) visitable).getNextPartialSolution().accept(this);
 			}
 

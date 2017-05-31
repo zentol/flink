@@ -86,7 +86,7 @@ public abstract class OperatorDescriptorDual implements AbstractOperatorDescript
 	protected boolean checkEquivalentFieldPositionsInKeyFields(FieldList fields1, FieldList fields2) {
 
 		// check number of produced partitioning fields
-		if(fields1.size() != fields2.size()) {
+		if (fields1.size() != fields2.size()) {
 			return false;
 		} else {
 			return checkEquivalentFieldPositionsInKeyFields(fields1, fields2, fields1.size());
@@ -96,27 +96,27 @@ public abstract class OperatorDescriptorDual implements AbstractOperatorDescript
 	protected boolean checkEquivalentFieldPositionsInKeyFields(FieldList fields1, FieldList fields2, int numRelevantFields) {
 
 		// check number of produced partitioning fields
-		if(fields1.size() < numRelevantFields || fields2.size() < numRelevantFields) {
+		if (fields1.size() < numRelevantFields || fields2.size() < numRelevantFields) {
 			return false;
 		}
 		else {
-			for(int i=0; i<numRelevantFields; i++) {
+			for (int i=0; i<numRelevantFields; i++) {
 				int pField1 = fields1.get(i);
 				int pField2 = fields2.get(i);
 				// check if position of both produced fields is the same in both requested fields
 				int j;
-				for(j=0; j<this.keys1.size(); j++) {
-					if(this.keys1.get(j) == pField1 && this.keys2.get(j) == pField2) {
+				for (j=0; j<this.keys1.size(); j++) {
+					if (this.keys1.get(j) == pField1 && this.keys2.get(j) == pField2) {
 						break;
 					}
-					else if(this.keys1.get(j) != pField1 && this.keys2.get(j) != pField2) {
+					else if (this.keys1.get(j) != pField1 && this.keys2.get(j) != pField2) {
 						// do nothing
 					}
 					else {
 						return false;
 					}
 				}
-				if(j == this.keys1.size()) {
+				if (j == this.keys1.size()) {
 					throw new CompilerException("Fields were not found in key fields.");
 				}
 			}

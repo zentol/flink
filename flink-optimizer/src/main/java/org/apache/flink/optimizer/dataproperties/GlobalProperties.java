@@ -301,14 +301,14 @@ public class GlobalProperties implements Cloneable {
 						break;
 					} else {
 						// use any field of target fields for now. We should use something like field equivalence sets in the future.
-						if(targetField.size() > 1) {
+						if (targetField.size() > 1) {
 							LOG.warn("Found that a field is forwarded to more than one target field in " +
 									"semantic forwarded field information. Will only use the field with the lowest index.");
 						}
 						newOrdering.appendOrdering(targetField.toArray()[0], this.ordering.getType(i), this.ordering.getOrder(i));
 					}
 				}
-				if(newOrdering != null) {
+				if (newOrdering != null) {
 					gp.partitioning = PartitioningProperty.RANGE_PARTITIONED;
 					gp.ordering = newOrdering;
 					gp.partitioningFields = newOrdering.getInvolvedIndexes();
@@ -327,14 +327,14 @@ public class GlobalProperties implements Cloneable {
 						break;
 					} else {
 						// use any field of target fields for now.  We should use something like field equivalence sets in the future.
-						if(targetField.size() > 1) {
+						if (targetField.size() > 1) {
 							LOG.warn("Found that a field is forwarded to more than one target field in " +
 									"semantic forwarded field information. Will only use the field with the lowest index.");
 						}
 						newPartitioningFields = newPartitioningFields.addField(targetField.toArray()[0]);
 					}
 				}
-				if(newPartitioningFields != null) {
+				if (newPartitioningFields != null) {
 					gp.partitioning = this.partitioning;
 					gp.partitioningFields = newPartitioningFields;
 					gp.customPartitioner = this.customPartitioner;
@@ -362,7 +362,7 @@ public class GlobalProperties implements Cloneable {
 						break;
 					} else {
 						// use any field of target fields for now.  We should use something like field equivalence sets in the future.
-						if(targetField.size() > 1) {
+						if (targetField.size() > 1) {
 							LOG.warn("Found that a field is forwarded to more than one target field in " +
 									"semantic forwarded field information. Will only use the field with the lowest index.");
 						}
@@ -373,7 +373,7 @@ public class GlobalProperties implements Cloneable {
 					newUniqueFieldCombinations.add(newFieldCombo);
 				}
 			}
-			if(!newUniqueFieldCombinations.isEmpty()) {
+			if (!newUniqueFieldCombinations.isEmpty()) {
 				gp.uniqueFieldCombinations = newUniqueFieldCombinations;
 			}
 		}

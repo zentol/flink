@@ -226,12 +226,12 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 					selectedCandidate = branchPlan2.get(brancher);
 				}
 
-				if(selectedCandidate == null && getSolutionSetDeltaPlanNode() != null && getSolutionSetDeltaPlanNode()
+				if (selectedCandidate == null && getSolutionSetDeltaPlanNode() != null && getSolutionSetDeltaPlanNode()
 						.branchPlan != null){
 					selectedCandidate = getSolutionSetDeltaPlanNode().branchPlan.get(brancher);
 				}
 
-				if(selectedCandidate == null && getNextWorkSetPlanNode() != null && getNextWorkSetPlanNode()
+				if (selectedCandidate == null && getNextWorkSetPlanNode() != null && getNextWorkSetPlanNode()
 						.branchPlan != null){
 					selectedCandidate = getNextWorkSetPlanNode().branchPlan.get(brancher);
 				}
