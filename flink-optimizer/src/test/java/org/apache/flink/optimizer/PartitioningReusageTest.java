@@ -695,7 +695,6 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		checkValidCoGroupInputProperties(coGroup);
 	}
 
-
 	private void checkValidJoinInputProperties(DualInputPlanNode join) {
 
 		GlobalProperties inProps1 = join.getInput1().getGlobalProperties();
@@ -811,7 +810,6 @@ public class PartitioningReusageTest extends CompilerTestBase {
 		}
 
 	}
-
 
 	public static class MockMapper implements MapFunction<Tuple3<Integer, Integer, Integer>, Tuple3<Integer, Integer, Integer>> {
 		@Override

@@ -139,8 +139,8 @@ public class Optimizer {
 	 * Compiler hint key for the operator's local strategy. This String is a key to the operator's stub
 	 * parameters. The corresponding value tells the compiler which local strategy to use to process the
 	 * data inside one partition.
-	 * <p>
-	 * This hint is ignored by operators that do not have a local strategy (such as <i>Map</i>), or by operators that
+	 *
+	 * <p>This hint is ignored by operators that do not have a local strategy (such as <i>Map</i>), or by operators that
 	 * have no choice in their local strategy (such as <i>Cross</i>).
 	 */
 	public static final String HINT_LOCAL_STRATEGY = "LOCAL_STRATEGY";

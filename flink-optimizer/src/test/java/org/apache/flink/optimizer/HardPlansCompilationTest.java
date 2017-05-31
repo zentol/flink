@@ -45,7 +45,7 @@ public class HardPlansCompilationTest extends CompilerTestBase {
 	 * |--------------------------/                  /
 	 * |--------------------------------------------/
 	 *
-	 * First cross has SameKeyFirst output contract
+	 * <p>First cross has SameKeyFirst output contract
 	 */
 	@Test
 	public void testTicket158() {

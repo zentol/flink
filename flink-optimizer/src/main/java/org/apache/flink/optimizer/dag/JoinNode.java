@@ -112,8 +112,7 @@ public class JoinNode extends TwoInputNode {
 	}
 
 	private List<OperatorDescriptorDual> getDataProperties(InnerJoinOperatorBase<?, ?, ?, ?> joinOperatorBase, JoinHint joinHint,
-			Partitioner<?> customPartitioner)
-	{
+			Partitioner<?> customPartitioner) {
 		// see if an internal hint dictates the strategy to use
 		Configuration conf = joinOperatorBase.getParameters();
 		String localStrategy = conf.getString(Optimizer.HINT_LOCAL_STRATEGY, null);
@@ -123,8 +122,7 @@ public class JoinNode extends TwoInputNode {
 			if (Optimizer.HINT_LOCAL_STRATEGY_SORT_BOTH_MERGE.equals(localStrategy) ||
 				Optimizer.HINT_LOCAL_STRATEGY_SORT_FIRST_MERGE.equals(localStrategy) ||
 				Optimizer.HINT_LOCAL_STRATEGY_SORT_SECOND_MERGE.equals(localStrategy) ||
-				Optimizer.HINT_LOCAL_STRATEGY_MERGE.equals(localStrategy))
-			{
+				Optimizer.HINT_LOCAL_STRATEGY_MERGE.equals(localStrategy)) {
 				fixedDriverStrat = new SortMergeInnerJoinDescriptor(this.keys1, this.keys2);
 			}
 			else if (Optimizer.HINT_LOCAL_STRATEGY_HASH_BUILD_FIRST.equals(localStrategy)) {

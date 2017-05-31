@@ -37,12 +37,8 @@ public class NAryUnionPlanNode extends PlanNode {
 
 	private final List<Channel> inputs;
 
-	/**
-	 * @param template
-	 */
 	public NAryUnionPlanNode(BinaryUnionNode template, List<Channel> inputs, GlobalProperties gProps,
-			Costs cumulativeCosts)
-	{
+			Costs cumulativeCosts) {
 		super(template, "Union", DriverStrategy.NONE);
 
 		this.inputs = inputs;

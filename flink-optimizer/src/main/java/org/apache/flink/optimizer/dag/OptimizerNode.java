@@ -220,8 +220,7 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	public abstract void computeUnclosedBranchStack();
 
 	protected List<UnclosedBranchDescriptor> computeUnclosedBranchStackForBroadcastInputs(
-															List<UnclosedBranchDescriptor> branchesSoFar)
-	{
+															List<UnclosedBranchDescriptor> branchesSoFar) {
 		// handle the data flow branching for the broadcast inputs
 		for (DagConnection broadcastInput : getBroadcastConnections()) {
 			OptimizerNode bcSource = broadcastInput.getSource();

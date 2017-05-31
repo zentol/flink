@@ -520,8 +520,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 
 	protected void addLocalCandidates(Channel template1, Channel template2, List<Set<? extends NamedChannel>> broadcastPlanChannels,
 			RequestedGlobalProperties rgps1, RequestedGlobalProperties rgps2,
-			List<PlanNode> target, LocalPropertiesPair[] validLocalCombinations, CostEstimator estimator)
-	{
+			List<PlanNode> target, LocalPropertiesPair[] validLocalCombinations, CostEstimator estimator) {
 		for (RequestedLocalProperties ilp1 : this.input1.getInterestingProperties().getLocalProperties()) {
 			final Channel in1 = template1.clone();
 			ilp1.parameterizeChannel(in1);

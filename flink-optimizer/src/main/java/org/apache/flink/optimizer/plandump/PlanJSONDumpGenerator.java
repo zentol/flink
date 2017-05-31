@@ -222,7 +222,6 @@ public class PlanJSONDumpGenerator {
 		// print the id
 		writer.print("\t\t\"id\": " + this.nodeIds.get(node));
 
-
 		final String type;
 		String contents;
 		if (n instanceof DataSinkNode) {

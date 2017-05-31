@@ -67,7 +67,7 @@ public abstract class CostEstimator {
 	 * This method computes the cost of an operator. The cost is composed of cost for input shipping,
 	 * locally processing an input, and running the operator.
 	 *
-	 * It requires at least that all inputs are set and have a proper ship strategy set,
+	 * <p>It requires at least that all inputs are set and have a proper ship strategy set,
 	 * which is not equal to <tt>NONE</tt>.
 	 *
 	 * @param n The node to compute the costs for.

@@ -59,8 +59,7 @@ public class OptimizedPlan implements FlinkPlan, Visitable<PlanNode>  {
 	 * @param jobName The name of the program
 	 */
 	public OptimizedPlan(Collection<SourcePlanNode> sources, Collection<SinkPlanNode> sinks,
-			Collection<PlanNode> allNodes, String jobName, Plan programPlan)
-	{
+			Collection<PlanNode> allNodes, String jobName, Plan programPlan) {
 		this.dataSources = sources;
 		this.dataSinks = sinks;
 		this.allNodes = allNodes;

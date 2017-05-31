@@ -87,7 +87,7 @@ public class UnionReplacementTest extends CompilerTestBase {
 	 *                       >-> Union234 -> GroupBy(1) -> Sum -> Output
 	 * Src4 ----------------/
 	 * </pre>
-	 * 
+	 *
 	 * <p>The fix for FLINK-2662 translates the union with two output (Union-23) into two separate
 	 * unions (Union-23_1 and Union-23_2) with one output each. Due to this change, the interesting
 	 * partitioning properties for GroupBy(0) and GroupBy(1) are pushed through Union-23_1 and

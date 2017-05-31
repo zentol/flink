@@ -269,7 +269,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 							public void coGroup(Iterable<Tuple2<Long, Long>> first,
 													Iterable<Tuple2<Long, Long>> second,
 													Collector<Tuple2<Long, Long>> out) {
-							  }
+							}
 					})
 					.map(new IdentityMapper<Tuple2<Long, Long>>());
 

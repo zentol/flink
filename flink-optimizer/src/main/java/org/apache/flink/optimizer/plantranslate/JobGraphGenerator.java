@@ -543,8 +543,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 					return;
 				}
 				else if (node instanceof BulkPartialSolutionPlanNode ||
-						node instanceof WorksetPlanNode)
-				{
+						node instanceof WorksetPlanNode) {
 					// merged iteration head task. the task that the head is merged with will take care of it
 					return;
 				} else {
@@ -684,7 +683,6 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 		int numChannelsDynamicPath = 0;
 		int numDynamicSenderTasksTotal = 0;
 
-
 		// expand the channel to all the union channels, in case there is a union operator at its source
 		while (allInChannels.hasNext()) {
 			final Channel inConn = allInChannels.next();
@@ -815,7 +813,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 				BulkIterationPlanNode wspn = (BulkIterationPlanNode) this.currentIteration;
 				if (node == wspn.getRootOfTerminationCriterion() && wspn.getRootOfStepFunction() == pred){
 					chaining = false;
-				}else if (node.getOutgoingChannels().size() > 0 &&(wspn.getRootOfStepFunction() == pred ||
+				} else if (node.getOutgoingChannels().size() > 0 && (wspn.getRootOfStepFunction() == pred ||
 						wspn.getRootOfTerminationCriterion() == pred)) {
 					chaining = false;
 				}
