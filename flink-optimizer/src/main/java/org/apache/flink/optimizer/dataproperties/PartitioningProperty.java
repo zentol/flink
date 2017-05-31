@@ -50,7 +50,7 @@ public enum PartitioningProperty {
 	 * A not further specified partitioning on a key (hash-, or range partitioning, or some other scheme even).
 	 */
 	ANY_PARTITIONING,
-	
+
 	/**
 	 *Full replication of the data to each parallel instance.
 	 */
@@ -60,36 +60,36 @@ public enum PartitioningProperty {
 	 * A forced even re-balancing. All partitions are guaranteed to have almost the same number of records.
 	 */
 	FORCED_REBALANCED,
-	
+
 	/**
 	 * A custom partitioning, accompanied by a {@link org.apache.flink.api.common.functions.Partitioner}.
 	 */
 	CUSTOM_PARTITIONING;
-	
+
 	/**
 	 * Checks, if this property represents in fact a partitioning. That is,
 	 * whether this property is not equal to <tt>PartitionProperty.FULL_REPLICATION</tt>.
-	 * 
+	 *
 	 * @return True, if this enum constant is unequal to <tt>PartitionProperty.FULL_REPLICATION</tt>,
 	 *         false otherwise.
 	 */
 	public boolean isPartitioned() {
 		return this != FULL_REPLICATION && this != FORCED_REBALANCED && this != ANY_DISTRIBUTION;
 	}
-	
+
 	/**
 	 * Checks, if this property represents a full replication.
-	 * 
+	 *
 	 * @return True, if this enum constant is equal to <tt>PartitionProperty.FULL_REPLICATION</tt>,
 	 *         false otherwise.
 	 */
 	public boolean isReplication() {
 		return this == FULL_REPLICATION;
 	}
-	
+
 	/**
 	 * Checks if this property presents a partitioning that is not random, but on a partitioning key.
-	 * 
+	 *
 	 * @return True, if the data is partitioned on a key.
 	 */
 	public boolean isPartitionedOnKey() {
@@ -103,7 +103,7 @@ public enum PartitioningProperty {
 	 * <p>
 	 * Examples for computable partitioning schemes are hash- or range-partitioning. An example for a non-computable
 	 * partitioning is the implicit partitioning that exists though a globally unique key.
-	 * 
+	 *
 	 * @return True, if this enum constant is a re-computable partitioning.
 	 */
 	public boolean isComputablyPartitioned() {

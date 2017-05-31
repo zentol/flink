@@ -33,7 +33,7 @@ import java.util.List;
  * The optimizer's internal representation of the partial solution that is input to a bulk iteration.
  */
 public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
-	
+
 	private final BulkIterationNode iterationNode;
 
 	public BulkPartialSolutionNode(PartialSolutionPlaceHolder<?> psph, BulkIterationNode iterationNode) {
@@ -42,7 +42,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps, Channel initialInput) {
 		if (this.cachedPlans != null) {
 			throw new IllegalStateException();
@@ -51,7 +51,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 					"PartialSolution ("+this.getOperator().getName()+")", gProps, lProps, initialInput));
 		}
 	}
-	
+
 	public BulkPartialSolutionPlanNode getCurrentPartialSolutionPlanNode() {
 		if (this.cachedPlans != null) {
 			return (BulkPartialSolutionPlanNode) this.cachedPlans.get(0);
@@ -59,22 +59,22 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public BulkIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the operator (here the {@link PartialSolutionPlaceHolder}) that is represented by this
 	 * optimizer node.
-	 * 
+	 *
 	 * @return The operator represented by this optimizer node.
 	 */
 	@Override
@@ -94,7 +94,7 @@ public class BulkPartialSolutionNode extends AbstractPartialSolutionNode {
 		}
 
 		OptimizerNode inputToIteration = this.iterationNode.getPredecessorNode();
-		
+
 		addClosedBranches(inputToIteration.closedBranchingNodes);
 		List<UnclosedBranchDescriptor> fromInput = inputToIteration.getBranchesForParent(this.iterationNode.getIncomingConnection());
 		this.openBranches = (fromInput == null || fromInput.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : fromInput;

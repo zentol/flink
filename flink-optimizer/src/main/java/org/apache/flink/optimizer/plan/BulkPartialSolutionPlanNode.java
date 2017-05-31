@@ -38,13 +38,13 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.NOT_FO
  * Plan candidate node for partial solution of a bulk iteration.
  */
 public class BulkPartialSolutionPlanNode extends PlanNode {
-	
+
 	private static final Costs NO_COSTS = new Costs();
-	
+
 	private BulkIterationPlanNode containingIterationNode;
-	
+
 	private Channel initialInput;
-	
+
 	public Object postPassHelper;
 
 	public BulkPartialSolutionPlanNode(BulkPartialSolutionNode template, String nodeName,
@@ -52,40 +52,40 @@ public class BulkPartialSolutionPlanNode extends PlanNode {
 			Channel initialInput)
 	{
 		super(template, nodeName, DriverStrategy.NONE);
-		
+
 		this.globalProps = gProps;
 		this.localProps = lProps;
 		this.initialInput = initialInput;
-		
+
 		// the partial solution does not cost anything
 		this.nodeCosts = NO_COSTS;
 		this.cumulativeCosts = NO_COSTS;
-		
+
 		if (initialInput.getSource().branchPlan != null && initialInput.getSource().branchPlan.size() > 0) {
 			if (this.branchPlan == null) {
 				this.branchPlan = new HashMap<OptimizerNode, PlanNode>();
 			}
-			
+
 			this.branchPlan.putAll(initialInput.getSource().branchPlan);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public BulkPartialSolutionNode getPartialSolutionNode() {
 		return (BulkPartialSolutionNode) this.template;
 	}
-	
+
 	public BulkIterationPlanNode getContainingIterationNode() {
 		return this.containingIterationNode;
 	}
-	
+
 	public void setContainingIterationNode(BulkIterationPlanNode containingIterationNode) {
 		this.containingIterationNode = containingIterationNode;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void accept(Visitor<PlanNode> visitor) {
 		if (visitor.preVisit(this)) {
@@ -113,7 +113,7 @@ public class BulkPartialSolutionPlanNode extends PlanNode {
 			return FOUND_SOURCE_AND_DAM;
 		}
 		else if (res == FOUND_SOURCE) {
-			return (this.initialInput.getLocalStrategy().dams() || 
+			return (this.initialInput.getLocalStrategy().dams() ||
 					this.initialInput.getTempMode().breaksPipeline() ||
 					getDriverStrategy().firstDam() == DamBehavior.FULL_DAM) ?
 				FOUND_SOURCE_AND_DAM : FOUND_SOURCE;

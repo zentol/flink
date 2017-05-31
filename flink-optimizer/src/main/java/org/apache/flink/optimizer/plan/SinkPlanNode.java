@@ -25,20 +25,20 @@ import org.apache.flink.runtime.operators.DriverStrategy;
  * Plan candidate node for data flow sinks.
  */
 public class SinkPlanNode extends SingleInputPlanNode {
-	
+
 	/**
 	 * Constructs a new sink candidate node that uses <i>NONE</i> as its local strategy. Note that
 	 * local sorting and range partitioning are handled by the incoming channel already.
-	 * 
+	 *
 	 * @param template The template optimizer node that this candidate is created for.
 	 */
 	public SinkPlanNode(DataSinkNode template, String nodeName, Channel input) {
 		super(template, nodeName, input, DriverStrategy.NONE);
-		
+
 		this.globalProps = input.getGlobalProperties().clone();
 		this.localProps = input.getLocalProperties().clone();
 	}
-	
+
 	public DataSinkNode getSinkNode() {
 		if (this.template instanceof DataSinkNode) {
 			return (DataSinkNode) this.template;

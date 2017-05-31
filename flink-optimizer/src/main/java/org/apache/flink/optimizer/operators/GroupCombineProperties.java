@@ -41,13 +41,13 @@ import java.util.List;
  */
 public final class GroupCombineProperties extends OperatorDescriptorSingle {
 
-	private final Ordering ordering;        // ordering that we need to use if an additional ordering is requested 
+	private final Ordering ordering;        // ordering that we need to use if an additional ordering is requested
 
 	public GroupCombineProperties(FieldSet groupKeys, Ordering additionalOrderKeys) {
 		super(groupKeys);
 
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
-		
+
 		this.ordering = new Ordering();
 		for (Integer key : this.keyList) {
 			this.ordering.appendOrdering(key, null, Order.ANY);
@@ -72,10 +72,10 @@ public final class GroupCombineProperties extends OperatorDescriptorSingle {
 	@Override
 	public SingleInputPlanNode instantiate(Channel in, SingleInputNode node) {
 		node.setParallelism(in.getSource().getParallelism());
-		
+
 		// sorting key info
 		SingleInputPlanNode singleInputPlanNode = new SingleInputPlanNode(
-				node, 
+				node,
 				"GroupCombine (" + node.getOperator().getName() + ")",
 				in, // reuse the combine strategy also used in the group reduce
 				DriverStrategy.SORTED_GROUP_COMBINE, this.keyList);
@@ -84,7 +84,7 @@ public final class GroupCombineProperties extends OperatorDescriptorSingle {
 		singleInputPlanNode.setDriverKeyInfo(this.ordering.getInvolvedIndexes(), this.ordering.getFieldSortDirections(), 0);
 		// set grouping comparator key info
 		singleInputPlanNode.setDriverKeyInfo(this.keyList, 1);
-		
+
 		return singleInputPlanNode;
 	}
 

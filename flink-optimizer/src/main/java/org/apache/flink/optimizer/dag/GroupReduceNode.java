@@ -41,37 +41,37 @@ import java.util.List;
  * The optimizer representation of a <i>GroupReduce</i> operation.
  */
 public class GroupReduceNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	private final String operatorName;
-	
+
 	private GroupReduceNode combinerUtilityNode;
-	
+
 	/**
 	 * Creates a new optimizer node for the given operator.
-	 * 
+	 *
 	 * @param operator The reduce operation.
 	 */
 	public GroupReduceNode(GroupReduceOperatorBase<?, ?, ?> operator) {
 		super(operator);
 		this.operatorName = "GroupReduce";
-		
+
 		if (this.keys == null) {
 			// case of a key-less reducer. force a parallelism of 1
 			setParallelism(1);
 		}
-		
+
 		this.possibleProperties = initPossibleProperties(operator.getCustomPartitioner());
 	}
-	
+
 	private GroupReduceNode(GroupReduceNode reducerToCopyForCombiner) {
 		super(reducerToCopyForCombiner);
 		this.operatorName = "GroupCombine";
-		
+
 		this.possibleProperties = Collections.emptyList();
 	}
-	
+
 	private List<OperatorDescriptorSingle> initPossibleProperties(Partitioner<?> customPartitioner) {
 		// see if an internal hint dictates the strategy to use
 		final Configuration conf = getOperator().getParameters();
@@ -94,7 +94,7 @@ public class GroupReduceNode extends SingleInputNode {
 		} else {
 			useCombiner = isCombineable();
 		}
-		
+
 		// check if we can work with a grouping (simple reducer), or if we need ordering because of a group order
 		Ordering groupOrder = null;
 		if (getOperator() instanceof GroupReduceOperatorBase) {
@@ -103,7 +103,7 @@ public class GroupReduceNode extends SingleInputNode {
 				groupOrder = null;
 			}
 		}
-		
+
 		OperatorDescriptorSingle props = useCombiner ?
 			(this.keys == null ? new AllGroupWithPartialPreGroupProperties() : new GroupReduceWithCombineProperties(this.keys, groupOrder, customPartitioner)) :
 			(this.keys == null ? new AllGroupReduceProperties() : new GroupReduceProperties(this.keys, groupOrder, customPartitioner));
@@ -115,7 +115,7 @@ public class GroupReduceNode extends SingleInputNode {
 
 	/**
 	 * Gets the operator represented by this optimizer node.
-	 * 
+	 *
 	 * @return The operator represented by this optimizer node.
 	 */
 	@Override
@@ -126,7 +126,7 @@ public class GroupReduceNode extends SingleInputNode {
 	/**
 	 * Checks, whether a combiner function has been given for the function encapsulated
 	 * by this reduce contract.
-	 * 
+	 *
 	 * @return True, if a combiner has been given, false otherwise.
 	 */
 	public boolean isCombineable() {
@@ -137,7 +137,7 @@ public class GroupReduceNode extends SingleInputNode {
 	public String getOperatorName() {
 		return this.operatorName;
 	}
-	
+
 	@Override
 	protected List<OperatorDescriptorSingle> getPossibleProperties() {
 		return this.possibleProperties;
@@ -164,21 +164,21 @@ public class GroupReduceNode extends SingleInputNode {
 		}
 		return filteredProps;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Estimates
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// no real estimates possible for a reducer.
 	}
-	
+
 	public GroupReduceNode getCombinerUtilityNode() {
 		if (this.combinerUtilityNode == null) {
 			this.combinerUtilityNode = new GroupReduceNode(this);
-			
-			// we conservatively assume the combiner returns the same data size as it consumes 
+
+			// we conservatively assume the combiner returns the same data size as it consumes
 			this.combinerUtilityNode.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 			this.combinerUtilityNode.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		}

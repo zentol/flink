@@ -37,45 +37,45 @@ import java.util.List;
  * candidate selection works correctly with nodes that have multiple outputs is transparently reused.
  */
 public class SinkJoiner extends TwoInputNode {
-	
+
 	public SinkJoiner(OptimizerNode input1, OptimizerNode input2) {
 		super(new NoOpBinaryUdfOp<Nothing>(new NothingTypeInfo()));
 
 		DagConnection conn1 = new DagConnection(input1, this, null, ExecutionMode.PIPELINED);
 		DagConnection conn2 = new DagConnection(input2, this, null, ExecutionMode.PIPELINED);
-		
+
 		this.input1 = conn1;
 		this.input2 = conn2;
-		
+
 		setParallelism(1);
 	}
-	
+
 	@Override
 	public String getOperatorName() {
 		return "Internal Utility Node";
 	}
-	
+
 	@Override
 	public List<DagConnection> getOutgoingConnections() {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	public void computeUnclosedBranchStack() {
 		if (this.openBranches != null) {
 			return;
 		}
-		
+
 		addClosedBranches(getFirstPredecessorNode().closedBranchingNodes);
 		addClosedBranches(getSecondPredecessorNode().closedBranchingNodes);
-		
+
 		List<UnclosedBranchDescriptor> pred1branches = getFirstPredecessorNode().openBranches;
 		List<UnclosedBranchDescriptor> pred2branches = getSecondPredecessorNode().openBranches;
-		
+
 		// if the predecessors do not have branches, then we have multiple sinks that do not originate from
 		// a common data flow.
 		if (pred1branches == null || pred1branches.isEmpty()) {
-			
+
 			this.openBranches = (pred2branches == null || pred2branches.isEmpty()) ?
 					Collections.<UnclosedBranchDescriptor>emptyList() : // both empty - disconnected flow
 					pred2branches;
@@ -87,10 +87,10 @@ public class SinkJoiner extends TwoInputNode {
 			// copy the lists and merge
 			List<UnclosedBranchDescriptor> result1 = new ArrayList<UnclosedBranchDescriptor>(pred1branches);
 			List<UnclosedBranchDescriptor> result2 = new ArrayList<UnclosedBranchDescriptor>(pred2branches);
-			
+
 			ArrayList<UnclosedBranchDescriptor> result = new ArrayList<UnclosedBranchDescriptor>();
 			mergeLists(result1, result2, result, false);
-			
+
 			this.openBranches = result.isEmpty() ? Collections.<UnclosedBranchDescriptor>emptyList() : result;
 		}
 	}

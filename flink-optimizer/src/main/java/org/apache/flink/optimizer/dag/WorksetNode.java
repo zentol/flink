@@ -33,7 +33,7 @@ import java.util.List;
  * The optimizer's internal representation of the partial solution that is input to a bulk iteration.
  */
 public class WorksetNode extends AbstractPartialSolutionNode {
-	
+
 	private final WorksetIterationNode iterationNode;
 
 	public WorksetNode(WorksetPlaceHolder<?> psph, WorksetIterationNode iterationNode) {
@@ -42,7 +42,7 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps, Channel initialInput) {
 		if (this.cachedPlans != null) {
 			throw new IllegalStateException();
@@ -51,7 +51,7 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 			this.cachedPlans = Collections.<PlanNode>singletonList(wspn);
 		}
 	}
-	
+
 	public WorksetPlanNode getCurrentWorksetPlanNode() {
 		if (this.cachedPlans != null) {
 			return (WorksetPlanNode) this.cachedPlans.get(0);
@@ -59,21 +59,21 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public WorksetIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getInitialWorksetPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -85,7 +85,7 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 	public String getOperatorName() {
 		return "Workset";
 	}
-	
+
 	@Override
 	public void computeUnclosedBranchStack() {
 		if (this.openBranches != null) {
@@ -94,7 +94,7 @@ public class WorksetNode extends AbstractPartialSolutionNode {
 
 		DagConnection worksetInput = this.iterationNode.getSecondIncomingConnection();
 		OptimizerNode worksetSource = worksetInput.getSource();
-		
+
 		addClosedBranches(worksetSource.closedBranchingNodes);
 		List<UnclosedBranchDescriptor> fromInput = worksetSource.getBranchesForParent(worksetInput);
 		this.openBranches = (fromInput == null || fromInput.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : fromInput;

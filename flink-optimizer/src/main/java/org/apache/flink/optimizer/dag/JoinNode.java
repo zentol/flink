@@ -39,17 +39,17 @@ import java.util.List;
  * The Optimizer representation of a join operator.
  */
 public class JoinNode extends TwoInputNode {
-	
+
 	private List<OperatorDescriptorDual> dataProperties;
-	
+
 	/**
 	 * Creates a new JoinNode for the given join operator.
-	 * 
+	 *
 	 * @param joinOperatorBase The join operator object.
 	 */
 	public JoinNode(InnerJoinOperatorBase<?, ?, ?, ?> joinOperatorBase) {
 		super(joinOperatorBase);
-		
+
 		this.dataProperties = getDataProperties(joinOperatorBase,
 				joinOperatorBase.getJoinHint(), joinOperatorBase.getCustomPartitioner());
 	}
@@ -58,7 +58,7 @@ public class JoinNode extends TwoInputNode {
 
 	/**
 	 * Gets the contract object for this match node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -75,7 +75,7 @@ public class JoinNode extends TwoInputNode {
 	protected List<OperatorDescriptorDual> getPossibleProperties() {
 		return this.dataProperties;
 	}
-	
+
 	public void makeJoinWithSolutionSet(int solutionsetInputIndex) {
 		OperatorDescriptorDual op;
 		if (solutionsetInputIndex == 0) {
@@ -85,10 +85,10 @@ public class JoinNode extends TwoInputNode {
 		} else {
 			throw new IllegalArgumentException();
 		}
-		
+
 		this.dataProperties = Collections.singletonList(op);
 	}
-	
+
 	/**
 	 * The default estimates build on the principle of inclusion: The smaller input key domain is included in the larger
 	 * input key domain. We also assume that every key from the larger input has one join partner in the smaller input.
@@ -99,18 +99,18 @@ public class JoinNode extends TwoInputNode {
 		long card1 = getFirstPredecessorNode().getEstimatedNumRecords();
 		long card2 = getSecondPredecessorNode().getEstimatedNumRecords();
 		this.estimatedNumRecords = (card1 < 0 || card2 < 0) ? -1 : Math.max(card1, card2);
-		
+
 		if (this.estimatedNumRecords >= 0) {
 			float width1 = getFirstPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width2 = getSecondPredecessorNode().getEstimatedAvgWidthPerOutputRecord();
 			float width = (width1 <= 0 || width2 <= 0) ? -1 : width1 + width2;
-			
+
 			if (width > 0) {
 				this.estimatedOutputSize = (long) (width * this.estimatedNumRecords);
 			}
 		}
 	}
-	
+
 	private List<OperatorDescriptorDual> getDataProperties(InnerJoinOperatorBase<?, ?, ?, ?> joinOperatorBase, JoinHint joinHint,
 			Partitioner<?> customPartitioner)
 	{
@@ -136,20 +136,20 @@ public class JoinNode extends TwoInputNode {
 			else {
 				throw new CompilerException("Invalid local strategy hint for match contract: " + localStrategy);
 			}
-			
+
 			if (customPartitioner != null) {
 				fixedDriverStrat.setCustomPartitioner(customPartitioner);
 			}
-			
+
 			ArrayList<OperatorDescriptorDual> list = new ArrayList<OperatorDescriptorDual>();
 			list.add(fixedDriverStrat);
 			return list;
 		}
 		else {
 			ArrayList<OperatorDescriptorDual> list = new ArrayList<OperatorDescriptorDual>();
-			
+
 			joinHint = joinHint == null ? JoinHint.OPTIMIZER_CHOOSES : joinHint;
-			
+
 			switch (joinHint) {
 				case BROADCAST_HASH_FIRST:
 					list.add(new HashJoinBuildFirstProperties(this.keys1, this.keys2, true, false, false));
@@ -174,13 +174,13 @@ public class JoinNode extends TwoInputNode {
 				default:
 					throw new CompilerException("Unrecognized join hint: " + joinHint);
 			}
-			
+
 			if (customPartitioner != null) {
 				for (OperatorDescriptorDual descr : list) {
 					((AbstractJoinDescriptor) descr).setCustomPartitioner(customPartitioner);
 				}
 			}
-			
+
 			return list;
 		}
 	}

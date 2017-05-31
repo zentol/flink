@@ -37,12 +37,12 @@ import java.util.List;
  *
  */
 public class UtilSinkJoinOpDescriptor extends OperatorDescriptorDual {
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.BINARY_NO_OP;
 	}
-	
+
 	@Override
 	protected List<GlobalPropertiesPair> createPossibleGlobalProperties() {
 		// all properties are possible
@@ -56,13 +56,13 @@ public class UtilSinkJoinOpDescriptor extends OperatorDescriptorDual {
 		return Collections.singletonList(new LocalPropertiesPair(
 			new RequestedLocalProperties(), new RequestedLocalProperties()));
 	}
-	
+
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
 			GlobalProperties produced1, GlobalProperties produced2) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
 			LocalProperties produced1, LocalProperties produced2) {

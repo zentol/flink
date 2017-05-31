@@ -52,7 +52,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 			// non forward case.plug in a combiner
 			Channel toCombiner = new Channel(in.getSource());
 			toCombiner.setShipStrategy(ShipStrategyType.FORWARD, DataExchangeMode.PIPELINED);
-			
+
 			// create an input node for combine with same parallelism as input node
 			GroupReduceNode combinerNode = ((GroupReduceNode) node).getCombinerUtilityNode();
 			combinerNode.setParallelism(in.getSource().getParallelism());
@@ -61,7 +61,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 					"Combine ("+node.getOperator().getName()+")", toCombiner, DriverStrategy.ALL_GROUP_REDUCE_COMBINE);
 			combiner.setCosts(new Costs(0, 0));
 			combiner.initProperties(toCombiner.getGlobalProperties(), toCombiner.getLocalProperties());
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(),
 										in.getShipStrategySortOrder(), in.getDataExchangeMode());
@@ -81,7 +81,7 @@ public final class AllGroupWithPartialPreGroupProperties extends OperatorDescrip
 	protected List<RequestedLocalProperties> createPossibleLocalProperties() {
 		return Collections.singletonList(new RequestedLocalProperties());
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&

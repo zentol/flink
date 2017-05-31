@@ -37,7 +37,7 @@ import java.util.List;
  * @see org.apache.flink.optimizer.dag.SingleInputNode
  */
 public abstract class OperatorDescriptorSingle implements AbstractOperatorDescriptor {
-	
+
 	protected final FieldSet keys;			// the set of key fields
 	protected final FieldList keyList;		// the key fields with ordered field positions
 
@@ -47,7 +47,7 @@ public abstract class OperatorDescriptorSingle implements AbstractOperatorDescri
 	protected OperatorDescriptorSingle() {
 		this(null);
 	}
-	
+
 	protected OperatorDescriptorSingle(FieldSet keys) {
 		this.keys = keys;
 		this.keyList = keys == null ? null : keys.toFieldList();
@@ -59,7 +59,7 @@ public abstract class OperatorDescriptorSingle implements AbstractOperatorDescri
 		}
 		return this.globalProps;
 	}
-	
+
 	public List<RequestedLocalProperties> getPossibleLocalProperties() {
 		if (this.localProps == null) {
 			this.localProps = createPossibleLocalProperties();
@@ -69,33 +69,33 @@ public abstract class OperatorDescriptorSingle implements AbstractOperatorDescri
 
 	/**
 	 * Returns a list of global properties that are required by this operator descriptor.
-	 * 
+	 *
 	 * @return A list of global properties that are required by this operator descriptor.
 	 */
 	protected abstract List<RequestedGlobalProperties> createPossibleGlobalProperties();
-	
+
 	/**
 	 * Returns a list of local properties that are required by this operator descriptor.
-	 * 
+	 *
 	 * @return A list of local properties that are required by this operator descriptor.
 	 */
 	protected abstract List<RequestedLocalProperties> createPossibleLocalProperties();
-	
+
 	public abstract SingleInputPlanNode instantiate(Channel in, SingleInputNode node);
-	
+
 	/**
-	 * Returns the global properties which are present after the operator was applied on the 
+	 * Returns the global properties which are present after the operator was applied on the
 	 * provided global properties.
-	 * 
+	 *
 	 * @param in The global properties on which the operator is applied.
 	 * @return The global properties which are valid after the operator has been applied.
 	 */
 	public abstract GlobalProperties computeGlobalProperties(GlobalProperties in);
-	
+
 	/**
-	 * Returns the local properties which are present after the operator was applied on the 
+	 * Returns the local properties which are present after the operator was applied on the
 	 * provided local properties.
-	 * 
+	 *
 	 * @param in The local properties on which the operator is applied.
 	 * @return The local properties which are valid after the operator has been applied.
 	 */

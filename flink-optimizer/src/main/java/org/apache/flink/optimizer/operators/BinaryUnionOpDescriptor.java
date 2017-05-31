@@ -37,7 +37,7 @@ import java.util.List;
  *
  */
 public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
-	
+
 	public BinaryUnionOpDescriptor() {
 		super();
 	}
@@ -51,7 +51,7 @@ public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
 	protected List<GlobalPropertiesPair> createPossibleGlobalProperties() {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	protected List<LocalPropertiesPair> createPossibleLocalProperties() {
 		return Collections.emptyList();
@@ -65,7 +65,7 @@ public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties in1, GlobalProperties in2) {
 		GlobalProperties newProps = new GlobalProperties();
-		
+
 		if (in1.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 			in2.getPartitioning() == PartitioningProperty.HASH_PARTITIONED &&
 			in1.getPartitioningFields().equals(in2.getPartitioningFields())) {
@@ -103,7 +103,7 @@ public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
 
 		return newProps;
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties in1, LocalProperties in2) {
 		// all local properties are destroyed
@@ -115,7 +115,7 @@ public class BinaryUnionOpDescriptor extends OperatorDescriptorDual {
 			LocalProperties produced1, LocalProperties produced2) {
 		return true;
 	}
-	
+
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
 			GlobalProperties produced1, GlobalProperties produced2) {

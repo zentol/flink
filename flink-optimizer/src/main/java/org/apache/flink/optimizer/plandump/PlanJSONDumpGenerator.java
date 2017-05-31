@@ -57,19 +57,19 @@ import java.util.Locale;
 import java.util.Map;
 
 public class PlanJSONDumpGenerator {
-	
+
 	private Map<DumpableNode<?>, Integer> nodeIds; // resolves pact nodes to ids
 
 	private int nodeCnt;
-	
+
 	private boolean encodeForHTML;
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setEncodeForHTML(boolean encodeForHTML) {
 		this.encodeForHTML = encodeForHTML;
 	}
-	
+
 	public boolean isEncodeForHTML() {
 		return encodeForHTML;
 	}
@@ -79,14 +79,14 @@ public class PlanJSONDumpGenerator {
 		List<DumpableNode<?>> n = (List<DumpableNode<?>>) (List<?>) nodes;
 		compilePlanToJSON(n, writer);
 	}
-	
+
 	public String getPactPlanAsJSON(List<DataSinkNode> nodes) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		dumpPactPlanAsJSON(nodes, pw);
 		return sw.toString();
 	}
-	
+
 	public void dumpOptimizerPlanAsJSON(OptimizedPlan plan, File toFile) throws IOException {
 		PrintWriter pw = null;
 		try {
@@ -99,7 +99,7 @@ public class PlanJSONDumpGenerator {
 			}
 		}
 	}
-	
+
 	public String getOptimizerPlanAsJSON(OptimizedPlan plan) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -107,7 +107,7 @@ public class PlanJSONDumpGenerator {
 		pw.close();
 		return sw.toString();
 	}
-	
+
 	public void dumpOptimizerPlanAsJSON(OptimizedPlan plan, PrintWriter writer) {
 		Collection<SinkPlanNode> sinks = plan.getDataSinks();
 		if (sinks instanceof List) {
@@ -118,20 +118,20 @@ public class PlanJSONDumpGenerator {
 			dumpOptimizerPlanAsJSON(n, writer);
 		}
 	}
-	
+
 	public void dumpOptimizerPlanAsJSON(List<SinkPlanNode> nodes, PrintWriter writer) {
 		@SuppressWarnings("unchecked")
 		List<DumpableNode<?>> n = (List<DumpableNode<?>>) (List<?>) nodes;
 		compilePlanToJSON(n, writer);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private void compilePlanToJSON(List<DumpableNode<?>> nodes, PrintWriter writer) {
 		// initialization to assign node ids
 		this.nodeIds = new HashMap<DumpableNode<?>, Integer>();
 		this.nodeCnt = 0;
-		
+
 		// JSON header
 		writer.print("{\n\t\"nodes\": [\n\n");
 
@@ -139,7 +139,7 @@ public class PlanJSONDumpGenerator {
 		for (int i = 0; i < nodes.size(); i++) {
 			visit(nodes.get(i), writer, i == 0);
 		}
-		
+
 		// JSON Footer
 		writer.println("\n\t]\n}");
 	}
@@ -149,10 +149,10 @@ public class PlanJSONDumpGenerator {
 		if (this.nodeIds.containsKey(node)) {
 			return false;
 		}
-		
+
 		// assign an id first
 		this.nodeIds.put(node, this.nodeCnt++);
-		
+
 		// then recurse
 		for (DumpableNode<?> child : node.getPredecessors()) {
 			//This is important, because when the node was already in the graph it is not allowed
@@ -161,68 +161,68 @@ public class PlanJSONDumpGenerator {
 				first = false;
 			}
 		}
-		
+
 		// check if this node should be skipped from the dump
 		final OptimizerNode n = node.getOptimizerNode();
-		
+
 		// ------------------ dump after the ascend ---------------------
 		// start a new node and output node id
 		if (!first) {
-			writer.print(",\n");	
+			writer.print(",\n");
 		}
 		// open the node
 		writer.print("\t{\n");
-		
+
 		// recurse, it is is an iteration node
 		if (node instanceof BulkIterationNode || node instanceof BulkIterationPlanNode) {
-			
+
 			DumpableNode<?> innerChild = node instanceof BulkIterationNode ?
 					((BulkIterationNode) node).getNextPartialSolution() :
 					((BulkIterationPlanNode) node).getRootOfStepFunction();
-					
+
 			DumpableNode<?> begin = node instanceof BulkIterationNode ?
 				((BulkIterationNode) node).getPartialSolution() :
 				((BulkIterationPlanNode) node).getPartialSolutionPlanNode();
-			
+
 			writer.print("\t\t\"step_function\": [\n");
-			
+
 			visit(innerChild, writer, true);
-			
+
 			writer.print("\n\t\t],\n");
 			writer.print("\t\t\"partial_solution\": " + this.nodeIds.get(begin) + ",\n");
 			writer.print("\t\t\"next_partial_solution\": " + this.nodeIds.get(innerChild) + ",\n");
 		} else if (node instanceof WorksetIterationNode || node instanceof WorksetIterationPlanNode) {
-			
+
 			DumpableNode<?> worksetRoot = node instanceof WorksetIterationNode ?
 					((WorksetIterationNode) node).getNextWorkset() :
 					((WorksetIterationPlanNode) node).getNextWorkSetPlanNode();
 			DumpableNode<?> solutionDelta = node instanceof WorksetIterationNode ?
 					((WorksetIterationNode) node).getSolutionSetDelta() :
 					((WorksetIterationPlanNode) node).getSolutionSetDeltaPlanNode();
-					
+
 			DumpableNode<?> workset = node instanceof WorksetIterationNode ?
 						((WorksetIterationNode) node).getWorksetNode() :
 						((WorksetIterationPlanNode) node).getWorksetPlanNode();
 			DumpableNode<?> solutionSet = node instanceof WorksetIterationNode ?
 						((WorksetIterationNode) node).getSolutionSetNode() :
 						((WorksetIterationPlanNode) node).getSolutionSetPlanNode();
-			
+
 			writer.print("\t\t\"step_function\": [\n");
-			
+
 			visit(worksetRoot, writer, true);
 			visit(solutionDelta, writer, false);
-			
+
 			writer.print("\n\t\t],\n");
 			writer.print("\t\t\"workset\": " + this.nodeIds.get(workset) + ",\n");
 			writer.print("\t\t\"solution_set\": " + this.nodeIds.get(solutionSet) + ",\n");
 			writer.print("\t\t\"next_workset\": " + this.nodeIds.get(worksetRoot) + ",\n");
 			writer.print("\t\t\"solution_delta\": " + this.nodeIds.get(solutionDelta) + ",\n");
 		}
-		
+
 		// print the id
 		writer.print("\t\t\"id\": " + this.nodeIds.get(node));
 
-		
+
 		final String type;
 		String contents;
 		if (n instanceof DataSinkNode) {
@@ -248,7 +248,7 @@ public class PlanJSONDumpGenerator {
 			type = "pact";
 			contents = n.getOperator().getName();
 		}
-		
+
 		contents = StringUtils.showControlCharacters(contents);
 		if (encodeForHTML) {
 			contents = StringEscapeUtils.escapeHtml4(contents);
@@ -256,24 +256,24 @@ public class PlanJSONDumpGenerator {
 		}
 
 		String name = n.getOperatorName();
-		if (name.equals("Reduce") && (node instanceof SingleInputPlanNode) && 
+		if (name.equals("Reduce") && (node instanceof SingleInputPlanNode) &&
 				((SingleInputPlanNode) node).getDriverStrategy() == DriverStrategy.SORTED_GROUP_COMBINE) {
 			name = "Combine";
 		}
-		
+
 		// output the type identifier
 		writer.print(",\n\t\t\"type\": \"" + type + "\"");
-		
+
 		// output node name
 		writer.print(",\n\t\t\"pact\": \"" + name + "\"");
-		
+
 		// output node contents
 		writer.print(",\n\t\t\"contents\": \"" + contents + "\"");
 
 		// parallelism
 		writer.print(",\n\t\t\"parallelism\": \""
 			+ (n.getParallelism() >= 1 ? n.getParallelism() : "default") + "\"");
-		
+
 		// output node predecessors
 		Iterator<? extends DumpableConnection<?>> inConns = node.getDumpableInputs().iterator();
 		String child1name = "", child2name = "";
@@ -282,7 +282,7 @@ public class PlanJSONDumpGenerator {
 			// start predecessor list
 			writer.print(",\n\t\t\"predecessors\": [");
 			int inputNum = 0;
-			
+
 			while (inConns.hasNext()) {
 				final DumpableConnection<?> inConn = inConns.next();
 				final DumpableNode<?> source = inConn.getSource();
@@ -305,11 +305,11 @@ public class PlanJSONDumpGenerator {
 					writer.print(", \"side\": \"" + (inputNum == 0 ? "first" : "second") + "\"");
 				}
 				// output shipping strategy and channel type
-				final Channel channel = (inConn instanceof Channel) ? (Channel) inConn : null; 
-				final ShipStrategyType shipType = channel != null ? 
+				final Channel channel = (inConn instanceof Channel) ? (Channel) inConn : null;
+				final ShipStrategyType shipType = channel != null ?
 						channel.getShipStrategy() :
 						inConn.getShipStrategy();
-					
+
 				String shipStrategy = null;
 				if (shipType != null) {
 					switch (shipType) {
@@ -342,7 +342,7 @@ public class PlanJSONDumpGenerator {
 							+ "' in JSON generator.");
 					}
 				}
-				
+
 				if (channel != null && channel.getShipStrategyKeys() != null && channel.getShipStrategyKeys().size() > 0) {
 					shipStrategy += " on " + (channel.getShipStrategySortOrder() == null ?
 							channel.getShipStrategyKeys().toString() :
@@ -352,7 +352,7 @@ public class PlanJSONDumpGenerator {
 				if (shipStrategy != null) {
 					writer.print(", \"ship_strategy\": \"" + shipStrategy + "\"");
 				}
-				
+
 				if (channel != null) {
 					String localStrategy = null;
 					switch (channel.getLocalStrategy()) {
@@ -367,17 +367,17 @@ public class PlanJSONDumpGenerator {
 					default:
 						throw new CompilerException("Unknown local strategy " + channel.getLocalStrategy().name());
 					}
-					
+
 					if (channel != null && channel.getLocalStrategyKeys() != null && channel.getLocalStrategyKeys().size() > 0) {
 						localStrategy += " on " + (channel.getLocalStrategySortOrder() == null ?
 								channel.getLocalStrategyKeys().toString() :
 								Utils.createOrdering(channel.getLocalStrategyKeys(), channel.getLocalStrategySortOrder()).toString());
 					}
-					
+
 					if (localStrategy != null) {
 						writer.print(", \"local_strategy\": \"" + localStrategy + "\"");
 					}
-					
+
 					if (channel != null && channel.getTempMode() != TempMode.NONE) {
 						String tempMode = channel.getTempMode().toString();
 						writer.print(", \"temp_mode\": \"" + tempMode + "\"");
@@ -388,14 +388,14 @@ public class PlanJSONDumpGenerator {
 						writer.print(", \"exchange_mode\": \"" + exchangeMode + "\"");
 					}
 				}
-				
+
 				writer.print('}');
 				inputNum++;
 			}
 			// finish predecessors
 			writer.print("\n\t\t]");
 		}
-		
+
 		//---------------------------------------------------------------------------------------
 		// the part below here is relevant only to plan nodes with concrete strategies, etc
 		//---------------------------------------------------------------------------------------
@@ -413,36 +413,36 @@ public class PlanJSONDumpGenerator {
 			case NONE:
 			case BINARY_NO_OP:
 				break;
-				
+
 			case UNARY_NO_OP:
 				locString = "No-Op";
 				break;
-				
+
 			case MAP:
 				locString = "Map";
 				break;
-				
+
 			case FLAT_MAP:
 				locString = "FlatMap";
 				break;
-				
+
 			case MAP_PARTITION:
 				locString = "Map Partition";
 				break;
-			
+
 			case ALL_REDUCE:
 				locString = "Reduce All";
 				break;
-			
+
 			case ALL_GROUP_REDUCE:
 			case ALL_GROUP_REDUCE_COMBINE:
 				locString = "Group Reduce All";
 				break;
-				
+
 			case SORTED_REDUCE:
 				locString = "Sorted Reduce";
 				break;
-				
+
 			case SORTED_PARTIAL_REDUCE:
 				locString = "Sorted Combine/Reduce";
 				break;
@@ -450,7 +450,7 @@ public class PlanJSONDumpGenerator {
 			case SORTED_GROUP_REDUCE:
 				locString = "Sorted Group Reduce";
 				break;
-				
+
 			case SORTED_GROUP_COMBINE:
 				locString = "Sorted Combine";
 				break;
@@ -461,7 +461,7 @@ public class PlanJSONDumpGenerator {
 			case HYBRIDHASH_BUILD_SECOND:
 				locString = "Hybrid Hash (build: " + child2name + ")";
 				break;
-				
+
 			case HYBRIDHASH_BUILD_FIRST_CACHED:
 				locString = "Hybrid Hash (CACHED) (build: " + child1name + ")";
 				break;
@@ -501,7 +501,7 @@ public class PlanJSONDumpGenerator {
 				writer.print("\"");
 			}
 		}
-		
+
 		{
 			// output node global properties
 			final GlobalProperties gp = p.getGlobalProperties();
@@ -513,7 +513,7 @@ public class PlanJSONDumpGenerator {
 				addProperty(writer, "Partitioned on", gp.getPartitioningFields().toString(), false);
 			}
 			if (gp.getPartitioningOrdering() != null) {
-				addProperty(writer, "Partitioning Order", gp.getPartitioningOrdering().toString(), false);	
+				addProperty(writer, "Partitioning Order", gp.getPartitioningOrdering().toString(), false);
 			}
 			else {
 				addProperty(writer, "Partitioning Order", "(none)", false);
@@ -522,7 +522,7 @@ public class PlanJSONDumpGenerator {
 				addProperty(writer, "Uniqueness", "not unique", false);
 			}
 			else {
-				addProperty(writer, "Uniqueness", n.getUniqueFields().toString(), false);	
+				addProperty(writer, "Uniqueness", n.getUniqueFields().toString(), false);
 			}
 
 			writer.print("\n\t\t]");
@@ -535,7 +535,7 @@ public class PlanJSONDumpGenerator {
 			writer.print(",\n\t\t\"local_properties\": [\n");
 
 			if (lp.getOrdering() != null) {
-				addProperty(writer, "Order", lp.getOrdering().toString(), true);	
+				addProperty(writer, "Order", lp.getOrdering().toString(), true);
 			}
 			else {
 				addProperty(writer, "Order", "(none)", true);
@@ -543,13 +543,13 @@ public class PlanJSONDumpGenerator {
 			if (lp.getGroupedFields() != null && lp.getGroupedFields().size() > 0) {
 				addProperty(writer, "Grouped on", lp.getGroupedFields().toString(), false);
 			} else {
-				addProperty(writer, "Grouping", "not grouped", false);	
+				addProperty(writer, "Grouping", "not grouped", false);
 			}
 			if (n.getUniqueFields() == null || n.getUniqueFields().size() == 0) {
 				addProperty(writer, "Uniqueness", "not unique", false);
 			}
 			else {
-				addProperty(writer, "Uniqueness", n.getUniqueFields().toString(), false);	
+				addProperty(writer, "Uniqueness", n.getUniqueFields().toString(), false);
 			}
 
 			writer.print("\n\t\t]");
@@ -598,7 +598,7 @@ public class PlanJSONDumpGenerator {
 			String card = hints.getOutputCardinality() == defaults.getOutputCardinality() ? "(none)" : String.valueOf(hints.getOutputCardinality());
 			String width = hints.getAvgOutputRecordSize() == defaults.getAvgOutputRecordSize() ? "(none)" : String.valueOf(hints.getAvgOutputRecordSize());
 			String filter = hints.getFilterFactor() == defaults.getFilterFactor() ? "(none)" : String.valueOf(hints.getFilterFactor());
-			
+
 			writer.print(",\n\t\t\"compiler_hints\": [\n");
 
 			addProperty(writer, "Output Size (bytes)", size, true);
@@ -650,7 +650,7 @@ public class PlanJSONDumpGenerator {
 				number /= 10;
 			}
 		}
-		
+
 		return group > 0 ? String.format(Locale.US, "%.2f %s", number, SIZE_SUFFIXES[group]) :
 			String.format(Locale.US, "%.2f", number);
 	}

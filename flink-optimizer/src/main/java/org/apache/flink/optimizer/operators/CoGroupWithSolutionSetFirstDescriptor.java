@@ -32,14 +32,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ *
  */
 public class CoGroupWithSolutionSetFirstDescriptor extends CoGroupDescriptor {
-	
+
 	public CoGroupWithSolutionSetFirstDescriptor(FieldList keys1, FieldList keys2) {
 		super(keys1, keys2);
 	}
-	
+
 	@Override
 	protected List<LocalPropertiesPair> createPossibleLocalProperties() {
 		RequestedLocalProperties none = new RequestedLocalProperties();

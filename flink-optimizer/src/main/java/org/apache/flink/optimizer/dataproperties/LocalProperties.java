@@ -38,36 +38,36 @@ public class LocalProperties implements Cloneable {
 	public static final Logger LOG = LoggerFactory.getLogger(GlobalProperties.class);
 
 	public static final LocalProperties EMPTY = new LocalProperties();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private Ordering ordering;			// order inside a partition, null if not ordered
 
 	private FieldList groupedFields;		// fields by which the stream is grouped. null if not grouped.
-	
+
 	private Set<FieldSet> uniqueFields;		// fields whose value combination is unique in the stream
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Default constructor for trivial local properties. No order, no grouping, no uniqueness.
 	 */
 	public LocalProperties() {}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the key order.
-	 * 
+	 *
 	 * @return The key order, or <code>null</code> if nothing is ordered.
 	 */
 	public Ordering getOrdering() {
 		return ordering;
 	}
-	
+
 	/**
 	 * Gets the grouped fields.
-	 * 
+	 *
 	 * @return The grouped fields, or <code>null</code> if nothing is grouped.
 	 */
 	public FieldList getGroupedFields() {
@@ -76,38 +76,38 @@ public class LocalProperties implements Cloneable {
 
 	/**
 	 * Gets the fields whose combination is unique within the data set.
-	 * 
+	 *
 	 * @return The unique field combination, or <code>null</code> if nothing is unique.
 	 */
 	public Set<FieldSet> getUniqueFields() {
 		return this.uniqueFields;
 	}
-	
+
 	/**
 	 * Checks whether the given set of fields is unique, as specified in these local properties.
-	 * 
+	 *
 	 * @param set The set to check.
 	 * @return True, if the given column combination is unique, false if not.
 	 */
 	public boolean areFieldsUnique(FieldSet set) {
 		return this.uniqueFields != null && this.uniqueFields.contains(set);
 	}
-	
+
 	/**
 	 * Adds a combination of fields that are unique in these data properties.
-	 * 
+	 *
 	 * @param uniqueFields The fields that are unique in these data properties.
 	 */
 	public LocalProperties addUniqueFields(FieldSet uniqueFields) {
 		LocalProperties copy = clone();
-		
+
 		if (copy.uniqueFields == null) {
 			copy.uniqueFields = new HashSet<FieldSet>();
 		}
 		copy.uniqueFields.add(uniqueFields);
 		return copy;
 	}
-	
+
 	public LocalProperties clearUniqueFieldSets() {
 		if (this.uniqueFields == null || this.uniqueFields.isEmpty()) {
 			return this;
@@ -118,14 +118,14 @@ public class LocalProperties implements Cloneable {
 			return copy;
 		}
 	}
-	
+
 	/**
 	 * Checks, if the properties in this object are trivial, i.e. only standard values.
 	 */
 	public boolean isTrivial() {
 		return ordering == null && this.groupedFields == null && this.uniqueFields == null;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
@@ -269,9 +269,9 @@ public class LocalProperties implements Cloneable {
 		copy.uniqueFields = (this.uniqueFields == null ? null : new HashSet<FieldSet>(this.uniqueFields));
 		return copy;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static LocalProperties combine(LocalProperties lp1, LocalProperties lp2) {
 		if (lp1.ordering != null) {
 			return lp1;
@@ -289,16 +289,16 @@ public class LocalProperties implements Cloneable {
 			return lp1;
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static LocalProperties forOrdering(Ordering o) {
 		LocalProperties props = new LocalProperties();
 		props.ordering = o;
 		props.groupedFields = o.getInvolvedIndexes();
 		return props;
 	}
-	
+
 	public static LocalProperties forGrouping(FieldList groupedFields) {
 		LocalProperties props = new LocalProperties();
 		props.groupedFields = groupedFields;

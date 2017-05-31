@@ -44,12 +44,12 @@ import java.util.Map;
  * The Optimizer representation of a data sink.
  */
 public class DataSinkNode extends OptimizerNode {
-	
+
 	protected DagConnection input;			// The input edge
-	
+
 	/**
 	 * Creates a new DataSinkNode for the given sink operator.
-	 * 
+	 *
 	 * @param sink The data sink contract object.
 	 */
 	public DataSinkNode(GenericDataSinkBase<?> sink) {
@@ -57,16 +57,16 @@ public class DataSinkNode extends OptimizerNode {
 	}
 
 	// --------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Gets the input of the sink.
-	 * 
+	 *
 	 * @return The input connection.
 	 */
 	public DagConnection getInputConnection() {
 		return this.input;
 	}
-	
+
 	/**
 	 * Gets the predecessor of this node.
 	 *
@@ -82,7 +82,7 @@ public class DataSinkNode extends OptimizerNode {
 
 	/**
 	 * Gets the operator for which this optimizer sink node was created.
-	 * 
+	 *
 	 * @return The node's underlying operator.
 	 */
 	@Override
@@ -116,10 +116,10 @@ public class DataSinkNode extends OptimizerNode {
 
 		final OptimizerNode pred;
 		final DagConnection conn;
-		
+
 		pred = contractToNode.get(children);
 		conn = new DagConnection(pred, this, defaultExchangeMode);
-			
+
 		// create the connection and add it
 		this.input = conn;
 		pred.addOutgoingConnection(conn);
@@ -152,10 +152,10 @@ public class DataSinkNode extends OptimizerNode {
 			}
 			iProps.addLocalProperties(orderProps);
 		}
-		
+
 		this.input.setInterestingProperties(iProps);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Branch Handling
 	// --------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ public class DataSinkNode extends OptimizerNode {
 		addClosedBranches(getPredecessorNode().closedBranchingNodes);
 		this.openBranches = getPredecessorNode().getBranchesForParent(this.input);
 	}
-	
+
 	@Override
 	protected List<UnclosedBranchDescriptor> getBranchesForParent(DagConnection parent) {
 		// return our own stack of open branches, because nothing is added
@@ -181,18 +181,18 @@ public class DataSinkNode extends OptimizerNode {
 	// --------------------------------------------------------------------------------------------
 	//                                   Recursive Optimization
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public List<PlanNode> getAlternativePlans(CostEstimator estimator) {
 		// check if we have a cached version
 		if (this.cachedPlans != null) {
 			return this.cachedPlans;
 		}
-		
+
 		// calculate alternative sub-plans for predecessor
 		List<? extends PlanNode> subPlans = getPredecessorNode().getAlternativePlans(estimator);
 		List<PlanNode> outputPlans = new ArrayList<PlanNode>();
-		
+
 		final int parallelism = getParallelism();
 		final int inDop = getPredecessorNode().getParallelism();
 
@@ -209,7 +209,7 @@ public class DataSinkNode extends OptimizerNode {
 					lp.parameterizeChannel(c);
 					c.setRequiredLocalProps(lp);
 					c.setRequiredGlobalProps(gp);
-					
+
 					// no need to check whether the created properties meet what we need in case
 					// of ordering or global ordering, because the only interesting properties we have
 					// are what we require
@@ -217,7 +217,7 @@ public class DataSinkNode extends OptimizerNode {
 				}
 			}
 		}
-		
+
 		// cost and prune the plans
 		for (PlanNode node : outputPlans) {
 			estimator.costOperator(node);
@@ -227,7 +227,7 @@ public class DataSinkNode extends OptimizerNode {
 		this.cachedPlans = outputPlans;
 		return outputPlans;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                   Function Annotation Handling
 	// --------------------------------------------------------------------------------------------
@@ -236,11 +236,11 @@ public class DataSinkNode extends OptimizerNode {
 	public SemanticProperties getSemanticProperties() {
 		return new EmptySemanticProperties();
 	}
-		
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Miscellaneous
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void accept(Visitor<OptimizerNode> visitor) {
 		if (visitor.preVisit(this)) {

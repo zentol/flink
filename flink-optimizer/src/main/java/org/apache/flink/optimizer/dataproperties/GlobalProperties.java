@@ -46,40 +46,40 @@ import java.util.Set;
 public class GlobalProperties implements Cloneable {
 
 	public static final Logger LOG = LoggerFactory.getLogger(GlobalProperties.class);
-	
+
 	private PartitioningProperty partitioning;	// the type partitioning
-	
+
 	private FieldList partitioningFields;		// the fields which are partitioned
-	
+
 	private Ordering ordering;					// order of the partitioned fields, if it is an ordered (range) range partitioning
-	
+
 	private Set<FieldSet> uniqueFieldCombinations;
-	
+
 	private Partitioner<?> customPartitioner;
-	
+
 	private DataDistribution distribution;
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Initializes the global properties with no partitioning.
 	 */
 	public GlobalProperties() {
 		this.partitioning = PartitioningProperty.RANDOM_PARTITIONED;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Sets this global properties to represent a hash partitioning.
-	 * 
+	 *
 	 * @param partitionedFields The key fields on which the data is hash partitioned.
 	 */
 	public void setHashPartitioned(FieldList partitionedFields) {
 		if (partitionedFields == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.partitioning = PartitioningProperty.HASH_PARTITIONED;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
@@ -102,61 +102,61 @@ public class GlobalProperties implements Cloneable {
 
 	/**
 	 * Set the parameters for range partition.
-	 * 
+	 *
 	 * @param ordering Order of the partitioned fields
 	 * @param distribution The data distribution for range partition. User can supply a customized data distribution,
-	 *                     also the data distribution can be null.  
+	 *                     also the data distribution can be null.
 	 */
 	public void setRangePartitioned(Ordering ordering, DataDistribution distribution) {
 		if (ordering == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.partitioning = PartitioningProperty.RANGE_PARTITIONED;
 		this.ordering = ordering;
 		this.partitioningFields = ordering.getInvolvedIndexes();
 		this.distribution = distribution;
 	}
-	
+
 	public void setAnyPartitioning(FieldList partitionedFields) {
 		if (partitionedFields == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.partitioning = PartitioningProperty.ANY_PARTITIONING;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
 	}
-	
+
 	public void setRandomPartitioned() {
 		this.partitioning = PartitioningProperty.RANDOM_PARTITIONED;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setFullyReplicated() {
 		this.partitioning = PartitioningProperty.FULL_REPLICATION;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setForcedRebalanced() {
 		this.partitioning = PartitioningProperty.FORCED_REBALANCED;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setCustomPartitioned(FieldList partitionedFields, Partitioner<?> partitioner) {
 		if (partitionedFields == null || partitioner == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.partitioning = PartitioningProperty.CUSTOM_PARTITIONING;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
 		this.customPartitioner = partitioner;
 	}
-	
+
 	public void addUniqueFieldCombination(FieldSet fields) {
 		if (fields == null) {
 			return;
@@ -166,39 +166,39 @@ public class GlobalProperties implements Cloneable {
 		}
 		this.uniqueFieldCombinations.add(fields);
 	}
-	
+
 	public void clearUniqueFieldCombinations() {
 		if (this.uniqueFieldCombinations != null) {
 			this.uniqueFieldCombinations = null;
 		}
 	}
-	
+
 	public Set<FieldSet> getUniqueFieldCombination() {
 		return this.uniqueFieldCombinations;
 	}
-	
+
 	public FieldList getPartitioningFields() {
 		return this.partitioningFields;
 	}
-	
+
 	public Ordering getPartitioningOrdering() {
 		return this.ordering;
 	}
-	
+
 	public PartitioningProperty getPartitioning() {
 		return this.partitioning;
 	}
-	
+
 	public Partitioner<?> getCustomPartitioner() {
 		return this.customPartitioner;
 	}
-	
+
 	public DataDistribution getDataDistribution() {
 		return this.distribution;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public boolean isPartitionedOnFields(FieldSet fields) {
 		if (this.partitioning.isPartitionedOnKey() && fields.isValidSubset(this.partitioningFields)) {
 			return true;
@@ -217,18 +217,18 @@ public class GlobalProperties implements Cloneable {
 	public boolean isExactlyPartitionedOnFields(FieldList fields) {
 		return this.partitioning.isPartitionedOnKey() && fields.isExactMatch(this.partitioningFields);
 	}
-	
+
 	public boolean matchesOrderedPartitioning(Ordering o) {
 		if (this.partitioning == PartitioningProperty.RANGE_PARTITIONED) {
 			if (this.ordering.getNumberOfFields() > o.getNumberOfFields()) {
 				return false;
 			}
-			
+
 			for (int i = 0; i < this.ordering.getNumberOfFields(); i++) {
 				if (!this.ordering.getFieldNumber(i).equals(o.getFieldNumber(i))) {
 					return false;
 				}
-				
+
 				// if this one request no order, everything is good
 				final Order oo = o.getOrder(i);
 				final Order to = this.ordering.getOrder(i);
@@ -460,9 +460,9 @@ public class GlobalProperties implements Cloneable {
 			final GlobalProperties other = (GlobalProperties) obj;
 			return (this.partitioning == other.partitioning)
 				&& (this.ordering == other.ordering || (this.ordering != null && this.ordering.equals(other.ordering)))
-				&& (this.partitioningFields == other.partitioningFields || 
+				&& (this.partitioningFields == other.partitioningFields ||
 							(this.partitioningFields != null && this.partitioningFields.equals(other.partitioningFields)))
-				&& (this.uniqueFieldCombinations == other.uniqueFieldCombinations || 
+				&& (this.uniqueFieldCombinations == other.uniqueFieldCombinations ||
 							(this.uniqueFieldCombinations != null && this.uniqueFieldCombinations.equals(other.uniqueFieldCombinations)));
 		} else {
 			return false;
@@ -472,10 +472,10 @@ public class GlobalProperties implements Cloneable {
 	@Override
 	public String toString() {
 		final StringBuilder bld = new StringBuilder(
-			"GlobalProperties [partitioning=" + partitioning + 
-			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) + 
+			"GlobalProperties [partitioning=" + partitioning +
+			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) +
 			(this.ordering == null ? "" : ", with ordering " + this.ordering));
-		
+
 		if (this.uniqueFieldCombinations == null) {
 			bld.append(']');
 		} else {
@@ -497,9 +497,9 @@ public class GlobalProperties implements Cloneable {
 		newProps.uniqueFieldCombinations = this.uniqueFieldCombinations == null ? null : new HashSet<FieldSet>(this.uniqueFieldCombinations);
 		return newProps;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static GlobalProperties combine(GlobalProperties gp1, GlobalProperties gp2) {
 		if (gp1.isFullyReplicated()) {
 			if (gp2.isFullyReplicated()) {

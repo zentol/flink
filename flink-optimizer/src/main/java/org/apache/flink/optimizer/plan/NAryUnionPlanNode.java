@@ -34,9 +34,9 @@ import java.util.List;
  * A union operation over multiple inputs (2 or more).
  */
 public class NAryUnionPlanNode extends PlanNode {
-	
+
 	private final List<Channel> inputs;
-	
+
 	/**
 	 * @param template
 	 */
@@ -44,7 +44,7 @@ public class NAryUnionPlanNode extends PlanNode {
 			Costs cumulativeCosts)
 	{
 		super(template, "Union", DriverStrategy.NONE);
-		
+
 		this.inputs = inputs;
 		this.globalProps = gProps;
 		this.localProps = new LocalProperties();
@@ -60,7 +60,7 @@ public class NAryUnionPlanNode extends PlanNode {
 		}
 		visitor.postVisit(this);
 	}
-	
+
 	public List<Channel> getListOfInputs() {
 		return this.inputs;
 	}
@@ -89,7 +89,7 @@ public class NAryUnionPlanNode extends PlanNode {
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}
-			
+
 			@Override
 			public Iterator<PlanNode> iterator() {
 				return this;

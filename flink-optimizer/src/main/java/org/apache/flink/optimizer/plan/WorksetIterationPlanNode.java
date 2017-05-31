@@ -40,25 +40,25 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.FOUND_
 public class WorksetIterationPlanNode extends DualInputPlanNode implements IterationPlanNode {
 
 	private final SolutionSetPlanNode solutionSetPlanNode;
-	
+
 	private final WorksetPlanNode worksetPlanNode;
-	
+
 	private final PlanNode solutionSetDeltaPlanNode;
-	
+
 	private final PlanNode nextWorkSetPlanNode;
-	
+
 	private TypeSerializerFactory<?> worksetSerializer;
-	
+
 	private TypeSerializerFactory<?> solutionSetSerializer;
-	
+
 	private TypeComparatorFactory<?> solutionSetComparator;
-	
+
 	private boolean immediateSolutionSetUpdate;
-	
+
 	public Object postPassHelper;
-	
+
 	private TypeSerializerFactory<?> serializerForIterationChannel;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public WorksetIterationPlanNode(WorksetIterationNode template, String nodeName, Channel initialSolutionSet, Channel initialWorkset,
@@ -70,13 +70,13 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 		this.worksetPlanNode = worksetPlanNode;
 		this.solutionSetDeltaPlanNode = solutionSetDeltaPlanNode;
 		this.nextWorkSetPlanNode = nextWorkSetPlanNode;
-		
+
 		mergeBranchPlanMaps();
 
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public WorksetIterationNode getIterationNode() {
 		if (this.template instanceof WorksetIterationNode) {
 			return (WorksetIterationNode) this.template;
@@ -84,71 +84,71 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public SolutionSetPlanNode getSolutionSetPlanNode() {
 		return this.solutionSetPlanNode;
 	}
-	
+
 	public WorksetPlanNode getWorksetPlanNode() {
 		return this.worksetPlanNode;
 	}
-	
+
 	public PlanNode getSolutionSetDeltaPlanNode() {
 		return this.solutionSetDeltaPlanNode;
 	}
-	
+
 	public PlanNode getNextWorkSetPlanNode() {
 		return this.nextWorkSetPlanNode;
 	}
-	
+
 	public Channel getInitialSolutionSetInput() {
 		return getInput1();
 	}
-	
+
 	public Channel getInitialWorksetInput() {
 		return getInput2();
 	}
-	
+
 	public void setImmediateSolutionSetUpdate(boolean immediateUpdate) {
 		this.immediateSolutionSetUpdate = immediateUpdate;
 	}
-	
+
 	public boolean isImmediateSolutionSetUpdate() {
 		return this.immediateSolutionSetUpdate;
 	}
-	
+
 	public FieldList getSolutionSetKeyFields() {
 		return getIterationNode().getSolutionSetKeyFields();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public TypeSerializerFactory<?> getWorksetSerializer() {
 		return worksetSerializer;
 	}
-	
+
 	public void setWorksetSerializer(TypeSerializerFactory<?> worksetSerializer) {
 		this.worksetSerializer = worksetSerializer;
 	}
-	
+
 	public TypeSerializerFactory<?> getSolutionSetSerializer() {
 		return solutionSetSerializer;
 	}
-	
+
 	public void setSolutionSetSerializer(TypeSerializerFactory<?> solutionSetSerializer) {
 		this.solutionSetSerializer = solutionSetSerializer;
 	}
-	
+
 	public TypeComparatorFactory<?> getSolutionSetComparator() {
 		return solutionSetComparator;
 	}
-	
+
 	public void setSolutionSetComparator(TypeComparatorFactory<?> solutionSetComparator) {
 		this.solutionSetComparator = solutionSetComparator;
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCosts(Costs nodeCosts) {
 		// add the costs from the step function
 		nodeCosts.addCosts(this.solutionSetDeltaPlanNode.getCumulativeCostsShare());
@@ -156,18 +156,18 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 
 		super.setCosts(nodeCosts);
 	}
-	
+
 	public int getMemoryConsumerWeight() {
 		// solution set index and workset back channel
 		return 2;
 	}
-	
+
 	@Override
 	public SourceAndDamReport hasDamOnPathDownTo(PlanNode source) {
 		if (source == this) {
 			return FOUND_SOURCE;
 		}
-		
+
 		SourceAndDamReport fromOutside = super.hasDamOnPathDownTo(source);
 
 		if (fromOutside == FOUND_SOURCE_AND_DAM) {
@@ -245,13 +245,13 @@ public class WorksetIterationPlanNode extends DualInputPlanNode implements Itera
 			}
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public TypeSerializerFactory<?> getSerializerForIterationChannel() {
 		return serializerForIterationChannel;
 	}
-	
+
 	public void setSerializerForIterationChannel(TypeSerializerFactory<?> serializerForIterationChannel) {
 		this.serializerForIterationChannel = serializerForIterationChannel;
 	}

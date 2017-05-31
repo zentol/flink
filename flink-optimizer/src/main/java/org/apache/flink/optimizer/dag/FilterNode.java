@@ -32,9 +32,9 @@ import java.util.List;
  * The optimizer's internal representation of a <i>Filter</i> operator node.
  */
 public class FilterNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	public FilterNode(FilterOperatorBase<?, ?> operator) {
 		super(operator);
 		this.possibleProperties = Collections.<OperatorDescriptorSingle>singletonList(new FilterDescriptor());
@@ -62,7 +62,7 @@ public class FilterNode extends SingleInputNode {
 
 	/**
 	 * Computes the estimates for the Filter operator. Since it applies a filter on the data we assume a cardinality
-	 * decrease. To give the system a hint at data decrease, we use a default magic number to indicate a 0.5 decrease. 
+	 * decrease. To give the system a hint at data decrease, we use a default magic number to indicate a 0.5 decrease.
 	 */
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {

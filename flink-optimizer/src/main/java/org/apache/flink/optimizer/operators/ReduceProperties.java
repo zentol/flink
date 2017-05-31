@@ -44,21 +44,21 @@ import java.util.List;
 
 public final class ReduceProperties extends OperatorDescriptorSingle {
 	private static final Logger LOG = LoggerFactory.getLogger(ReduceProperties.class);
-	
+
 	private final Partitioner<?> customPartitioner;
 
 	private final DriverStrategy combinerStrategy;
-	
+
 	public ReduceProperties(FieldSet keys, DriverStrategy combinerStrategy) {
 		this(keys, null, combinerStrategy);
 	}
-	
+
 	public ReduceProperties(FieldSet keys, Partitioner<?> customPartitioner, DriverStrategy combinerStrategy) {
 		super(keys);
 		this.customPartitioner = customPartitioner;
 		this.combinerStrategy = combinerStrategy;
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.SORTED_REDUCE;
@@ -79,7 +79,7 @@ public final class ReduceProperties extends OperatorDescriptorSingle {
 			// non forward case. all local properties are killed anyways, so we can safely plug in a combiner
 			Channel toCombiner = new Channel(in.getSource());
 			toCombiner.setShipStrategy(ShipStrategyType.FORWARD, DataExchangeMode.PIPELINED);
-			
+
 			// create an input node for combine with same parallelism as input node
 			ReduceNode combinerNode = ((ReduceNode) node).getCombinerUtilityNode();
 			combinerNode.setParallelism(in.getSource().getParallelism());
@@ -90,7 +90,7 @@ public final class ReduceProperties extends OperatorDescriptorSingle {
 
 			combiner.setCosts(new Costs(0, 0));
 			combiner.initProperties(toCombiner.getGlobalProperties(), toCombiner.getLocalProperties());
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(),
 										in.getShipStrategySortOrder(), in.getDataExchangeMode());

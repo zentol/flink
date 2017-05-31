@@ -46,7 +46,7 @@ public class HashLeftOuterJoinBuildSecondDescriptor extends AbstractJoinDescript
 		// all properties are possible
 		return Collections.singletonList(new LocalPropertiesPair(new RequestedLocalProperties(), new RequestedLocalProperties()));
 	}
-	
+
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
 			LocalProperties produced1, LocalProperties produced2) {
@@ -59,7 +59,7 @@ public class HashLeftOuterJoinBuildSecondDescriptor extends AbstractJoinDescript
 		String nodeName = "LeftOuterJoin("+node.getOperator().getName()+")";
 		return new DualInputPlanNode(node, nodeName, in1, in2, getStrategy(), this.keys1, this.keys2);
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties in1, LocalProperties in2) {
 		return new LocalProperties();

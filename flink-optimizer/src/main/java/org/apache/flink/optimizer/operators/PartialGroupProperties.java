@@ -35,11 +35,11 @@ import java.util.Collections;
 import java.util.List;
 
 public final class PartialGroupProperties extends OperatorDescriptorSingle {
-	
+
 	public PartialGroupProperties(FieldSet keys) {
 		super(keys);
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.SORTED_GROUP_COMBINE;
@@ -57,7 +57,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		combiner.setDriverKeyInfo(in.getLocalStrategyKeys(), in.getLocalStrategySortOrder(), 0);
 		// set grouping comparator key info
 		combiner.setDriverKeyInfo(this.keyList, 1);
-		
+
 		return combiner;
 	}
 
@@ -72,7 +72,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		props.setGroupedFields(this.keys);
 		return Collections.singletonList(props);
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&
@@ -83,7 +83,7 @@ public final class PartialGroupProperties extends OperatorDescriptorSingle {
 		gProps.clearUniqueFieldCombinations();
 		return gProps;
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {
 		return lProps.clearUniqueFieldSets();

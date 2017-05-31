@@ -32,14 +32,14 @@ import java.util.List;
  * The Optimizer representation of a <i>Reduce</i> operator.
  */
 public class ReduceNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	private ReduceNode preReduceUtilityNode;
 
 	public ReduceNode(ReduceOperatorBase<?, ?> operator) {
 		super(operator);
-		
+
 		if (this.keys == null) {
 			// case of a key-less reducer. force a parallelism of 1
 			setParallelism(1);
@@ -66,13 +66,13 @@ public class ReduceNode extends SingleInputNode {
 			}
 			props = new ReduceProperties(this.keys, operator.getCustomPartitioner(), combinerStrategy);
 		}
-		
+
 		this.possibleProperties = Collections.singletonList(props);
 	}
-	
+
 	public ReduceNode(ReduceNode reducerToCopyForCombiner) {
 		super(reducerToCopyForCombiner);
-		
+
 		this.possibleProperties = Collections.emptyList();
 	}
 
@@ -87,26 +87,26 @@ public class ReduceNode extends SingleInputNode {
 	public String getOperatorName() {
 		return "Reduce";
 	}
-	
+
 	@Override
 	protected List<OperatorDescriptorSingle> getPossibleProperties() {
 		return this.possibleProperties;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//  Estimates
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// no real estimates possible for a reducer.
 	}
-	
+
 	public ReduceNode getCombinerUtilityNode() {
 		if (this.preReduceUtilityNode == null) {
 			this.preReduceUtilityNode = new ReduceNode(this);
-			
-			// we conservatively assume the combiner returns the same data size as it consumes 
+
+			// we conservatively assume the combiner returns the same data size as it consumes
 			this.preReduceUtilityNode.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 			this.preReduceUtilityNode.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		}

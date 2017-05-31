@@ -26,7 +26,7 @@ public class NamedChannel extends Channel {
 
 	/**
 	 * Initializes NamedChannel.
-	 * 
+	 *
 	 * @param sourceNode
 	 */
 	public NamedChannel(String name, PlanNode sourceNode) {

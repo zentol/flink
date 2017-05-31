@@ -38,9 +38,9 @@ import java.util.List;
  * The Optimizer representation of a <i>CoGroup</i> operator.
  */
 public class CoGroupNode extends TwoInputNode {
-	
+
 	private List<OperatorDescriptorDual> dataProperties;
-	
+
 	public CoGroupNode(CoGroupOperatorBase<?, ?, ?, ?> operator) {
 		super(operator);
 		this.dataProperties = initializeDataProperties(operator.getCustomPartitioner());
@@ -50,7 +50,7 @@ public class CoGroupNode extends TwoInputNode {
 
 	/**
 	 * Gets the operator for this CoGroup node.
-	 * 
+	 *
 	 * @return The CoGroup operator.
 	 */
 	@Override
@@ -67,7 +67,7 @@ public class CoGroupNode extends TwoInputNode {
 	protected List<OperatorDescriptorDual> getPossibleProperties() {
 		return this.dataProperties;
 	}
-	
+
 	public void makeCoGroupWithSolutionSet(int solutionsetInputIndex) {
 		OperatorDescriptorDual op;
 		if (solutionsetInputIndex == 0) {
@@ -119,27 +119,27 @@ public class CoGroupNode extends TwoInputNode {
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// for CoGroup, we currently make no reasonable default estimates
 	}
-	
+
 	private List<OperatorDescriptorDual> initializeDataProperties(Partitioner<?> customPartitioner) {
 		Ordering groupOrder1 = null;
 		Ordering groupOrder2 = null;
-		
+
 		CoGroupOperatorBase<?, ?, ?, ?> cgc = getOperator();
 		groupOrder1 = cgc.getGroupOrderForInputOne();
 		groupOrder2 = cgc.getGroupOrderForInputTwo();
-			
+
 		if (groupOrder1 != null && groupOrder1.getNumberOfFields() == 0) {
 			groupOrder1 = null;
 		}
 		if (groupOrder2 != null && groupOrder2.getNumberOfFields() == 0) {
 			groupOrder2 = null;
 		}
-		
+
 		CoGroupDescriptor descr = new CoGroupDescriptor(this.keys1, this.keys2, groupOrder1, groupOrder2);
 		if (customPartitioner != null) {
 			descr.setCustomPartitioner(customPartitioner);
 		}
-		
+
 		return Collections.<OperatorDescriptorDual>singletonList(descr);
 	}
 }

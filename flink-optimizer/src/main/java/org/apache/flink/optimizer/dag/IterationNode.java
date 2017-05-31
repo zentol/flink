@@ -24,7 +24,7 @@ import org.apache.flink.util.Visitor;
  *
  */
 public interface IterationNode {
-	
+
 	void acceptForStepFunction(Visitor<OptimizerNode> visitor);
 
 }

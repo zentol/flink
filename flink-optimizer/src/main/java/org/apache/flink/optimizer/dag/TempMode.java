@@ -24,16 +24,16 @@ package org.apache.flink.optimizer.dag;
  * themselves, or as a cache to replay an intermediate result.
  */
 public enum TempMode {
-	
+
 	NONE(false, false),
 	PIPELINE_BREAKER(false, true),
 	CACHED(true, false),
 	CACHING_PIPELINE_BREAKER(true, true);
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	private final boolean cached;
-	
+
 	private final boolean breaksPipeline;
 
 	private TempMode(boolean cached, boolean breaksPipeline) {
@@ -48,7 +48,7 @@ public enum TempMode {
 	public boolean breaksPipeline() {
 		return breaksPipeline;
 	}
-	
+
 	public TempMode makePipelineBreaker() {
 		if (this == NONE) {
 			return PIPELINE_BREAKER;
@@ -58,7 +58,7 @@ public enum TempMode {
 			return this;
 		}
 	}
-	
+
 	public TempMode makeCached() {
 		if (this == NONE) {
 			return CACHED;

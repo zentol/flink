@@ -44,7 +44,7 @@ public class SortPartitionNode extends SingleInputNode {
 
 	public SortPartitionNode(SortPartitionOperatorBase<?> operator) {
 		super(operator);
-		
+
 		OperatorDescriptorSingle descr = new SortPartitionDescriptor(operator.getPartitionOrdering());
 		this.possibleProperties = Collections.singletonList(descr);
 	}
@@ -70,14 +70,14 @@ public class SortPartitionNode extends SingleInputNode {
 		this.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		this.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 	}
-	
+
 	@Override
 	public SemanticProperties getSemanticProperties() {
 		return new SingleInputSemanticProperties.AllFieldsForwardedProperties();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static class SortPartitionDescriptor extends OperatorDescriptorSingle {
 
 		private Ordering partitionOrder;
@@ -85,7 +85,7 @@ public class SortPartitionNode extends SingleInputNode {
 		public SortPartitionDescriptor(Ordering partitionOrder) {
 			this.partitionOrder = partitionOrder;
 		}
-		
+
 		@Override
 		public DriverStrategy getStrategy() {
 			return DriverStrategy.UNARY_NO_OP;
@@ -110,13 +110,13 @@ public class SortPartitionNode extends SingleInputNode {
 
 			return Collections.singletonList(rlp);
 		}
-		
+
 		@Override
 		public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 			// sort partition is a no-operation operation, such that all global properties are preserved.
 			return gProps;
 		}
-		
+
 		@Override
 		public LocalProperties computeLocalProperties(LocalProperties lProps) {
 			// sort partition is a no-operation operation, such that all global properties are preserved.

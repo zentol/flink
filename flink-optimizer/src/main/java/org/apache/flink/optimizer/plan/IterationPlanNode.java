@@ -25,8 +25,8 @@ import org.apache.flink.util.Visitor;
  *
  */
 public interface IterationPlanNode {
-	
+
 	void acceptForStepFunction(Visitor<PlanNode> visitor);
-	
+
 	IterationNode getIterationNode();
 }

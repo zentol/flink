@@ -33,17 +33,17 @@ import java.util.List;
  * The optimizer's internal representation of a <i>MapPartition</i> operator node.
  */
 public class MapPartitionNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	/**
 	 * Creates a new MapNode for the given contract.
-	 * 
+	 *
 	 * @param operator The map partition contract object.
 	 */
 	public MapPartitionNode(SingleInputOperator<?, ?, ?> operator) {
 		super(operator);
-		
+
 		this.possibleProperties = Collections.<OperatorDescriptorSingle>singletonList(new MapPartitionDescriptor());
 	}
 

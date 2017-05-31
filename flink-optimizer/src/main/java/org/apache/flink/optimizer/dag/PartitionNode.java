@@ -46,10 +46,10 @@ import java.util.List;
 public class PartitionNode extends SingleInputNode {
 
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	public PartitionNode(PartitionOperatorBase<?> operator) {
 		super(operator);
-		
+
 		OperatorDescriptorSingle descr = new PartitionDescriptor(
 					this.getOperator().getPartitionMethod(), this.keys, operator.getOrdering(), operator.getCustomPartitioner(),
 					operator.getDistribution());
@@ -77,14 +77,14 @@ public class PartitionNode extends SingleInputNode {
 		this.estimatedNumRecords = getPredecessorNode().getEstimatedNumRecords();
 		this.estimatedOutputSize = getPredecessorNode().getEstimatedOutputSize();
 	}
-	
+
 	@Override
 	public SemanticProperties getSemanticProperties() {
 		return new SingleInputSemanticProperties.AllFieldsForwardedProperties();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public static class PartitionDescriptor extends OperatorDescriptorSingle {
 
 		private final PartitionMethod pMethod;
@@ -105,7 +105,7 @@ public class PartitionNode extends SingleInputNode {
 			this.distribution = distribution;
 			this.ordering = ordering;
 		}
-		
+
 		@Override
 		public DriverStrategy getStrategy() {
 			return DriverStrategy.UNARY_NO_OP;
@@ -119,7 +119,7 @@ public class PartitionNode extends SingleInputNode {
 		@Override
 		protected List<RequestedGlobalProperties> createPossibleGlobalProperties() {
 			RequestedGlobalProperties rgps = new RequestedGlobalProperties();
-			
+
 			switch (this.pMethod) {
 			case HASH:
 				rgps.setHashPartitioned(this.keys);
@@ -136,7 +136,7 @@ public class PartitionNode extends SingleInputNode {
 			default:
 				throw new IllegalArgumentException("Invalid partition method");
 			}
-			
+
 			return Collections.singletonList(rgps);
 		}
 
@@ -145,13 +145,13 @@ public class PartitionNode extends SingleInputNode {
 			// partitioning does not require any local property.
 			return Collections.singletonList(new RequestedLocalProperties());
 		}
-		
+
 		@Override
 		public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 			// the partition node is a no-operation operation, such that all global properties are preserved.
 			return gProps;
 		}
-		
+
 		@Override
 		public LocalProperties computeLocalProperties(LocalProperties lProps) {
 			// the partition node is a no-operation operation, such that all global properties are preserved.

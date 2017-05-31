@@ -21,7 +21,7 @@ package org.apache.flink.optimizer.plan;
 /**
  * A common interface for compiled Flink plans for both batch and streaming
  * processing programs.
- * 
+ *
  */
 public interface FlinkPlan {
 

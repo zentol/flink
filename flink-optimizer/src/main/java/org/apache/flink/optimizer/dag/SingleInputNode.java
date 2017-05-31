@@ -58,57 +58,57 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.NOT_FO
 
 /**
  * A node in the optimizer's program representation for an operation with a single input.
- * 
+ *
  * This class contains all the generic logic for handling branching flows, as well as to
  * enumerate candidate execution plans. The subclasses for specific operators simply add logic
  * for cost estimates and specify possible strategies for their execution.
  */
 public abstract class SingleInputNode extends OptimizerNode {
-	
+
 	protected final FieldSet keys; 			// The set of key fields
-	
+
 	protected DagConnection inConn; 		// the input of the node
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Creates a new node with a single input for the optimizer plan.
-	 * 
+	 *
 	 * @param programOperator The PACT that the node represents.
 	 */
 	protected SingleInputNode(SingleInputOperator<?, ?, ?> programOperator) {
 		super(programOperator);
-		
+
 		int[] k = programOperator.getKeyColumns(0);
 		this.keys = k == null || k.length == 0 ? null : new FieldSet(k);
 	}
-	
+
 	protected SingleInputNode(FieldSet keys) {
 		super(NoOpUnaryUdfOp.INSTANCE);
 		this.keys = keys;
 	}
-	
+
 	protected SingleInputNode() {
 		super(NoOpUnaryUdfOp.INSTANCE);
 		this.keys = null;
 	}
-	
+
 	protected SingleInputNode(SingleInputNode toCopy) {
 		super(toCopy);
-		
+
 		this.keys = toCopy.keys;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	@Override
 	public SingleInputOperator<?, ?, ?> getOperator() {
 		return (SingleInputOperator<?, ?, ?>) super.getOperator();
 	}
-	
+
 	/**
 	 * Gets the input of this operator.
-	 * 
+	 *
 	 * @return The input.
 	 */
 	public DagConnection getIncomingConnection() {
@@ -117,17 +117,17 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 	/**
 	 * Sets the connection through which this node receives its input.
-	 * 
+	 *
 	 * @param inConn The input connection to set.
 	 */
 	public void setIncomingConnection(DagConnection inConn) {
 		this.inConn = inConn;
 	}
-	
+
 	/**
 	 * Gets the predecessor of this node.
-	 * 
-	 * @return The predecessor of this node. 
+	 *
+	 * @return The predecessor of this node.
 	 */
 	public OptimizerNode getPredecessorNode() {
 		if (this.inConn != null) {
@@ -163,7 +163,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		final Configuration conf = getOperator().getParameters();
 		final String shipStrategy = conf.getString(Optimizer.HINT_SHIP_STRATEGY, null);
 		final ShipStrategyType preSet;
-		
+
 		if (shipStrategy != null) {
 			if (shipStrategy.equalsIgnoreCase(Optimizer.HINT_SHIP_STRATEGY_REPARTITION_HASH)) {
 				preSet = ShipStrategyType.PARTITION_HASH;
@@ -179,10 +179,10 @@ public abstract class SingleInputNode extends OptimizerNode {
 		} else {
 			preSet = null;
 		}
-		
+
 		// get the predecessor node
 		Operator<?> children = ((SingleInputOperator<?, ?, ?>) getOperator()).getInput();
-		
+
 		OptimizerNode pred;
 		DagConnection conn;
 		if (children == null) {
@@ -194,30 +194,30 @@ public abstract class SingleInputNode extends OptimizerNode {
 				conn.setShipStrategy(preSet);
 			}
 		}
-		
+
 		// create the connection and add it
 		setIncomingConnection(conn);
 		pred.addOutgoingConnection(conn);
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                             Properties and Optimization
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected abstract List<OperatorDescriptorSingle> getPossibleProperties();
-	
+
 	@Override
 	public void computeInterestingPropertiesForInputs(CostEstimator estimator) {
-		// get what we inherit and what is preserved by our user code 
+		// get what we inherit and what is preserved by our user code
 		final InterestingProperties props = getInterestingProperties().filterByCodeAnnotations(this, 0);
-		
+
 		// add all properties relevant to this node
 		for (OperatorDescriptorSingle dps : getPossibleProperties()) {
 			for (RequestedGlobalProperties gp : dps.getPossibleGlobalProperties()) {
-				
+
 				if (gp.getPartitioning().isPartitionedOnKey()) {
 					// make sure that among the same partitioning types, we do not push anything down that has fewer key fields
-					
+
 					for (RequestedGlobalProperties contained : props.getGlobalProperties()) {
 						if (contained.getPartitioning() == gp.getPartitioning() && gp.getPartitionedFields().isValidSubset(contained.getPartitionedFields())) {
 							props.getGlobalProperties().remove(contained);
@@ -225,16 +225,16 @@ public abstract class SingleInputNode extends OptimizerNode {
 						}
 					}
 				}
-				
+
 				props.addGlobalProperties(gp);
 			}
-			
+
 			for (RequestedLocalProperties lp : dps.getPossibleLocalProperties()) {
 				props.addLocalProperties(lp);
 			}
 		}
 		this.inConn.setInterestingProperties(props);
-		
+
 		for (DagConnection conn : getBroadcastConnections()) {
 			conn.setInterestingProperties(new InterestingProperties());
 		}
@@ -252,7 +252,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		// calculate alternative sub-plans for predecessor
 		final List<? extends PlanNode> subPlans = getPredecessorNode().getAlternativePlans(estimator);
 		final Set<RequestedGlobalProperties> intGlobal = this.inConn.getInterestingProperties().getGlobalProperties();
-		
+
 		// calculate alternative sub-plans for broadcast inputs
 		final List<Set<? extends NamedChannel>> broadcastPlanChannels = new ArrayList<Set<? extends NamedChannel>>();
 		List<DagConnection> broadcastConnections = getBroadcastConnections();
@@ -313,13 +313,13 @@ public abstract class SingleInputNode extends OptimizerNode {
 				for (RequestedGlobalProperties igps: intGlobal) {
 					final Channel c = new Channel(child, this.inConn.getMaterializationMode());
 					igps.parameterizeChannel(c, parallelismChange, executionMode, breaksPipeline);
-					
+
 					// if the parallelism changed, make sure that we cancel out properties, unless the
 					// ship strategy preserves/establishes them even under changing parallelisms
 					if (parallelismChange && !c.getShipStrategy().isNetworkStrategy()) {
 						c.getGlobalProperties().reset();
 					}
-					
+
 					// check whether we meet any of the accepted properties
 					// we may remove this check, when we do a check to not inherit
 					// requested global properties that are incompatible with all possible
@@ -343,7 +343,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 				} else {
 					c.setShipStrategy(shipStrategy, exMode);
 				}
-				
+
 				if (parallelismChange) {
 					c.adjustGlobalPropertiesForFullParallelismChange();
 				}
@@ -376,14 +376,14 @@ public abstract class SingleInputNode extends OptimizerNode {
 		this.cachedPlans = outputPlans;
 		return outputPlans;
 	}
-	
+
 	protected void addLocalCandidates(Channel template, List<Set<? extends NamedChannel>> broadcastPlanChannels, RequestedGlobalProperties rgps,
 			List<PlanNode> target, CostEstimator estimator)
 	{
 		for (RequestedLocalProperties ilp : this.inConn.getInterestingProperties().getLocalProperties()) {
 			final Channel in = template.clone();
 			ilp.parameterizeChannel(in);
-			
+
 			// instantiate a candidate, if the instantiated local properties meet one possible local property set
 			outer:
 			for (OperatorDescriptorSingle dps: getPossibleProperties()) {
@@ -402,43 +402,43 @@ public abstract class SingleInputNode extends OptimizerNode {
 			List<PlanNode> target, CostEstimator estimator, RequestedGlobalProperties globPropsReq, RequestedLocalProperties locPropsReq)
 	{
 		final PlanNode inputSource = in.getSource();
-		
+
 		for (List<NamedChannel> broadcastChannelsCombination: Sets.cartesianProduct(broadcastPlanChannels)) {
-			
+
 			boolean validCombination = true;
 			boolean requiresPipelinebreaker = false;
-			
+
 			// check whether the broadcast inputs use the same plan candidate at the branching point
 			for (int i = 0; i < broadcastChannelsCombination.size(); i++) {
 				NamedChannel nc = broadcastChannelsCombination.get(i);
 				PlanNode bcSource = nc.getSource();
-				
+
 				// check branch compatibility against input
 				if (!areBranchCompatible(bcSource, inputSource)) {
 					validCombination = false;
 					break;
 				}
-				
+
 				// check branch compatibility against all other broadcast variables
 				for (int k = 0; k < i; k++) {
 					PlanNode otherBcSource = broadcastChannelsCombination.get(k).getSource();
-					
+
 					if (!areBranchCompatible(bcSource, otherBcSource)) {
 						validCombination = false;
 						break;
 					}
 				}
-				
+
 				// check if there is a common predecessor and whether there is a dam on the way to all common predecessors
 				if (in.isOnDynamicPath() && this.hereJoinedBranches != null) {
 					for (OptimizerNode brancher : this.hereJoinedBranches) {
 						PlanNode candAtBrancher = in.getSource().getCandidateAtBranchPoint(brancher);
-						
+
 						if (candAtBrancher == null) {
 							// closed branch between two broadcast variables
 							continue;
 						}
-						
+
 						SourceAndDamReport res = in.getSource().hasDamOnPathDownTo(candAtBrancher);
 						if (res == NOT_FOUND) {
 							throw new CompilerException("Bug: Tracing dams for deadlock detection is broken.");
@@ -453,18 +453,18 @@ public abstract class SingleInputNode extends OptimizerNode {
 					}
 				}
 			}
-			
+
 			if (!validCombination) {
 				continue;
 			}
-			
+
 			if (requiresPipelinebreaker) {
 				in.setTempMode(in.getTempMode().makePipelineBreaker());
 			}
-			
+
 			final SingleInputPlanNode node = dps.instantiate(in, this);
 			node.setBroadcastInputs(broadcastChannelsCombination);
-			
+
 			// compute how the strategy affects the properties
 			GlobalProperties gProps = in.getGlobalProperties().clone();
 			LocalProperties lProps = in.getLocalProperties().clone();
@@ -474,7 +474,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 			// filter by the user code field copies
 			gProps = gProps.filterBySemanticProperties(getSemanticPropertiesForGlobalPropertyFiltering(), 0);
 			lProps = lProps.filterBySemanticProperties(getSemanticPropertiesForLocalPropertyFiltering(), 0);
-			
+
 			// apply
 			node.initProperties(gProps, lProps);
 			node.updatePropertiesWithUniqueSets(getUniqueFields());
@@ -485,7 +485,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 	// --------------------------------------------------------------------------------------------
 	//                                     Branch Handling
 	// --------------------------------------------------------------------------------------------
-	
+
 	@Override
 	public void computeUnclosedBranchStack() {
 		if (this.openBranches != null) {
@@ -494,13 +494,13 @@ public abstract class SingleInputNode extends OptimizerNode {
 
 		addClosedBranches(getPredecessorNode().closedBranchingNodes);
 		List<UnclosedBranchDescriptor> fromInput = getPredecessorNode().getBranchesForParent(this.inConn);
-		
+
 		// handle the data flow branching for the broadcast inputs
 		List<UnclosedBranchDescriptor> result = computeUnclosedBranchStackForBroadcastInputs(fromInput);
-		
+
 		this.openBranches = (result == null || result.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : result;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	//                                     Miscellaneous
 	// --------------------------------------------------------------------------------------------

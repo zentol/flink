@@ -50,7 +50,7 @@ public final class Utils {
 			return new FieldList(cols);
 		}
 	}
-	
+
 	public static Ordering createOrdering(FieldList fields, boolean[] directions) {
 		final Ordering o = new Ordering();
 		for (int i = 0; i < fields.size(); i++) {
@@ -58,7 +58,7 @@ public final class Utils {
 		}
 		return o;
 	}
-	
+
 	public static Ordering createOrdering(FieldList fields) {
 		final Ordering o = new Ordering();
 		for (int i = 0; i < fields.size(); i++) {
@@ -66,7 +66,7 @@ public final class Utils {
 		}
 		return o;
 	}
-	
+
 	public static boolean[] getDirections(Ordering o, int numFields) {
 		final boolean[] dirs = o.getFieldSortDirections();
 		if (dirs.length == numFields) {
@@ -112,9 +112,9 @@ public final class Utils {
 		}
 		return orders;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * No instantiation.
 	 */

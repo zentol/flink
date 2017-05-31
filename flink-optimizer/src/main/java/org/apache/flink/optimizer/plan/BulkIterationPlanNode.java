@@ -32,15 +32,15 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.FOUND_
 import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.FOUND_SOURCE_AND_DAM;
 
 public class BulkIterationPlanNode extends SingleInputPlanNode implements IterationPlanNode {
-	
+
 	private final BulkPartialSolutionPlanNode partialSolutionPlanNode;
-	
+
 	private final PlanNode rootOfStepFunction;
-	
+
 	private PlanNode rootOfTerminationCriterion;
-	
+
 	private TypeSerializerFactory<?> serializerForIterationChannel;
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public BulkIterationPlanNode(BulkIterationNode template, String nodeName, Channel input,
@@ -52,7 +52,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 
 		mergeBranchPlanMaps();
 	}
-	
+
 	public BulkIterationPlanNode(BulkIterationNode template, String nodeName, Channel input,
 			BulkPartialSolutionPlanNode pspn, PlanNode rootOfStepFunction, PlanNode rootOfTerminationCriterion)
 	{
@@ -61,7 +61,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public BulkIterationNode getIterationNode() {
 		if (this.template instanceof BulkIterationNode) {
 			return (BulkIterationNode) this.template;
@@ -69,25 +69,25 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public BulkPartialSolutionPlanNode getPartialSolutionPlanNode() {
 		return this.partialSolutionPlanNode;
 	}
-	
+
 	public PlanNode getRootOfStepFunction() {
 		return this.rootOfStepFunction;
 	}
-	
+
 	public PlanNode getRootOfTerminationCriterion() {
 		return this.rootOfTerminationCriterion;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	public TypeSerializerFactory<?> getSerializerForIterationChannel() {
 		return serializerForIterationChannel;
 	}
-	
+
 	public void setSerializerForIterationChannel(TypeSerializerFactory<?> serializerForIterationChannel) {
 		this.serializerForIterationChannel = serializerForIterationChannel;
 	}
@@ -95,16 +95,16 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	public void setCosts(Costs nodeCosts) {
 		// add the costs from the step function
 		nodeCosts.addCosts(this.rootOfStepFunction.getCumulativeCosts());
-		
+
 		// add the costs for the termination criterion, if it exists
 		// the costs are divided at branches, so we can simply add them up
 		if (rootOfTerminationCriterion != null) {
 			nodeCosts.addCosts(this.rootOfTerminationCriterion.getCumulativeCosts());
 		}
-		
+
 		super.setCosts(nodeCosts);
 	}
-	
+
 	public int getMemoryConsumerWeight() {
 		return 1;
 	}
@@ -114,7 +114,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 		if (source == this) {
 			return FOUND_SOURCE;
 		}
-		
+
 		SourceAndDamReport fromOutside = super.hasDamOnPathDownTo(source);
 
 		if (fromOutside == FOUND_SOURCE_AND_DAM) {
@@ -132,7 +132,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 	@Override
 	public void acceptForStepFunction(Visitor<PlanNode> visitor) {
 		this.rootOfStepFunction.accept(visitor);
-		
+
 		if(this.rootOfTerminationCriterion != null) {
 			this.rootOfTerminationCriterion.accept(visitor);
 		}
@@ -145,7 +145,7 @@ public class BulkIterationPlanNode extends SingleInputPlanNode implements Iterat
 			if (branchPlan == null) {
 				branchPlan = new HashMap<OptimizerNode, PlanNode>(6);
 			}
-			
+
 			if (!branchPlan.containsKey(brancher)) {
 				PlanNode selectedCandidate = null;
 

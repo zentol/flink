@@ -41,7 +41,7 @@ public class CoGroupRawNode extends TwoInputNode {
 	// --------------------------------------------------------------------------------------------
 	/**
 	 * Gets the operator for this CoGroup node.
-	 * 
+	 *
 	 * @return The CoGroup operator.
 	 */
 	@Override

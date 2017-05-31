@@ -37,12 +37,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ *
  */
 public class CoGroupRawDescriptor extends OperatorDescriptorDual {
 
-	private final Ordering ordering1;		// ordering on the first input 
-	private final Ordering ordering2;		// ordering on the second input 
+	private final Ordering ordering1;		// ordering on the first input
+	private final Ordering ordering2;		// ordering on the second input
 
 	public CoGroupRawDescriptor(FieldList keys1, FieldList keys2) {
 		this(keys1, keys2, null, null);
@@ -160,13 +160,13 @@ public class CoGroupRawDescriptor extends OperatorDescriptorDual {
 		LocalProperties comb = LocalProperties.combine(in1, in2);
 		return comb.clearUniqueFieldSets();
 	}
-	
+
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
 			GlobalProperties produced1, GlobalProperties produced2)
 	{
-		return produced1.getPartitioning() == produced2.getPartitioning() && 
-				(produced1.getCustomPartitioner() == null ? 
+		return produced1.getPartitioning() == produced2.getPartitioning() &&
+				(produced1.getCustomPartitioner() == null ?
 					produced2.getCustomPartitioner() == null :
 					produced1.getCustomPartitioner().equals(produced2.getCustomPartitioner()));
 	}

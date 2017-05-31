@@ -44,28 +44,28 @@ import org.apache.flink.runtime.operators.shipping.ShipStrategyType;
  * </ul>
  */
 public final class RequestedGlobalProperties implements Cloneable {
-	
+
 	private PartitioningProperty partitioning;	// the type partitioning
-	
+
 	private FieldSet partitioningFields;		// the fields which are partitioned
-	
+
 	private Ordering ordering;					// order of the partitioned fields, if it is an ordered (range) range partitioning
-	
+
 	private DataDistribution dataDistribution;	// optional data distribution, for a range partitioning
-	
+
 	private Partitioner<?> customPartitioner;	// optional, partitioner for custom partitioning
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Initializes the global properties with no partitioning.
 	 */
 	public RequestedGlobalProperties() {
 		this.partitioning = PartitioningProperty.RANDOM_PARTITIONED;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Sets these properties to request a hash partitioning on the given fields.
 	 *
@@ -87,7 +87,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	public void setRangePartitioned(Ordering ordering) {
 		this.setRangePartitioned(ordering, null);
 	}
-	
+
 	public void setRangePartitioned(Ordering ordering, DataDistribution dataDistribution) {
 		if (ordering == null) {
 			throw new NullPointerException();
@@ -116,7 +116,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
 	}
-	
+
 	public void setRandomPartitioning() {
 		this.partitioning = PartitioningProperty.RANDOM_PARTITIONED;
 		this.partitioningFields = null;
@@ -128,13 +128,13 @@ public final class RequestedGlobalProperties implements Cloneable {
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setFullyReplicated() {
 		this.partitioning = PartitioningProperty.FULL_REPLICATION;
 		this.partitioningFields = null;
 		this.ordering = null;
 	}
-	
+
 	public void setForceRebalancing() {
 		this.partitioning = PartitioningProperty.FORCED_REBALANCED;
 		this.partitioningFields = null;
@@ -154,7 +154,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 		if (partitionedFields == null || partitioner == null) {
 			throw new NullPointerException();
 		}
-		
+
 		this.partitioning = PartitioningProperty.CUSTOM_PARTITIONING;
 		this.partitioningFields = partitionedFields;
 		this.ordering = null;
@@ -163,16 +163,16 @@ public final class RequestedGlobalProperties implements Cloneable {
 
 	/**
 	 * Gets the partitioning property.
-	 * 
+	 *
 	 * @return The partitioning property.
 	 */
 	public PartitioningProperty getPartitioning() {
 		return partitioning;
 	}
-	
+
 	/**
 	 * Gets the fields on which the data is partitioned.
-	 * 
+	 *
 	 * @return The partitioning fields.
 	 */
 	public FieldSet getPartitionedFields() {
@@ -181,25 +181,25 @@ public final class RequestedGlobalProperties implements Cloneable {
 
 	/**
 	 * Gets the key order.
-	 * 
+	 *
 	 * @return The key order.
 	 */
 	public Ordering getOrdering() {
 		return this.ordering;
 	}
-	
+
 	/**
 	 * Gets the data distribution.
-	 * 
+	 *
 	 * @return The data distribution.
 	 */
 	public DataDistribution getDataDistribution() {
 		return this.dataDistribution;
 	}
-	
+
 	/**
 	 * Gets the custom partitioner associated with these properties.
-	 * 
+	 *
 	 * @return The custom partitioner associated with these properties.
 	 */
 	public Partitioner<?> getCustomPartitioner() {
@@ -293,7 +293,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	/**
 	 * Checks, if this set of interesting properties, is met by the given
 	 * produced properties.
-	 * 
+	 *
 	 * @param props The properties for which to check whether they meet these properties.
 	 * @return True, if the properties are met, false otherwise.
 	 */
@@ -337,7 +337,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	/**
 	 * Parametrizes the ship strategy fields of a channel such that the channel produces
 	 * the desired global properties.
-	 * 
+	 *
 	 * @param channel The channel to parametrize.
 	 * @param globalDopChange Flag indicating whether the parallelism changes
 	 *                        between sender and receiver.
@@ -368,7 +368,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 			channel.setShipStrategy(shipStrategy, em);
 			return;
 		}
-		
+
 		final GlobalProperties inGlobals = channel.getSource().getGlobalProperties();
 		// if we have no global parallelism change, check if we have already compatible global properties
 		if (!globalDopChange && isMetBy(inGlobals)) {
@@ -376,7 +376,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 			channel.setShipStrategy(ShipStrategyType.FORWARD, em);
 			return;
 		}
-		
+
 		// if we fall through the conditions until here, we need to re-establish
 		ShipStrategyType shipType;
 		FieldList partitionKeys;
@@ -398,7 +398,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 				sortDirection = null;
 				partitioner = null;
 				break;
-			
+
 			case RANGE_PARTITIONED:
 				shipType = ShipStrategyType.PARTITION_RANGE;
 				partitionKeys = this.ordering.getInvolvedIndexes();
@@ -451,7 +451,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 			RequestedGlobalProperties other = (RequestedGlobalProperties) obj;
 			return (ordering == other.getOrdering() || (ordering != null && ordering.equals(other.getOrdering())))
 					&& (partitioning == other.getPartitioning())
-					&& (partitioningFields == other.partitioningFields || 
+					&& (partitioningFields == other.partitioningFields ||
 							(partitioningFields != null && partitioningFields.equals(other.getPartitionedFields())));
 		} else {
 			return false;
@@ -460,8 +460,8 @@ public final class RequestedGlobalProperties implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "Requested Global Properties [partitioning=" + partitioning + 
-			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) + 
+		return "Requested Global Properties [partitioning=" + partitioning +
+			(this.partitioningFields == null ? "" : ", on fields " + this.partitioningFields) +
 			(this.ordering == null ? "" : ", with ordering " + this.ordering) + "]";
 	}
 

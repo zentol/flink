@@ -91,34 +91,34 @@ public class Optimizer {
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a <b>Forward</b> strategy on the
 	 * input channel, i.e. no redistribution of any kind.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_FORWARD = "SHIP_FORWARD";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a random repartition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_REPARTITION= "SHIP_REPARTITION";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a hash-partition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
 	 */
 	public static final String HINT_SHIP_STRATEGY_REPARTITION_HASH = "SHIP_REPARTITION_HASH";
-	
+
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a range-partition strategy.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
@@ -128,7 +128,7 @@ public class Optimizer {
 	/**
 	 * Value for the shipping strategy compiler hint that enforces a <b>broadcast</b> strategy on the
 	 * input channel.
-	 * 
+	 *
 	 * @see #HINT_SHIP_STRATEGY
 	 * @see #HINT_SHIP_STRATEGY_FIRST_INPUT
 	 * @see #HINT_SHIP_STRATEGY_SECOND_INPUT
@@ -148,56 +148,56 @@ public class Optimizer {
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort based</b> local strategy.
 	 * For example, a <i>Reduce</i> operator will sort the data to group it.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT = "LOCAL_STRATEGY_SORT";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort based</b> local strategy.
 	 * During sorting a combine method is repeatedly applied to reduce the data volume.
 	 * For example, a <i>Reduce</i> operator will sort the data to group it.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_COMBINING_SORT = "LOCAL_STRATEGY_COMBINING_SORT";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy on both
-	 * inputs with subsequent merging of inputs. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * inputs with subsequent merging of inputs.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_BOTH_MERGE = "LOCAL_STRATEGY_SORT_BOTH_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy.
 	 * The first input is sorted, the second input is assumed to be sorted. After sorting both inputs are merged.
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_FIRST_MERGE = "LOCAL_STRATEGY_SORT_FIRST_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>sort merge based</b> local strategy.
 	 * The second input is sorted, the first input is assumed to be sorted. After sorting both inputs are merged.
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs 
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a sort-merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_SORT_SECOND_MERGE = "LOCAL_STRATEGY_SORT_SECOND_MERGE";
-	
+
 	/**
 	 * Value for the local strategy compiler hint that enforces a <b>merge based</b> local strategy.
-	 * Both inputs are assumed to be sorted and are merged. 
-	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a merge strategy to find pairs 
+	 * Both inputs are assumed to be sorted and are merged.
+	 * For example, a <i>Match</i> or <i>CoGroup</i> operator will use a merge strategy to find pairs
 	 * of matching keys.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_MERGE = "LOCAL_STRATEGY_MERGE";
@@ -207,7 +207,7 @@ public class Optimizer {
 	 * For example, a <i>Match</i> operator will use a hybrid-hash-join strategy to find pairs of
 	 * matching keys. The <b>first</b> input will be used to build the hash table, the second input will be
 	 * used to probe the table.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_HASH_BUILD_FIRST = "LOCAL_STRATEGY_HASH_BUILD_FIRST";
@@ -217,7 +217,7 @@ public class Optimizer {
 	 * For example, a <i>Match</i> operator will use a hybrid-hash-join strategy to find pairs of
 	 * matching keys. The <b>second</b> input will be used to build the hash table, the first input will be
 	 * used to probe the table.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_HASH_BUILD_SECOND = "LOCAL_STRATEGY_HASH_BUILD_SECOND";
@@ -228,7 +228,7 @@ public class Optimizer {
 	 * Hence, the data of the first input will be is streamed though, while the data of the second input is stored on
 	 * disk
 	 * and repeatedly read.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST = "LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_FIRST";
@@ -239,7 +239,7 @@ public class Optimizer {
 	 * Hence, the data of the second input will be is streamed though, while the data of the first input is stored on
 	 * disk
 	 * and repeatedly read.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND = "LOCAL_STRATEGY_NESTEDLOOP_STREAMED_OUTER_SECOND";
@@ -250,7 +250,7 @@ public class Optimizer {
 	 * Further more, the first input, being the outer side, will be processed in blocks, and for each block, the second
 	 * input,
 	 * being the inner side, will read repeatedly from disk.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST = "LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_FIRST";
@@ -261,11 +261,11 @@ public class Optimizer {
 	 * Further more, the second input, being the outer side, will be processed in blocks, and for each block, the first
 	 * input,
 	 * being the inner side, will read repeatedly from disk.
-	 * 
+	 *
 	 * @see #HINT_LOCAL_STRATEGY
 	 */
 	public static final String HINT_LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND = "LOCAL_STRATEGY_NESTEDLOOP_BLOCKED_OUTER_SECOND";
-	
+
 	/**
 	 * The log handle that is used by the compiler to log messages.
 	 */
@@ -308,7 +308,7 @@ public class Optimizer {
 	/**
 	 * Creates a new optimizer instance that uses the statistics object to determine properties about the input.
 	 * Given those statistics, the optimizer can make better choices for the execution strategies.
-	 * 
+	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
 	 */
@@ -323,7 +323,7 @@ public class Optimizer {
 	 * of the most robust execution strategies.
 	 *
 	 * The optimizer uses the given cost estimator to compute the costs of the individual operations.
-	 * 
+	 *
 	 * @param estimator The cost estimator to use to cost the individual operations.
 	 */
 	public Optimizer(CostEstimator estimator, Configuration config) {
@@ -335,7 +335,7 @@ public class Optimizer {
 	 * Given those statistics, the optimizer can make better choices for the execution strategies.
 	 *
 	 * The optimizer uses the given cost estimator to compute the costs of the individual operations.
-	 * 
+	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
 	 * @param estimator
@@ -356,15 +356,15 @@ public class Optimizer {
 			this.defaultParallelism = 1;
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                             Getters / Setters
 	// ------------------------------------------------------------------------
-	
+
 	public int getDefaultParallelism() {
 		return defaultParallelism;
 	}
-	
+
 	public void setDefaultParallelism(int defaultParallelism) {
 		if (defaultParallelism > 0) {
 			this.defaultParallelism = defaultParallelism;
@@ -372,7 +372,7 @@ public class Optimizer {
 			throw new IllegalArgumentException("Default parallelism cannot be zero or negative.");
 		}
 	}
-	
+
 	// ------------------------------------------------------------------------
 	//                               Compilation
 	// ------------------------------------------------------------------------
@@ -383,7 +383,7 @@ public class Optimizer {
 	 *
 	 * For more details on the optimization phase, see the comments for
 	 * {@link #compile(org.apache.flink.api.common.Plan, org.apache.flink.optimizer.postpass.OptimizerPostPass)}.
-	 * 
+	 *
 	 * @param program The program to be translated.
 	 * @return The optimized plan.
 	 *
@@ -411,12 +411,12 @@ public class Optimizer {
 	 * <li>Enumerate plan alternatives. This cannot be done in the same step as the interesting property computation (as
 	 * opposed to the Database approaches), because we support plans that are not trees.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @param program The program to be translated.
 	 * @param postPasser The function to be used for post passing the optimizer's plan and setting the
 	 *                   data type specific serialization routines.
 	 * @return The optimized plan.
-	 * 
+	 *
 	 * @throws CompilerException
 	 *         Thrown, if the plan is invalid or the optimizer encountered an inconsistent
 	 *         situation during the compilation process.
@@ -425,7 +425,7 @@ public class Optimizer {
 		if (program == null || postPasser == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Beginning compilation of program '" + program.getJobName() + '\'');
 		}
@@ -483,7 +483,7 @@ public class Optimizer {
 		// Propagate the interesting properties top-down through the graph
 		InterestingPropertyVisitor propsVisitor = new InterestingPropertyVisitor(this.costEstimator);
 		rootNode.accept(propsVisitor);
-		
+
 		// perform a sanity check: the root may not have any unclosed branches
 		if (rootNode.getOpenBranches() != null && rootNode.getOpenBranches().size() > 0) {
 			throw new CompilerException("Bug: Logic for branching plans (non-tree plans) has an error, and does not " +
@@ -510,21 +510,21 @@ public class Optimizer {
 
 		// finalize the plan
 		OptimizedPlan plan = new PlanFinalizer().createFinalPlan(bestPlanSinks, program.getJobName(), program);
-		
+
 		plan.accept(new BinaryUnionReplacer());
 
 		plan.accept(new RangePartitionRewriter(plan));
 
 		// post pass the plan. this is the phase where the serialization and comparator code is set
 		postPasser.postPass(plan);
-		
+
 		return plan;
 	}
 
 	/**
 	 * This function performs only the first step to the compilation process - the creation of the optimizer
 	 * representation of the plan. No estimations or enumerations of alternatives are done here.
-	 * 
+	 *
 	 * @param program The plan to generate the optimizer representation for.
 	 * @return The optimizer representation of the plan, as a collection of all data sinks
 	 *         from the plan can be traversed.
@@ -538,7 +538,7 @@ public class Optimizer {
 	// ------------------------------------------------------------------------
 	// Miscellaneous
 	// ------------------------------------------------------------------------
-	
+
 	private OptimizerPostPass getPostPassFromPlan(Plan program) {
 		final String className = program.getPostPassClassName();
 		if (className == null) {

@@ -32,35 +32,35 @@ import java.util.List;
  * Defines the possible global properties for a join.
  */
 public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
-	
+
 	private final boolean broadcastFirstAllowed;
 	private final boolean broadcastSecondAllowed;
 	private final boolean repartitionAllowed;
-	
+
 	private Partitioner<?> customPartitioner;
-	
+
 	protected AbstractJoinDescriptor(FieldList keys1, FieldList keys2) {
 		this(keys1, keys2, true, true, true);
 	}
-	
+
 	protected AbstractJoinDescriptor(FieldList keys1, FieldList keys2,
 			boolean broadcastFirstAllowed, boolean broadcastSecondAllowed, boolean repartitionAllowed)
 	{
 		super(keys1, keys2);
-		
+
 		this.broadcastFirstAllowed = broadcastFirstAllowed;
 		this.broadcastSecondAllowed = broadcastSecondAllowed;
 		this.repartitionAllowed = repartitionAllowed;
 	}
-	
+
 	public void setCustomPartitioner(Partitioner<?> partitioner) {
 		customPartitioner = partitioner;
 	}
-	
+
 	@Override
 	protected List<GlobalPropertiesPair> createPossibleGlobalProperties() {
 		ArrayList<GlobalPropertiesPair> pairs = new ArrayList<GlobalPropertiesPair>();
-		
+
 		if (repartitionAllowed) {
 			// partition both (hash or custom)
 			if (this.customPartitioner == null) {
@@ -95,17 +95,17 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 			} else {
 				partitioned1.setCustomPartitioned(this.keys1, this.customPartitioner);
 			}
-			
+
 			RequestedGlobalProperties partitioned2 = new RequestedGlobalProperties();
 			if (customPartitioner == null) {
 				partitioned2.setAnyPartitioning(this.keys2);
 			} else {
 				partitioned2.setCustomPartitioned(this.keys2, this.customPartitioner);
 			}
-			
+
 			pairs.add(new GlobalPropertiesPair(partitioned1, partitioned2));
 		}
-		
+
 		if (broadcastSecondAllowed) {
 			// replicate second
 			RequestedGlobalProperties any1 = new RequestedGlobalProperties();
@@ -113,7 +113,7 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 			replicated2.setFullyReplicated();
 			pairs.add(new GlobalPropertiesPair(any1, replicated2));
 		}
-		
+
 		if (broadcastFirstAllowed) {
 			// replicate first
 			RequestedGlobalProperties replicated1 = new RequestedGlobalProperties();
@@ -123,7 +123,7 @@ public abstract class AbstractJoinDescriptor extends OperatorDescriptorDual {
 		}
 		return pairs;
 	}
-	
+
 	@Override
 	public boolean areCompatible(RequestedGlobalProperties requested1, RequestedGlobalProperties requested2,
 			GlobalProperties produced1, GlobalProperties produced2)

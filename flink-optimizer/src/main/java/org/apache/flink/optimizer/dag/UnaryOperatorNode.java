@@ -30,9 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UnaryOperatorNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> operators;
-	
+
 	private final String name;
 
 	public UnaryOperatorNode(String name, SingleInputOperator<?, ?, ?> operator, boolean onDynamicPath) {
@@ -42,14 +42,14 @@ public class UnaryOperatorNode extends SingleInputNode {
 		this.operators = new ArrayList<>();
 		this.onDynamicPath = onDynamicPath;
 	}
-	
+
 	public UnaryOperatorNode(String name, FieldSet keys, OperatorDescriptorSingle ... operators) {
 		this(name, keys, Arrays.asList(operators));
 	}
-	
+
 	public UnaryOperatorNode(String name, FieldSet keys, List<OperatorDescriptorSingle> operators) {
 		super(keys);
-		
+
 		this.operators = operators;
 		this.name = name;
 	}

@@ -52,7 +52,7 @@ import java.util.Map;
  * The optimizer's internal representation of a data source.
  */
 public class DataSourceNode extends OptimizerNode {
-	
+
 	private final boolean sequentialInput;
 
 	private final boolean replicatedInput;
@@ -63,17 +63,17 @@ public class DataSourceNode extends OptimizerNode {
 
 	/**
 	 * Creates a new DataSourceNode for the given contract.
-	 * 
+	 *
 	 * @param pactContract
 	 *        The data source contract object.
 	 */
 	public DataSourceNode(GenericDataSourceBase<?, ?> pactContract) {
 		super(pactContract);
-		
+
 		if (pactContract.getUserCodeWrapper().getUserCodeClass() == null) {
 			throw new IllegalArgumentException("Input format has not been set.");
 		}
-		
+
 		if (NonParallelInput.class.isAssignableFrom(pactContract.getUserCodeWrapper().getUserCodeClass())) {
 			setParallelism(1);
 			this.sequentialInput = true;
@@ -101,7 +101,7 @@ public class DataSourceNode extends OptimizerNode {
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -134,10 +134,10 @@ public class DataSourceNode extends OptimizerNode {
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// see, if we have a statistics object that can tell us a bit about the file
 		if (statistics != null) {
-			// instantiate the input format, as this is needed by the statistics 
+			// instantiate the input format, as this is needed by the statistics
 			InputFormat<?, ?> format;
 			String inFormatDescription = "<unknown>";
-			
+
 			try {
 				format = getOperator().getFormatWrapper().getUserCodeObject();
 				Configuration config = getOperator().getParameters();
@@ -156,11 +156,11 @@ public class DataSourceNode extends OptimizerNode {
 			catch (Throwable t) {
 				// we can ignore this error, as it only prevents us to use a cosmetic string
 			}
-			
+
 			// first of all, get the statistics from the cache
 			final String statisticsKey = getOperator().getStatisticsKey();
 			final BaseStatistics cachedStatistics = statistics.getBaseStatistics(statisticsKey);
-			
+
 			BaseStatistics bs = null;
 			try {
 				bs = format.getStatistics(cachedStatistics);
@@ -170,7 +170,7 @@ public class DataSourceNode extends OptimizerNode {
 					Optimizer.LOG.warn("Error obtaining statistics from input format: " + t.getMessage(), t);
 				}
 			}
-			
+
 			if (bs != null) {
 				final long len = bs.getTotalInputSize();
 				if (len == BaseStatistics.SIZE_UNKNOWN) {
@@ -181,7 +181,7 @@ public class DataSourceNode extends OptimizerNode {
 				else if (len >= 0) {
 					this.estimatedOutputSize = len;
 				}
-				
+
 				final long card = bs.getNumberOfRecords();
 				if (card != BaseStatistics.NUM_RECORDS_UNKNOWN) {
 					this.estimatedNumRecords = card;
@@ -243,7 +243,7 @@ public class DataSourceNode extends OptimizerNode {
 	public SemanticProperties getSemanticProperties() {
 		return new EmptySemanticProperties();
 	}
-	
+
 	@Override
 	public void accept(Visitor<OptimizerNode> visitor) {
 		if (visitor.preVisit(this)) {

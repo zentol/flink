@@ -37,13 +37,13 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.NOT_FO
  * Plan candidate node for partial solution of a bulk iteration.
  */
 public class SolutionSetPlanNode extends PlanNode {
-	
+
 	private static final Costs NO_COSTS = new Costs();
-	
+
 	private WorksetIterationPlanNode containingIterationNode;
-	
+
 	private final Channel initialInput;
-	
+
 	public Object postPassHelper;
 
 	public SolutionSetPlanNode(SolutionSetNode template, String nodeName,
@@ -51,34 +51,34 @@ public class SolutionSetPlanNode extends PlanNode {
 			Channel initialInput)
 	{
 		super(template, nodeName, DriverStrategy.NONE);
-		
+
 		this.globalProps = gProps;
 		this.localProps = lProps;
 		this.initialInput = initialInput;
-		
+
 		// the node incurs no cost
 		this.nodeCosts = NO_COSTS;
 		this.cumulativeCosts = NO_COSTS;
-		
+
 		if (initialInput.getSource().branchPlan != null && initialInput.getSource().branchPlan.size() > 0) {
 			if (this.branchPlan == null) {
 				this.branchPlan = new HashMap<OptimizerNode, PlanNode>();
 			}
-			
+
 			this.branchPlan.putAll(initialInput.getSource().branchPlan);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public SolutionSetNode getSolutionSetNode() {
 		return (SolutionSetNode) this.template;
 	}
-	
+
 	public WorksetIterationPlanNode getContainingIterationNode() {
 		return this.containingIterationNode;
 	}
-	
+
 	public void setContainingIterationNode(WorksetIterationPlanNode containingIterationNode) {
 		this.containingIterationNode = containingIterationNode;
 	}
@@ -107,7 +107,7 @@ public class SolutionSetPlanNode extends PlanNode {
 		if (source == this) {
 			return FOUND_SOURCE_AND_DAM;
 		}
-		
+
 		SourceAndDamReport res = this.initialInput.getSource().hasDamOnPathDownTo(source);
 		if (res == FOUND_SOURCE_AND_DAM || res == FOUND_SOURCE) {
 			return FOUND_SOURCE_AND_DAM;

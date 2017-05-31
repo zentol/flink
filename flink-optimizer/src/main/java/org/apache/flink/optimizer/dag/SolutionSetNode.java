@@ -33,7 +33,7 @@ import java.util.List;
  * The optimizer's internal representation of the solution set of a workset iteration.
  */
 public class SolutionSetNode extends AbstractPartialSolutionNode {
-	
+
 	private final WorksetIterationNode iterationNode;
 
 	public SolutionSetNode(SolutionSetPlaceHolder<?> psph, WorksetIterationNode iterationNode) {
@@ -42,11 +42,11 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public void setCandidateProperties(GlobalProperties gProps, LocalProperties lProps, Channel initialInput) {
 		this.cachedPlans = Collections.<PlanNode>singletonList(new SolutionSetPlanNode(this, "SolutionSet("+this.getOperator().getName()+")", gProps, lProps, initialInput));
 	}
-	
+
 	public SolutionSetPlanNode getCurrentSolutionSetPlanNode() {
 		if (this.cachedPlans != null) {
 			return (SolutionSetPlanNode) this.cachedPlans.get(0);
@@ -54,21 +54,21 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public WorksetIterationNode getIterationNode() {
 		return this.iterationNode;
 	}
-	
+
 	@Override
 	public void computeOutputEstimates(DataStatistics statistics) {
 		copyEstimates(this.iterationNode.getInitialSolutionSetPredecessorNode());
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 
 	/**
 	 * Gets the contract object for this data source node.
-	 * 
+	 *
 	 * @return The contract.
 	 */
 	@Override
@@ -80,7 +80,7 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 	public String getOperatorName() {
 		return "Solution Set";
 	}
-	
+
 	@Override
 	public void computeUnclosedBranchStack() {
 		if (this.openBranches != null) {
@@ -89,7 +89,7 @@ public class SolutionSetNode extends AbstractPartialSolutionNode {
 
 		DagConnection solutionSetInput = this.iterationNode.getFirstIncomingConnection();
 		OptimizerNode solutionSetSource = solutionSetInput.getSource();
-		
+
 		addClosedBranches(solutionSetSource.closedBranchingNodes);
 		List<UnclosedBranchDescriptor> fromInput = solutionSetSource.getBranchesForParent(solutionSetInput);
 		this.openBranches = (fromInput == null || fromInput.isEmpty()) ? Collections.<UnclosedBranchDescriptor>emptyList() : fromInput;

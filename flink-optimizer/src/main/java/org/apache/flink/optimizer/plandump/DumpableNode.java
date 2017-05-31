@@ -25,17 +25,17 @@ import org.apache.flink.optimizer.plan.PlanNode;
  *
  */
 public interface DumpableNode<T extends DumpableNode<T>> {
-	
+
 	/**
 	 * Gets an iterator over the predecessors.
-	 * 
+	 *
 	 * @return An iterator over the predecessors.
 	 */
 	Iterable<T> getPredecessors();
-	
+
 	Iterable<DumpableConnection<T>> getDumpableInputs();
-	
+
 	OptimizerNode getOptimizerNode();
-	
+
 	PlanNode getPlanNode();
 }

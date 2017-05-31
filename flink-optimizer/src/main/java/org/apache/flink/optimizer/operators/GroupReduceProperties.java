@@ -36,33 +36,33 @@ import java.util.Collections;
 import java.util.List;
 
 public final class GroupReduceProperties extends OperatorDescriptorSingle {
-	
-	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested 
+
+	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested
 
 	private final Partitioner<?> customPartitioner;
 
 	public GroupReduceProperties(FieldSet keys) {
 		this(keys, null, null);
 	}
-	
+
 	public GroupReduceProperties(FieldSet keys, Ordering additionalOrderKeys) {
 		this(keys, additionalOrderKeys, null);
 	}
-	
+
 	public GroupReduceProperties(FieldSet keys, Partitioner<?> customPartitioner) {
 		this(keys, null, customPartitioner);
 	}
-	
+
 	public GroupReduceProperties(FieldSet groupKeys, Ordering additionalOrderKeys, Partitioner<?> customPartitioner) {
 		super(groupKeys);
-		
+
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
 		if (additionalOrderKeys != null) {
 			this.ordering = new Ordering();
 			for (Integer key : this.keyList) {
 				this.ordering.appendOrdering(key, null, Order.ANY);
 			}
-		
+
 			// and next the additional order fields
 			for (int i = 0; i < additionalOrderKeys.getNumberOfFields(); i++) {
 				Integer field = additionalOrderKeys.getFieldNumber(i);
@@ -73,10 +73,10 @@ public final class GroupReduceProperties extends OperatorDescriptorSingle {
 		else {
 			this.ordering = null;
 		}
-		
+
 		this.customPartitioner = customPartitioner;
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.SORTED_GROUP_REDUCE;
@@ -90,7 +90,7 @@ public final class GroupReduceProperties extends OperatorDescriptorSingle {
 	@Override
 	protected List<RequestedGlobalProperties> createPossibleGlobalProperties() {
 		RequestedGlobalProperties props = new RequestedGlobalProperties();
-		
+
 		if (customPartitioner == null) {
 			props.setAnyPartitioning(this.keys);
 		} else {
@@ -109,7 +109,7 @@ public final class GroupReduceProperties extends OperatorDescriptorSingle {
 		}
 		return Collections.singletonList(props);
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		if (gProps.getUniqueFieldCombination() != null && gProps.getUniqueFieldCombination().size() > 0 &&
@@ -120,7 +120,7 @@ public final class GroupReduceProperties extends OperatorDescriptorSingle {
 		gProps.clearUniqueFieldCombinations();
 		return gProps;
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {
 		return lProps.clearUniqueFieldSets();

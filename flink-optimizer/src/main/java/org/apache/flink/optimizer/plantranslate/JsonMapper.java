@@ -40,7 +40,7 @@ public class JsonMapper {
 	public static String getOperatorStrategyString(DriverStrategy strategy) {
 		return getOperatorStrategyString(strategy, "input 1", "input 2");
 	}
-	
+
 	public static String getOperatorStrategyString(DriverStrategy strategy, String firstInputName, String secondInputName) {
 		if (strategy == null) {
 			return "(null)";
@@ -50,10 +50,10 @@ public class JsonMapper {
 				return "Data Source";
 			case SINK:
 				return "Data Sink";
-			
+
 			case NONE:
 				return "(none)";
-				
+
 			case BINARY_NO_OP:
 			case UNARY_NO_OP:
 				return "No-Op";
@@ -88,7 +88,7 @@ public class JsonMapper {
 
 			case HYBRIDHASH_BUILD_FIRST:
 				return "Hybrid Hash (build: " + firstInputName + ")";
-				
+
 			case HYBRIDHASH_BUILD_SECOND:
 				return "Hybrid Hash (build: " + secondInputName + ")";
 
@@ -123,7 +123,7 @@ public class JsonMapper {
 				return strategy.name();
 		}
 	}
-	
+
 	public static String getShipStrategyString(ShipStrategyType shipType) {
 		if (shipType == null) {
 			return "(null)";
@@ -165,21 +165,21 @@ public class JsonMapper {
 				return localStrategy.name();
 		}
 	}
-	
+
 	public static String getOptimizerPropertiesJson(JsonFactory jsonFactory, PlanNode node) {
 		try {
 			final StringWriter writer = new StringWriter(256);
 			final JsonGenerator gen = jsonFactory.createGenerator(writer);
-			
+
 			final OptimizerNode optNode = node.getOptimizerNode();
-			
+
 			gen.writeStartObject();
-			
+
 			// global properties
 			if (node.getGlobalProperties() != null) {
 				GlobalProperties gp = node.getGlobalProperties();
 				gen.writeArrayFieldStart("global_properties");
-				
+
 				addProperty(gen, "Partitioning", gp.getPartitioning().name());
 				if (gp.getPartitioningFields() != null) {
 					addProperty(gen, "Partitioned on", gp.getPartitioningFields().toString());
@@ -196,15 +196,15 @@ public class JsonMapper {
 				else {
 					addProperty(gen, "Uniqueness", optNode.getUniqueFields().toString());
 				}
-				
+
 				gen.writeEndArray();
 			}
-			
+
 			// local properties
 			if (node.getLocalProperties() != null) {
 				LocalProperties lp = node.getLocalProperties();
 				gen.writeArrayFieldStart("local_properties");
-				
+
 				if (lp.getOrdering() != null) {
 					addProperty(gen, "Order", lp.getOrdering().toString());
 				}
@@ -222,29 +222,29 @@ public class JsonMapper {
 				else {
 					addProperty(gen, "Uniqueness", optNode.getUniqueFields().toString());
 				}
-				
+
 				gen.writeEndArray();
 			}
 
 			// output size estimates
 			{
 				gen.writeArrayFieldStart("estimates");
-				
+
 				addProperty(gen, "Est. Output Size", optNode.getEstimatedOutputSize() == -1 ? "(unknown)"
 						: formatNumber(optNode.getEstimatedOutputSize(), "B"));
-				
+
 				addProperty(gen, "Est. Cardinality", optNode.getEstimatedNumRecords() == -1 ? "(unknown)"
 						: formatNumber(optNode.getEstimatedNumRecords()));
 				gen.writeEndArray();
 			}
-			
+
 			// output node cost
 			if (node.getNodeCosts() != null) {
 				gen.writeArrayFieldStart("costs");
 
-				addProperty(gen, "Network", node.getNodeCosts().getNetworkCost() == -1 ? 
+				addProperty(gen, "Network", node.getNodeCosts().getNetworkCost() == -1 ?
 						"(unknown)" : formatNumber(node.getNodeCosts().getNetworkCost(), "B"));
-				addProperty(gen, "Disk I/O", node.getNodeCosts().getDiskCost() == -1 ? 
+				addProperty(gen, "Disk I/O", node.getNodeCosts().getDiskCost() == -1 ?
 						"(unknown)" : formatNumber(node.getNodeCosts().getDiskCost(), "B"));
 				addProperty(gen, "CPU", node.getNodeCosts().getCpuCost() == -1 ?
 						"(unknown)" : formatNumber(node.getNodeCosts().getCpuCost(), ""));
@@ -255,7 +255,7 @@ public class JsonMapper {
 						"(unknown)" : formatNumber(node.getCumulativeCosts().getDiskCost(), "B"));
 				addProperty(gen, "Cumulative CPU", node.getCumulativeCosts().getCpuCost() == -1 ?
 						"(unknown)" : formatNumber(node.getCumulativeCosts().getCpuCost(), ""));
-				
+
 				gen.writeEndArray();
 			}
 
@@ -263,28 +263,28 @@ public class JsonMapper {
 			if (optNode.getOperator().getCompilerHints() != null) {
 				CompilerHints hints = optNode.getOperator().getCompilerHints();
 				CompilerHints defaults = new CompilerHints();
-				
-				String size = hints.getOutputSize() == defaults.getOutputSize() ? 
+
+				String size = hints.getOutputSize() == defaults.getOutputSize() ?
 						"(none)" : String.valueOf(hints.getOutputSize());
-				String card = hints.getOutputCardinality() == defaults.getOutputCardinality() ? 
+				String card = hints.getOutputCardinality() == defaults.getOutputCardinality() ?
 						"(none)" : String.valueOf(hints.getOutputCardinality());
-				String width = hints.getAvgOutputRecordSize() == defaults.getAvgOutputRecordSize() ? 
+				String width = hints.getAvgOutputRecordSize() == defaults.getAvgOutputRecordSize() ?
 						"(none)" : String.valueOf(hints.getAvgOutputRecordSize());
-				String filter = hints.getFilterFactor() == defaults.getFilterFactor() ? 
+				String filter = hints.getFilterFactor() == defaults.getFilterFactor() ?
 						"(none)" : String.valueOf(hints.getFilterFactor());
-				
+
 				gen.writeArrayFieldStart("compiler_hints");
-				
+
 				addProperty(gen, "Output Size (bytes)", size);
 				addProperty(gen, "Output Cardinality", card);
 				addProperty(gen, "Avg. Output Record Size (bytes)", width);
 				addProperty(gen, "Filter Factor", filter);
-				
+
 				gen.writeEndArray();
 			}
 
 			gen.writeEndObject();
-			
+
 			gen.close();
 			return writer.toString();
 		}

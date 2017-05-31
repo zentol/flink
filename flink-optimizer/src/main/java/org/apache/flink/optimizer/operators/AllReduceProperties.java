@@ -51,7 +51,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 			// non forward case.plug in a combiner
 			Channel toCombiner = new Channel(in.getSource());
 			toCombiner.setShipStrategy(ShipStrategyType.FORWARD, DataExchangeMode.PIPELINED);
-			
+
 			// create an input node for combine with same parallelism as input node
 			ReduceNode combinerNode = ((ReduceNode) node).getCombinerUtilityNode();
 			combinerNode.setParallelism(in.getSource().getParallelism());
@@ -60,7 +60,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 					"Combine ("+node.getOperator().getName()+")", toCombiner, DriverStrategy.ALL_REDUCE);
 			combiner.setCosts(new Costs(0, 0));
 			combiner.initProperties(toCombiner.getGlobalProperties(), toCombiner.getLocalProperties());
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(),
 										in.getShipStrategySortOrder(), in.getDataExchangeMode());
@@ -71,7 +71,7 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 											toReducer, DriverStrategy.ALL_REDUCE);
 		}
 	}
-	
+
 	@Override
 	protected List<RequestedGlobalProperties> createPossibleGlobalProperties() {
 		return Collections.singletonList(new RequestedGlobalProperties());
@@ -81,12 +81,12 @@ public final class AllReduceProperties extends OperatorDescriptorSingle {
 	protected List<RequestedLocalProperties> createPossibleLocalProperties() {
 		return Collections.singletonList(new RequestedLocalProperties());
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		return new GlobalProperties();
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {
 		return new LocalProperties();

@@ -34,12 +34,12 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.NOT_FO
  * Plan candidate node for data flow sources that have no input and no special strategies.
  */
 public class SourcePlanNode extends PlanNode {
-	
+
 	private TypeSerializerFactory<?> serializer;
-	
+
 	/**
 	 * Constructs a new source candidate node that uses <i>NONE</i> as its local strategy.
-	 * 
+	 *
 	 * @param template The template optimizer node that this candidate is created for.
 	 */
 	public SourcePlanNode(DataSourceNode template, String nodeName) {
@@ -55,11 +55,11 @@ public class SourcePlanNode extends PlanNode {
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	public DataSourceNode getDataSourceNode() {
 		return (DataSourceNode) this.template;
 	}
-	
+
 	/**
 	 * Gets the serializer from this PlanNode.
 	 *
@@ -68,7 +68,7 @@ public class SourcePlanNode extends PlanNode {
 	public TypeSerializerFactory<?> getSerializer() {
 		return serializer;
 	}
-	
+
 	/**
 	 * Sets the serializer for this PlanNode.
 	 *

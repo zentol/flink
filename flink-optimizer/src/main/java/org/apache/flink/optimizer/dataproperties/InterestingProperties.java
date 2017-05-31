@@ -51,7 +51,7 @@ public class InterestingProperties implements Cloneable  {
 
 	/**
 	 * Private constructor for cloning purposes.
-	 * 
+	 *
 	 * @param globalProps  The global properties for this new object.
 	 * @param localProps The local properties for this new object.
 	 */
@@ -65,11 +65,11 @@ public class InterestingProperties implements Cloneable  {
 	public void addGlobalProperties(RequestedGlobalProperties props) {
 		this.globalProps.add(props);
 	}
-	
+
 	public void addLocalProperties(RequestedLocalProperties props) {
 		this.localProps.add(props);
 	}
-	
+
 	public void addInterestingProperties(InterestingProperties other) {
 		this.globalProps.addAll(other.globalProps);
 		this.localProps.addAll(other.localProps);
@@ -77,7 +77,7 @@ public class InterestingProperties implements Cloneable  {
 
 	/**
 	 * Gets the interesting local properties.
-	 * 
+	 *
 	 * @return The interesting local properties.
 	 */
 	public Set<RequestedLocalProperties> getLocalProperties() {
@@ -86,7 +86,7 @@ public class InterestingProperties implements Cloneable  {
 
 	/**
 	 * Gets the interesting global properties.
-	 * 
+	 *
 	 * @return The interesting global properties.
 	 */
 	public Set<RequestedGlobalProperties> getGlobalProperties() {
@@ -116,7 +116,7 @@ public class InterestingProperties implements Cloneable  {
 		}
 		return iProps;
 	}
-	
+
 	public void dropTrivials() {
 		for (Iterator<RequestedGlobalProperties> iter = this.globalProps.iterator(); iter.hasNext();) {
 			RequestedGlobalProperties gp = iter.next();
@@ -125,7 +125,7 @@ public class InterestingProperties implements Cloneable  {
 				break;
 			}
 		}
-		
+
 		for (Iterator<RequestedLocalProperties> iter = this.localProps.iterator(); iter.hasNext();) {
 			RequestedLocalProperties lp = iter.next();
 			if (lp.isTrivial()) {
@@ -136,7 +136,7 @@ public class InterestingProperties implements Cloneable  {
 	}
 
 	// ------------------------------------------------------------------------
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -159,7 +159,7 @@ public class InterestingProperties implements Cloneable  {
 
 	@Override
 	public String toString() {
-		return "InterestingProperties [globalProps=" + this.globalProps + 
+		return "InterestingProperties [globalProps=" + this.globalProps +
 				", localProps=" + this.localProps + " ]";
 	}
 
@@ -173,7 +173,7 @@ public class InterestingProperties implements Cloneable  {
 		for (RequestedLocalProperties p : this.localProps) {
 			localProps.add(p.clone());
 		}
-		
+
 		return new InterestingProperties(globalProps, localProps);
 	}
 }

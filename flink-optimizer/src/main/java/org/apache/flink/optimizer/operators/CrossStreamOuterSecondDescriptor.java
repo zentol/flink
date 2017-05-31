@@ -22,15 +22,15 @@ import org.apache.flink.optimizer.dataproperties.LocalProperties;
 import org.apache.flink.runtime.operators.DriverStrategy;
 
 public class CrossStreamOuterSecondDescriptor extends CartesianProductDescriptor {
-	
+
 	public CrossStreamOuterSecondDescriptor() {
 		this(true, true);
 	}
-	
+
 	public CrossStreamOuterSecondDescriptor(boolean allowBroadcastFirst, boolean allowBroadcastSecond) {
 		super(allowBroadcastFirst, allowBroadcastSecond);
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.NESTEDLOOP_STREAMED_OUTER_SECOND;

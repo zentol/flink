@@ -30,17 +30,17 @@ import java.util.List;
  * The optimizer's internal representation of a <i>Map</i> operator node.
  */
 public class MapNode extends SingleInputNode {
-	
+
 	private final List<OperatorDescriptorSingle> possibleProperties;
-	
+
 	/**
 	 * Creates a new MapNode for the given operator.
-	 * 
+	 *
 	 * @param operator The map operator.
 	 */
 	public MapNode(SingleInputOperator<?, ?, ?> operator) {
 		super(operator);
-		
+
 		this.possibleProperties = Collections.<OperatorDescriptorSingle>singletonList(new MapDescriptor());
 	}
 
@@ -55,7 +55,7 @@ public class MapNode extends SingleInputNode {
 	}
 
 	/**
-	 * Computes the estimates for the Map operator. 
+	 * Computes the estimates for the Map operator.
 	 * We assume that by default, Map takes one value and transforms it into another value.
 	 * The cardinality consequently stays the same.
 	 */

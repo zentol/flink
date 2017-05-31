@@ -34,11 +34,11 @@ import java.util.List;
  *
  */
 public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
-	
+
 	public HashJoinBuildFirstProperties(FieldList keys1, FieldList keys2) {
 		super(keys1, keys2);
 	}
-	
+
 	public HashJoinBuildFirstProperties(FieldList keys1, FieldList keys2,
 			boolean broadcastFirstAllowed, boolean broadcastSecondAllowed, boolean repartitionAllowed)
 	{
@@ -55,7 +55,7 @@ public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
 		// all properties are possible
 		return Collections.singletonList(new LocalPropertiesPair(new RequestedLocalProperties(), new RequestedLocalProperties()));
 	}
-	
+
 	@Override
 	public boolean areCoFulfilled(RequestedLocalProperties requested1, RequestedLocalProperties requested2,
 			LocalProperties produced1, LocalProperties produced2)
@@ -66,7 +66,7 @@ public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
 	@Override
 	public DualInputPlanNode instantiate(Channel in1, Channel in2, TwoInputNode node) {
 		DriverStrategy strategy;
-		
+
 		if(!in1.isOnDynamicPath() && in2.isOnDynamicPath()) {
 			// sanity check that the first input is cached and remove that cache
 			if (!in1.getTempMode().isCached()) {
@@ -80,7 +80,7 @@ public class HashJoinBuildFirstProperties extends AbstractJoinDescriptor {
 		}
 		return new DualInputPlanNode(node, "Join("+node.getOperator().getName()+")", in1, in2, strategy, this.keys1, this.keys2);
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties in1, LocalProperties in2) {
 		return new LocalProperties();

@@ -21,7 +21,7 @@ package org.apache.flink.optimizer.dag;
 import org.apache.flink.util.Visitor;
 
 final class InterestingPropertiesClearer implements Visitor<OptimizerNode> {
-	
+
 	static final InterestingPropertiesClearer INSTANCE = new InterestingPropertiesClearer();
 
 	@Override

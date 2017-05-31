@@ -46,33 +46,33 @@ import java.util.List;
 
 public final class GroupReduceWithCombineProperties extends OperatorDescriptorSingle {
 	private static final Logger LOG = LoggerFactory.getLogger(GroupReduceWithCombineProperties.class);
-	
-	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested 
-	
+
+	private final Ordering ordering;		// ordering that we need to use if an additional ordering is requested
+
 	private final Partitioner<?> customPartitioner;
 
 	public GroupReduceWithCombineProperties(FieldSet groupKeys) {
 		this(groupKeys, null, null);
 	}
-	
+
 	public GroupReduceWithCombineProperties(FieldSet groupKeys, Ordering additionalOrderKeys) {
 		this(groupKeys, additionalOrderKeys, null);
 	}
-	
+
 	public GroupReduceWithCombineProperties(FieldSet groupKeys, Partitioner<?> customPartitioner) {
 		this(groupKeys, null, customPartitioner);
 	}
-	
+
 	public GroupReduceWithCombineProperties(FieldSet groupKeys, Ordering additionalOrderKeys, Partitioner<?> customPartitioner) {
 		super(groupKeys);
-		
+
 		// if we have an additional ordering, construct the ordering to have primarily the grouping fields
 		if (additionalOrderKeys != null) {
 			this.ordering = new Ordering();
 			for (Integer key : this.keyList) {
 				this.ordering.appendOrdering(key, null, Order.ANY);
 			}
-		
+
 			// and next the additional order fields
 			for (int i = 0; i < additionalOrderKeys.getNumberOfFields(); i++) {
 				Integer field = additionalOrderKeys.getFieldNumber(i);
@@ -82,10 +82,10 @@ public final class GroupReduceWithCombineProperties extends OperatorDescriptorSi
 		} else {
 			this.ordering = null;
 		}
-		
+
 		this.customPartitioner = customPartitioner;
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.SORTED_GROUP_REDUCE;
@@ -124,7 +124,7 @@ public final class GroupReduceWithCombineProperties extends OperatorDescriptorSi
 			combiner.setDriverKeyInfo(in.getLocalStrategyKeys(), in.getLocalStrategySortOrder(), 0);
 			// set grouping comparator key info
 			combiner.setDriverKeyInfo(this.keyList, 1);
-			
+
 			Channel toReducer = new Channel(combiner);
 			toReducer.setShipStrategy(in.getShipStrategy(), in.getShipStrategyKeys(),
 									in.getShipStrategySortOrder(), in.getDataExchangeMode());

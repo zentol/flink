@@ -39,7 +39,7 @@ public class SolutionSetDeltaOperator extends OperatorDescriptorSingle {
 	public SolutionSetDeltaOperator(FieldList partitioningFields) {
 		super(partitioningFields);
 	}
-	
+
 	@Override
 	public DriverStrategy getStrategy() {
 		return DriverStrategy.UNARY_NO_OP;
@@ -61,12 +61,12 @@ public class SolutionSetDeltaOperator extends OperatorDescriptorSingle {
 	protected List<RequestedLocalProperties> createPossibleLocalProperties() {
 		return Collections.singletonList(new RequestedLocalProperties());
 	}
-	
+
 	@Override
 	public GlobalProperties computeGlobalProperties(GlobalProperties gProps) {
 		return gProps;
 	}
-	
+
 	@Override
 	public LocalProperties computeLocalProperties(LocalProperties lProps) {
 		return lProps;

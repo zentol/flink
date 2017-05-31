@@ -25,7 +25,7 @@ import java.io.IOException;
 
 /**
  * Abstract class representing Flink Streaming plans
- * 
+ *
  */
 public abstract class StreamingPlan implements FlinkPlan {
 

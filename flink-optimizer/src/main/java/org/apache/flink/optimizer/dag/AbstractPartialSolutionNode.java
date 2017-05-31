@@ -35,26 +35,26 @@ import java.util.Map;
  * The optimizer's internal representation of the partial solution that is input to a bulk iteration.
  */
 public abstract class AbstractPartialSolutionNode extends OptimizerNode {
-	
+
 	protected AbstractPartialSolutionNode(Operator<?> contract) {
 		super(contract);
 	}
 
 	// --------------------------------------------------------------------------------------------
-	
+
 	protected void copyEstimates(OptimizerNode node) {
 		this.estimatedNumRecords = node.estimatedNumRecords;
 		this.estimatedOutputSize = node.estimatedOutputSize;
 	}
-	
+
 	public abstract IterationNode getIterationNode();
-	
+
 	// --------------------------------------------------------------------------------------------
-	
+
 	public boolean isOnDynamicPath() {
 		return true;
 	}
-	
+
 	public void identifyDynamicPath(int costWeight) {
 		this.onDynamicPath = true;
 		this.costWeight = costWeight;
@@ -72,7 +72,7 @@ public abstract class AbstractPartialSolutionNode extends OptimizerNode {
 	protected void computeOperatorSpecificDefaultEstimates(DataStatistics statistics) {
 		// we do nothing here, because the estimates can only be copied from the iteration input
 	}
-	
+
 	@Override
 	public void computeInterestingPropertiesForInputs(CostEstimator estimator) {
 		// no children, so nothing to compute
@@ -91,7 +91,7 @@ public abstract class AbstractPartialSolutionNode extends OptimizerNode {
 	public SemanticProperties getSemanticProperties() {
 		return new EmptySemanticProperties();
 	}
-	
+
 	@Override
 	protected void readStubAnnotations() {}
 
