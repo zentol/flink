@@ -57,7 +57,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * This tests a fix for FLINK-2540.
  *
- * <p> This test is necessary, because {@link NAryUnionPlanNode}s are not directly translated
+ * <p>This test is necessary, because {@link NAryUnionPlanNode}s are not directly translated
  * to runtime tasks by the {@link JobGraphGenerator}. Instead, the network stack unions the
  * inputs by directly reading from multiple inputs (via {@link UnionInputGate}).
  *

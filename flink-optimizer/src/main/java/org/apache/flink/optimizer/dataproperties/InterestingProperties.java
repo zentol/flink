@@ -33,7 +33,7 @@ import java.util.Set;
  * example, tells its child that partitioned data would help. If the child is a join operator, it can use
  * that knowledge to favor strategies that leave the data in a partitioned form.
  *
- * More on optimization with interesting properties can be found in the works on
+ * <p>More on optimization with interesting properties can be found in the works on
  * the volcano- and cascades optimizer framework.
  */
 public class InterestingProperties implements Cloneable  {

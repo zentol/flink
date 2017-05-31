@@ -98,10 +98,10 @@ import java.util.Map.Entry;
  * to a {@link org.apache.flink.runtime.jobgraph.JobGraph}. The translation is not strictly a one-to-one,
  * because some nodes from the OptimizedPlan are collapsed into one job vertex.
  *
- * This translation does not make any decisions or assumptions. All degrees-of-freedom in the execution
+ * <p>This translation does not make any decisions or assumptions. All degrees-of-freedom in the execution
  * of the job are made by the Optimizer, so that this translation becomes a deterministic mapping.
  *
- * The basic method of operation is a top down traversal over the plan graph. On the way down, job vertices
+ * <p>The basic method of operation is a top down traversal over the plan graph. On the way down, job vertices
  * are created for the plan nodes, on the way back up, the nodes connect their predecessors.
  */
 public class JobGraphGenerator implements Visitor<PlanNode> {

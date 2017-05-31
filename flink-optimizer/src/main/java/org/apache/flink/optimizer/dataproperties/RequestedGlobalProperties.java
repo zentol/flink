@@ -69,7 +69,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	/**
 	 * Sets these properties to request a hash partitioning on the given fields.
 	 *
-	 * If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
+	 * <p>If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
 	 * valid partitioning, including subsets. If the fields are given as a {@link FieldList},
 	 * then only an exact partitioning on the fields matches this requested partitioning.
 	 *
@@ -102,7 +102,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	 * Sets these properties to request some partitioning on the given fields. This will allow
 	 * both hash partitioning and range partitioning to match.
 	 *
-	 * If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
+	 * <p>If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
 	 * valid partitioning, including subsets. If the fields are given as a {@link FieldList},
 	 * then only an exact partitioning on the fields matches this requested partitioning.
 	 *
@@ -144,7 +144,7 @@ public final class RequestedGlobalProperties implements Cloneable {
 	/**
 	 * Sets these properties to request a custom partitioning with the given {@link Partitioner} instance.
 	 *
-	 * If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
+	 * <p>If the fields are provided as {@link FieldSet}, then any permutation of the fields is a
 	 * valid partitioning, including subsets. If the fields are given as a {@link FieldList},
 	 * then only an exact partitioning on the fields matches this requested partitioning.
 	 *

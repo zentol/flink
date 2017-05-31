@@ -51,8 +51,8 @@ import java.util.Set;
  * The OptimizerNode is the base class of all nodes in the optimizer DAG. The optimizer DAG is the
  * optimizer's representation of a program, created before the actual optimization (which creates different
  * candidate plans and computes their cost).
- * <p>
- * Nodes in the DAG correspond (almost) one-to-one to the operators in a program. The optimizer DAG is constructed
+ *
+ * <p>Nodes in the DAG correspond (almost) one-to-one to the operators in a program. The optimizer DAG is constructed
  * to hold the additional information that the optimizer needs:
  * <ul>
  *     <li>Estimates of the data size processed by each operator</li>
@@ -952,9 +952,9 @@ public abstract class OptimizerNode implements Visitable<OptimizerNode>, Estimat
 	}
 
 	/**
-	 * Checks whether to candidate plans for the sub-plan of this node are comparable. The two
-	 * alternative plans are comparable, if
-	 *
+	 * Checks whether to candidate plans for the sub-plan of this node are comparable.
+	 * 
+	 * <p>The two alternative plans are comparable, if
 	 * a) There is no branch in the sub-plan of this node
 	 * b) Both candidates have the same candidate as the child at the last open branch.
 	 *

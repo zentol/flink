@@ -59,7 +59,7 @@ import static org.apache.flink.optimizer.plan.PlanNode.SourceAndDamReport.NOT_FO
 /**
  * A node in the optimizer's program representation for an operation with a single input.
  *
- * This class contains all the generic logic for handling branching flows, as well as to
+ * <p>This class contains all the generic logic for handling branching flows, as well as to
  * enumerate candidate execution plans. The subclasses for specific operators simply add logic
  * for cost estimates and specify possible strategies for their execution.
  */

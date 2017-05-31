@@ -53,12 +53,12 @@ import java.util.List;
  * exact descriptions about how the physical execution will take place. It first translates the user
  * program into an internal optimizer representation and then chooses between different alternatives
  * for shipping strategies and local strategies.
- * <p>
- * The basic principle is taken from optimizer works in systems such as Volcano/Cascades and Selinger/System-R/DB2. The
+ *
+ * <p>The basic principle is taken from optimizer works in systems such as Volcano/Cascades and Selinger/System-R/DB2. The
  * optimizer walks from the sinks down, generating interesting properties, and ascends from the sources generating
  * alternative plans, pruning against the interesting properties.
- * <p>
- * The optimizer also assigns the memory to the individual tasks. This is currently done in a very simple fashion: All
+ *
+ * <p>The optimizer also assigns the memory to the individual tasks. This is currently done in a very simple fashion: All
  * sub-tasks that need memory (e.g. reduce or join) are given an equal share of memory.
  */
 public class Optimizer {
@@ -322,7 +322,7 @@ public class Optimizer {
 	 * unknown sizes and hence use only the heuristic cost functions, which result in the selection
 	 * of the most robust execution strategies.
 	 *
-	 * The optimizer uses the given cost estimator to compute the costs of the individual operations.
+	 * <p>The optimizer uses the given cost estimator to compute the costs of the individual operations.
 	 *
 	 * @param estimator The cost estimator to use to cost the individual operations.
 	 */
@@ -334,7 +334,7 @@ public class Optimizer {
 	 * Creates a new optimizer instance that uses the statistics object to determine properties about the input.
 	 * Given those statistics, the optimizer can make better choices for the execution strategies.
 	 *
-	 * The optimizer uses the given cost estimator to compute the costs of the individual operations.
+	 * <p>The optimizer uses the given cost estimator to compute the costs of the individual operations.
 	 *
 	 * @param stats
 	 *        The statistics to be used to determine the input properties.
@@ -381,7 +381,7 @@ public class Optimizer {
 	 * Translates the given program to an OptimizedPlan, where all nodes have their local strategy assigned
 	 * and all channels have a shipping strategy assigned.
 	 *
-	 * For more details on the optimization phase, see the comments for
+	 * <p>For more details on the optimization phase, see the comments for
 	 * {@link #compile(org.apache.flink.api.common.Plan, org.apache.flink.optimizer.postpass.OptimizerPostPass)}.
 	 *
 	 * @param program The program to be translated.
@@ -402,7 +402,7 @@ public class Optimizer {
 	 * (local pipe forward, shuffle, broadcast), what exchange mode to use (pipelined, batch),
 	 * where to cache intermediate results, etc,
 	 *
-	 * The optimization happens in multiple phases:
+	 * <p>The optimization happens in multiple phases:
 	 * <ol>
 	 *     <li>Create optimizer dag implementation of the program.
 	 *

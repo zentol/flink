@@ -74,12 +74,11 @@ public class UnionReplacementTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
 	 * Test for FLINK-2662.
 	 *
-	 * Checks that a plan with an union with two outputs is correctly translated.
+	 * <p>Checks that a plan with an union with two outputs is correctly translated.
 	 * The program can be illustrated as follows:
-	 *
+	 * <pre>
 	 * Src1 ----------------\
 	 *                       >-> Union123 -> GroupBy(0) -> Sum -> Output
 	 * Src2 -\              /
@@ -87,13 +86,13 @@ public class UnionReplacementTest extends CompilerTestBase {
 	 * Src3 -/              \
 	 *                       >-> Union234 -> GroupBy(1) -> Sum -> Output
 	 * Src4 ----------------/
-	 *
-	 * The fix for FLINK-2662 translates the union with two output (Union-23) into two separate
+	 * </pre>
+	 * 
+	 * <p>The fix for FLINK-2662 translates the union with two output (Union-23) into two separate
 	 * unions (Union-23_1 and Union-23_2) with one output each. Due to this change, the interesting
 	 * partitioning properties for GroupBy(0) and GroupBy(1) are pushed through Union-23_1 and
 	 * Union-23_2 and do not interfere with each other (which would be the case if Union-23 would
 	 * be a single operator with two outputs).
-	 *
 	 */
 	@Test
 	public void testUnionWithTwoOutputs() throws Exception {
@@ -165,20 +164,19 @@ public class UnionReplacementTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
 	 * Checks that a plan with consecutive UNIONs followed by PartitionByHash is correctly translated.
 	 *
-	 * The program can be illustrated as follows:
-	 *
+	 * <p>The program can be illustrated as follows:
+	 * <pre>
 	 * Src1 -\
 	 *        >-> Union12--<
 	 * Src2 -/              \
 	 *                       >-> Union123 -> PartitionByHash -> Output
 	 * Src3 ----------------/
+	 * </pre>
 	 *
-	 * In the resulting plan, the hash partitioning (ShippingStrategy.PARTITION_HASH) must be
+	 * <p>In the resulting plan, the hash partitioning (ShippingStrategy.PARTITION_HASH) must be
 	 * pushed to the inputs of the unions (Src1, Src2, Src3).
-	 *
 	 */
 	@Test
 	public void testConsecutiveUnionsWithHashPartitioning() throws Exception {
@@ -237,20 +235,19 @@ public class UnionReplacementTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
 	 * Checks that a plan with consecutive UNIONs followed by REBALANCE is correctly translated.
 	 *
-	 * The program can be illustrated as follows:
-	 *
+	 * <p>The program can be illustrated as follows:
+	 * <pre>
 	 * Src1 -\
 	 *        >-> Union12--<
 	 * Src2 -/              \
 	 *                       >-> Union123 -> Rebalance -> Output
 	 * Src3 ----------------/
+	 * </pre>
 	 *
-	 * In the resulting plan, the Rebalance (ShippingStrategy.PARTITION_FORCED_REBALANCE) must be
+	 * <p>In the resulting plan, the Rebalance (ShippingStrategy.PARTITION_FORCED_REBALANCE) must be
 	 * pushed to the inputs of the unions (Src1, Src2, Src3).
-	 *
 	 */
 	@Test
 	public void testConsecutiveUnionsWithRebalance() throws Exception {
@@ -305,20 +302,19 @@ public class UnionReplacementTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
 	 * Checks that a plan with consecutive UNIONs followed by PARTITION_RANGE is correctly translated.
 	 *
-	 * The program can be illustrated as follows:
-	 *
+	 * <p>The program can be illustrated as follows:
+	 * <pre>
 	 * Src1 -\
 	 *        >-> Union12--<
 	 * Src2 -/              \
 	 *                       >-> Union123 -> PartitionByRange -> Output
 	 * Src3 ----------------/
+	 * </pre>
 	 *
-	 * In the resulting plan, the range partitioning must be
+	 * <p>In the resulting plan, the range partitioning must be
 	 * pushed to the inputs of the unions (Src1, Src2, Src3).
-	 *
 	 */
 	@Test
 	public void testConsecutiveUnionsWithRangePartitioning() throws Exception {
@@ -379,11 +375,10 @@ public class UnionReplacementTest extends CompilerTestBase {
 	}
 
 	/**
-	 *
 	 * Checks that a plan with consecutive UNIONs followed by broadcast-fwd JOIN is correctly translated.
 	 *
-	 * The program can be illustrated as follows:
-	 *
+	 * <p>The program can be illustrated as follows:
+	 * <pre>
 	 * Src1 -\
 	 *        >-> Union12--<
 	 * Src2 -/              \
@@ -391,10 +386,10 @@ public class UnionReplacementTest extends CompilerTestBase {
 	 * Src3 ----------------/             /
 	 *                                   /
 	 * Src4 ----------------------------/
+	 * </pre>
 	 *
-	 * In the resulting plan, the broadcasting must be
+	 * <p>In the resulting plan, the broadcasting must be
 	 * pushed to the inputs of the unions (Src1, Src2, Src3).
-	 *
 	 */
 	@Test
 	public void testConsecutiveUnionsWithBroadcast() throws Exception {

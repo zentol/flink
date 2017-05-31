@@ -43,8 +43,8 @@ import java.util.Set;
 /**
  * The representation of a data exchange between to operators. The data exchange can realize a shipping strategy,
  * which established global properties, and a local strategy, which establishes local properties.
- * <p>
- * Because we currently deal only with plans where the operator order is fixed, many properties are equal
+ *
+ * <p>Because we currently deal only with plans where the operator order is fixed, many properties are equal
  * among candidates and are determined prior to the enumeration (such as for example constant/dynamic path membership).
  * Hence, many methods will delegate to the {@code OptimizerNode} that represents the node this candidate was
  * created for.

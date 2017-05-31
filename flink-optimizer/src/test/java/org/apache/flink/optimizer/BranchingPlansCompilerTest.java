@@ -465,7 +465,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 	 *         (SRC A)             (SRC B)
 	 * </pre>
 	 *
-	 * NOTE: this case is currently not caught by the compiler. we should enable the test once it is caught.
+	 * <p>NOTE: this case is currently not caught by the compiler. we should enable the test once it is caught.
 	 */
 	@Test
 	public void testBranchingDisjointPlan() {

@@ -100,8 +100,8 @@ public enum PartitioningProperty {
 	 * Checks, if this property represents a partitioning that is computable.
 	 * A computable partitioning can be recreated through an algorithm. If two sets of data are to
 	 * be co-partitioned, it is crucial, that the partitioning schemes are computable.
-	 * <p>
-	 * Examples for computable partitioning schemes are hash- or range-partitioning. An example for a non-computable
+	 *
+	 * <p>Examples for computable partitioning schemes are hash- or range-partitioning. An example for a non-computable
 	 * partitioning is the implicit partitioning that exists though a globally unique key.
 	 *
 	 * @return True, if this enum constant is a re-computable partitioning.

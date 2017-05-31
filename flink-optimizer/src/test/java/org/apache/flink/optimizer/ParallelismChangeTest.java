@@ -53,7 +53,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 	/**
 	 * Simple Job: Map -> Reduce -> Map -> Reduce. All functions preserve all fields (hence all properties).
 	 *
-	 * Increases parallelism between 1st reduce and 2nd map, so the hash partitioning from 1st reduce is not reusable.
+	 * <p>Increases parallelism between 1st reduce and 2nd map, so the hash partitioning from 1st reduce is not reusable.
 	 * Expected to re-establish partitioning between reduce and map, via hash, because random is a full network
 	 * transit as well.
 	 */
@@ -98,7 +98,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 	/**
 	 * Simple Job: Map -> Reduce -> Map -> Reduce. All functions preserve all fields (hence all properties).
 	 *
-	 * Increases parallelism between 2nd map and 2nd reduce, so the hash partitioning from 1st reduce is not reusable.
+	 * <p>Increases parallelism between 2nd map and 2nd reduce, so the hash partitioning from 1st reduce is not reusable.
 	 * Expected to re-establish partitioning between map and reduce (hash).
 	 */
 	@Test
@@ -143,7 +143,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 	/**
 	 * Simple Job: Map -> Reduce -> Map -> Reduce. All functions preserve all fields (hence all properties).
 	 *
-	 * Increases parallelism between 1st reduce and 2nd map, such that more tasks are on one instance.
+	 * <p>Increases parallelism between 1st reduce and 2nd map, such that more tasks are on one instance.
 	 * Expected to re-establish partitioning between map and reduce via a local hash.
 	 */
 	@Test
@@ -229,7 +229,7 @@ public class ParallelismChangeTest extends CompilerTestBase {
 	/**
 	 * Checks that re-partitioning happens when the inputs of a two-input contract have different parallelisms.
 	 *
-	 * Test Plan:
+	 * <p>Test Plan:
 	 * <pre>
 	 *
 	 * (source) -> reduce -\

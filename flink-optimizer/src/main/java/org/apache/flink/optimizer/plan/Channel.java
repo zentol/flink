@@ -42,10 +42,10 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * A Channel represents the result produced by an operator and the data exchange
  * before the consumption by the target operator.
  *
- * The channel defines and tracks various properties and characteristics of the
+ * <p>The channel defines and tracks various properties and characteristics of the
  * data set and data exchange.
  *
- * Data set characteristics:
+ * <p>Data set characteristics:
  * <ul>
  *     <li>The "global properties" of the data, i.e., how the data is distributed across
  *         partitions</li>
@@ -56,7 +56,7 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  *         would cause the program to return a wrong result.</li>
  * </ul>
  *
- * Data exchange parameters:
+ * <p>Data exchange parameters:
  * <ul>
  *     <li>The "ship strategy", i.e., whether to forward the data, shuffle it, broadcast it, ...</li>
  *     <li>The "ship keys", which are the positions of the key fields in the exchanged records.</li>

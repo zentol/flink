@@ -22,13 +22,13 @@ import org.apache.flink.optimizer.dag.EstimateProvider;
 
 /**
  * A default cost estimator that has access to basic size and cardinality estimates.
- * <p>
- * This estimator works with actual estimates (as far as they are available) and falls back to setting
+ *
+ * <p>This estimator works with actual estimates (as far as they are available) and falls back to setting
  * relative costs, if no estimates are available. That way, the estimator makes sure that plans with
  * different strategies are costed differently, also in the absence of estimates. The different relative
  * costs in the absence of estimates represent this estimator's heuristic guidance towards certain strategies.
- * <p>
- * For robustness reasons, we always assume that the whole data is shipped during a repartition step. We deviate from
+ *
+ * <p>For robustness reasons, we always assume that the whole data is shipped during a repartition step. We deviate from
  * the typical estimate of <code>(n - 1) / n</code> (with <i>n</i> being the number of nodes), because for a parallelism
  * of 1, that would yield a shipping of zero bytes. While this is usually correct, the runtime scheduling may still
  * choose to move tasks to different nodes, so that we do not know that no data is shipped.
