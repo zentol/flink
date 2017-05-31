@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 public class JoinWithDistributionTest extends CompilerTestBase {
 
 	@Test
-	public void JoinWithSameDistributionTest() throws Exception {
+	public void joinWithSameDistributionTest() throws Exception {
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple3<Integer, Integer, Integer>> set1 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);
 		DataSet<Tuple3<Integer, Integer, Integer>> set2 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);
@@ -65,7 +65,7 @@ public class JoinWithDistributionTest extends CompilerTestBase {
 	}
 
 	@Test
-	public void JoinWithDifferentDistributionTest() throws Exception{
+	public void joinWithDifferentDistributionTest() throws Exception{
 		ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Tuple3<Integer, Integer, Integer>> set1 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);
 		DataSet<Tuple3<Integer, Integer, Integer>> set2 = env.readCsvFile(IN_FILE).types(Integer.class, Integer.class, Integer.class);

@@ -102,28 +102,28 @@ public class CoGroupDescriptor extends OperatorDescriptorDual {
 		if (this.customPartitioner == null) {
 
 			// we accept compatible partitionings of any type
-			RequestedGlobalProperties partitioned_left_any = new RequestedGlobalProperties();
-			RequestedGlobalProperties partitioned_right_any = new RequestedGlobalProperties();
-			partitioned_left_any.setAnyPartitioning(this.keys1);
-			partitioned_right_any.setAnyPartitioning(this.keys2);
+			RequestedGlobalProperties partitionedLeftAny = new RequestedGlobalProperties();
+			RequestedGlobalProperties partitionedRightAny = new RequestedGlobalProperties();
+			partitionedLeftAny.setAnyPartitioning(this.keys1);
+			partitionedRightAny.setAnyPartitioning(this.keys2);
 
 			// add strict hash partitioning of both inputs on their full key sets
-			RequestedGlobalProperties partitioned_left_hash = new RequestedGlobalProperties();
-			RequestedGlobalProperties partitioned_right_hash = new RequestedGlobalProperties();
-			partitioned_left_hash.setHashPartitioned(this.keys1);
-			partitioned_right_hash.setHashPartitioned(this.keys2);
+			RequestedGlobalProperties partitionedLeftHash = new RequestedGlobalProperties();
+			RequestedGlobalProperties partitionedRightHash = new RequestedGlobalProperties();
+			partitionedLeftHash.setHashPartitioned(this.keys1);
+			partitionedRightHash.setHashPartitioned(this.keys2);
 
-			return Arrays.asList(new GlobalPropertiesPair(partitioned_left_any, partitioned_right_any),
-					new GlobalPropertiesPair(partitioned_left_hash, partitioned_right_hash));
+			return Arrays.asList(new GlobalPropertiesPair(partitionedLeftAny, partitionedRightAny),
+					new GlobalPropertiesPair(partitionedLeftHash, partitionedRightHash));
 		}
 		else {
-			RequestedGlobalProperties partitioned_left = new RequestedGlobalProperties();
-			partitioned_left.setCustomPartitioned(this.keys1, this.customPartitioner);
+			RequestedGlobalProperties partitionedLeft = new RequestedGlobalProperties();
+			partitionedLeft.setCustomPartitioned(this.keys1, this.customPartitioner);
 
-			RequestedGlobalProperties partitioned_right = new RequestedGlobalProperties();
-			partitioned_right.setCustomPartitioned(this.keys2, this.customPartitioner);
+			RequestedGlobalProperties partitionedRight = new RequestedGlobalProperties();
+			partitionedRight.setCustomPartitioned(this.keys2, this.customPartitioner);
 
-			return Collections.singletonList(new GlobalPropertiesPair(partitioned_left, partitioned_right));
+			return Collections.singletonList(new GlobalPropertiesPair(partitionedLeft, partitionedRight));
 		}
 	}
 

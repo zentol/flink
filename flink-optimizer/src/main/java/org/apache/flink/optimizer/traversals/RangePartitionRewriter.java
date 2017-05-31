@@ -78,7 +78,7 @@ public class RangePartitionRewriter implements Visitor<PlanNode> {
 
 	final static int SAMPLES_PER_PARTITION = 1000;
 
-	final static IdPartitioner idPartitioner = new IdPartitioner();
+	private final static IdPartitioner idPartitioner = new IdPartitioner();
 
 	final OptimizedPlan plan;
 	final Set<IterationPlanNode> visitedIterationNodes;

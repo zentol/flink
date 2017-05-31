@@ -32,8 +32,8 @@ public class ChannelTest {
 
 	@Test
 	public void testGetEstimatesNoReplicationFactor() {
-		final long NUM_RECORD = 1001;
-		final long SIZE = 467131;
+		final long numRecord = 1001;
+		final long size = 467131;
 
 		DataSourceNode source = getSourceNode();
 		SourcePlanNode planNode = new SourcePlanNode(source, "test node");
@@ -44,33 +44,33 @@ public class ChannelTest {
 		Assert.assertEquals(-1, channel.getEstimatedNumRecords());
 
 		// set estimates
-		source.setEstimatedNumRecords(NUM_RECORD);
-		source.setEstimatedOutputSize(SIZE);
-		Assert.assertEquals(SIZE, channel.getEstimatedOutputSize());
-		Assert.assertEquals(NUM_RECORD, channel.getEstimatedNumRecords());
+		source.setEstimatedNumRecords(numRecord);
+		source.setEstimatedOutputSize(size);
+		Assert.assertEquals(size, channel.getEstimatedOutputSize());
+		Assert.assertEquals(numRecord, channel.getEstimatedNumRecords());
 	}
 
 	@Test
 	public void testGetEstimatesWithReplicationFactor() {
-		final long NUM_RECORD = 1001;
-		final long SIZE = 467131;
+		final long numRecord = 1001;
+		final long size = 467131;
 
-		final int REPLICATION = 23;
+		final int replication = 23;
 
 		DataSourceNode source = getSourceNode();
 		SourcePlanNode planNode = new SourcePlanNode(source, "test node");
 		Channel channel = new Channel(planNode);
-		channel.setReplicationFactor(REPLICATION);
+		channel.setReplicationFactor(replication);
 
 		// no estimates here
 		Assert.assertEquals(-1, channel.getEstimatedOutputSize());
 		Assert.assertEquals(-1, channel.getEstimatedNumRecords());
 
 		// set estimates
-		source.setEstimatedNumRecords(NUM_RECORD);
-		source.setEstimatedOutputSize(SIZE);
-		Assert.assertEquals(SIZE * REPLICATION, channel.getEstimatedOutputSize());
-		Assert.assertEquals(NUM_RECORD * REPLICATION, channel.getEstimatedNumRecords());
+		source.setEstimatedNumRecords(numRecord);
+		source.setEstimatedOutputSize(size);
+		Assert.assertEquals(size * replication, channel.getEstimatedOutputSize());
+		Assert.assertEquals(numRecord * replication, channel.getEstimatedNumRecords());
 	}
 
 //	private static final OptimizerNode getSingleInputNode() {

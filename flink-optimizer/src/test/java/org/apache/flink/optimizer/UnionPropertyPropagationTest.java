@@ -94,7 +94,7 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 
 	@Test
 	public void testUnion2() {
-		final int NUM_INPUTS = 4;
+		final int numInputs = 4;
 
 		// construct the plan it will be multiple flat maps, all unioned
 		// and the "unioned" inputDataSet will be grouped
@@ -103,7 +103,7 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 		DataSet<String> source = env.readTextFile(IN_FILE);
 		DataSet<Tuple2<String, Integer>> lastUnion = source.flatMap(new DummyFlatMap());
 
-		for (int i = 1; i< NUM_INPUTS; i++){
+		for (int i = 1; i< numInputs; i++){
 			lastUnion = lastUnion.union(source.flatMap(new DummyFlatMap()));
 		}
 
@@ -148,7 +148,7 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 								inConn.getShipStrategy() == ShipStrategyType.PARTITION_HASH);
 					}
 
-					Assert.assertTrue("NAryUnion should have " + NUM_INPUTS + " inputs", numberInputs == NUM_INPUTS);
+					Assert.assertTrue("NAryUnion should have " + numInputs + " inputs", numberInputs == numInputs);
 					return false;
 				}
 				return true;

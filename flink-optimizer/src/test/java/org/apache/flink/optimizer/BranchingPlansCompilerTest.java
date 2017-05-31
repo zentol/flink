@@ -62,7 +62,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 	@Test
 	public void testCostComputationWithMultipleDataSinks() {
-		final int SINKS = 5;
+		final int sinks = 5;
 
 		try {
 			ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
@@ -73,7 +73,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			DataSet<Long> mappedA = source.map(new IdentityMapper<Long>());
 			DataSet<Long> mappedC = source.map(new IdentityMapper<Long>());
 
-			for (int sink = 0; sink < SINKS; sink++) {
+			for (int sink = 0; sink < sinks; sink++) {
 				mappedA.output(new DiscardingOutputFormat<Long>());
 				mappedC.output(new DiscardingOutputFormat<Long>());
 			}
@@ -845,11 +845,11 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 			env.setParallelism(100);
 
 			DataSet<Long> input = env.generateSequence(1, 10);
-			DataSet<Long> bc_input = env.generateSequence(1, 10);
+			DataSet<Long> bcInput = env.generateSequence(1, 10);
 
 			input
-				.map(new IdentityMapper<Long>()).withBroadcastSet(bc_input, "name1")
-				.map(new IdentityMapper<Long>()).withBroadcastSet(bc_input, "name2")
+				.map(new IdentityMapper<Long>()).withBroadcastSet(bcInput, "name1")
+				.map(new IdentityMapper<Long>()).withBroadcastSet(bcInput, "name2")
 				.output(new DiscardingOutputFormat<Long>());
 
 			Plan plan = env.createProgramPlan();
@@ -869,18 +869,18 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			DataSet<Tuple2<Long, Long>> input = env.generateSequence(1, 10).map(new Duplicator<Long>()).name("proper input");
 
-			DataSet<Long> bc_input1 = env.generateSequence(1, 10).name("BC input 1");
-			DataSet<Long> bc_input2 = env.generateSequence(1, 10).name("BC input 1");
+			DataSet<Long> bcInput1 = env.generateSequence(1, 10).name("BC input 1");
+			DataSet<Long> bcInput2 = env.generateSequence(1, 10).name("BC input 1");
 
 			DataSet<Tuple2<Long, Long>> joinInput1 =
 					input.map(new IdentityMapper<Tuple2<Long,Long>>())
-						.withBroadcastSet(bc_input1.map(new IdentityMapper<Long>()), "bc1")
-						.withBroadcastSet(bc_input2, "bc2");
+						.withBroadcastSet(bcInput1.map(new IdentityMapper<Long>()), "bc1")
+						.withBroadcastSet(bcInput2, "bc2");
 
 			DataSet<Tuple2<Long, Long>> joinInput2 =
 					input.map(new IdentityMapper<Tuple2<Long,Long>>())
-						.withBroadcastSet(bc_input1, "bc1")
-						.withBroadcastSet(bc_input2, "bc2");
+						.withBroadcastSet(bcInput1, "bc1")
+						.withBroadcastSet(bcInput2, "bc2");
 
 			DataSet<Tuple2<Long, Long>> joinResult = joinInput1
 				.join(joinInput2, JoinHint.REPARTITION_HASH_FIRST).where(0).equalTo(1)
@@ -888,7 +888,7 @@ public class BranchingPlansCompilerTest extends CompilerTestBase {
 
 			input
 				.map(new IdentityMapper<Tuple2<Long,Long>>())
-					.withBroadcastSet(bc_input1, "bc1")
+					.withBroadcastSet(bcInput1, "bc1")
 				.union(joinResult)
 				.output(new DiscardingOutputFormat<Tuple2<Long, Long>>());
 
