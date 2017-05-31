@@ -348,7 +348,7 @@ public class WorksetIterationNode extends TwoInputNode implements IterationNode 
 		{
 			List<PlanNode> newCandidates = new ArrayList<PlanNode>();
 
-			for (Iterator<PlanNode> planDeleter = worksetCandidates.iterator(); planDeleter.hasNext(); ) {
+			for (Iterator<PlanNode> planDeleter = worksetCandidates.iterator(); planDeleter.hasNext();) {
 				PlanNode candidate = planDeleter.next();
 
 				GlobalProperties atEndGlobal = candidate.getGlobalProperties();

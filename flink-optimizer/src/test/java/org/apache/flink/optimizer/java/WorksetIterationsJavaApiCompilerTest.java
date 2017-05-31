@@ -91,8 +91,8 @@ public class WorksetIterationsJavaApiCompilerTest extends CompilerTestBase {
 			ShipStrategyType ss1 = deltaMapper.getInput().getShipStrategy();
 			ShipStrategyType ss2 = deltaMapper.getOutgoingChannels().get(0).getShipStrategy();
 
-			assertTrue( (ss1 == ShipStrategyType.FORWARD && ss2 == ShipStrategyType.PARTITION_HASH) ||
-						(ss2 == ShipStrategyType.FORWARD && ss1 == ShipStrategyType.PARTITION_HASH) );
+			assertTrue((ss1 == ShipStrategyType.FORWARD && ss2 == ShipStrategyType.PARTITION_HASH) ||
+						(ss2 == ShipStrategyType.FORWARD && ss1 == ShipStrategyType.PARTITION_HASH));
 
 			new JobGraphGenerator().compileJobGraph(oPlan);
 		}

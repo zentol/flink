@@ -129,9 +129,9 @@ public class UnionPropertyPropagationTest extends CompilerTestBase {
 				if (visitable instanceof SingleInputPlanNode && visitable.getProgramOperator() instanceof GroupReduceOperatorBase){
 					final Channel inConn = ((SingleInputPlanNode) visitable).getInput();
 					Assert.assertTrue("Union should just forward the Partitioning",
-							inConn.getShipStrategy() == ShipStrategyType.FORWARD );
+							inConn.getShipStrategy() == ShipStrategyType.FORWARD);
 					Assert.assertTrue("Union Node should be under Group operator",
-							inConn.getSource() instanceof NAryUnionPlanNode );
+							inConn.getSource() instanceof NAryUnionPlanNode);
 				}
 
 				/* Test on the union input connections

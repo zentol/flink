@@ -303,7 +303,7 @@ public class BulkIterationNode extends SingleInputNode implements IterationNode 
 		{
 			List<PlanNode> newCandidates = new ArrayList<PlanNode>();
 
-			for (Iterator<PlanNode> planDeleter = candidates.iterator(); planDeleter.hasNext(); ) {
+			for (Iterator<PlanNode> planDeleter = candidates.iterator(); planDeleter.hasNext();) {
 				PlanNode candidate = planDeleter.next();
 
 				GlobalProperties atEndGlobal = candidate.getGlobalProperties();

@@ -123,7 +123,7 @@ public class JoinNode extends TwoInputNode {
 			if (Optimizer.HINT_LOCAL_STRATEGY_SORT_BOTH_MERGE.equals(localStrategy) ||
 				Optimizer.HINT_LOCAL_STRATEGY_SORT_FIRST_MERGE.equals(localStrategy) ||
 				Optimizer.HINT_LOCAL_STRATEGY_SORT_SECOND_MERGE.equals(localStrategy) ||
-				Optimizer.HINT_LOCAL_STRATEGY_MERGE.equals(localStrategy) )
+				Optimizer.HINT_LOCAL_STRATEGY_MERGE.equals(localStrategy))
 			{
 				fixedDriverStrat = new SortMergeInnerJoinDescriptor(this.keys1, this.keys2);
 			}

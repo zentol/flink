@@ -315,7 +315,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 		List<DagConnection> broadcastConnections = getBroadcastConnections();
 		List<String> broadcastConnectionNames = getBroadcastConnectionNames();
 
-		for (int i = 0; i < broadcastConnections.size(); i++ ) {
+		for (int i = 0; i < broadcastConnections.size(); i++) {
 			DagConnection broadcastConnection = broadcastConnections.get(i);
 			String broadcastConnectionName = broadcastConnectionNames.get(i);
 			List<PlanNode> broadcastPlanCandidates = broadcastConnection.getSource().getAlternativePlans(estimator);
@@ -461,7 +461,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 						outer:
 						for (GlobalPropertiesPair gpp : allGlobalPairs) {
 							if (gpp.getProperties1().isMetBy(c1.getGlobalProperties()) &&
-								gpp.getProperties2().isMetBy(c2.getGlobalProperties()) ) {
+								gpp.getProperties2().isMetBy(c2.getGlobalProperties())) {
 								for (OperatorDescriptorDual desc : getProperties()) {
 									if (desc.areCompatible(gpp.getProperties1(), gpp.getProperties2(),
 											c1.getGlobalProperties(), c2.getGlobalProperties())) {
@@ -533,7 +533,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 				for (OperatorDescriptorDual dps: getProperties()) {
 					for (LocalPropertiesPair lpp : dps.getPossibleLocalProperties()) {
 						if (lpp.getProperties1().isMetBy(in1.getLocalProperties()) &&
-							lpp.getProperties2().isMetBy(in2.getLocalProperties()) ) {
+							lpp.getProperties2().isMetBy(in2.getLocalProperties())) {
 							// valid combination
 							// for non trivial local properties, we need to check that they are co compatible
 							// (such as when some sort order is requested, that both are the same sort order
@@ -678,7 +678,7 @@ public abstract class TwoInputNode extends OptimizerNode {
 			}
 
 			// okay combinations are both all dam or both no dam
-			if ( (damOnAllLeftPaths & damOnAllRightPaths) | (!someDamOnLeftPaths & !someDamOnRightPaths) ) {
+			if ((damOnAllLeftPaths & damOnAllRightPaths) | (!someDamOnLeftPaths & !someDamOnRightPaths)) {
 				// good, either both materialize already on the way, or both fully pipeline
 			} else {
 				if (someDamOnLeftPaths & !damOnAllRightPaths) {

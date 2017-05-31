@@ -257,7 +257,7 @@ public abstract class SingleInputNode extends OptimizerNode {
 		List<DagConnection> broadcastConnections = getBroadcastConnections();
 		List<String> broadcastConnectionNames = getBroadcastConnectionNames();
 
-		for (int i = 0; i < broadcastConnections.size(); i++ ) {
+		for (int i = 0; i < broadcastConnections.size(); i++) {
 			DagConnection broadcastConnection = broadcastConnections.get(i);
 			String broadcastConnectionName = broadcastConnectionNames.get(i);
 			List<PlanNode> broadcastPlanCandidates = broadcastConnection.getSource().getAlternativePlans(estimator);

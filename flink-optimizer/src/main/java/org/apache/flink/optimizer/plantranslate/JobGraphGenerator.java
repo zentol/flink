@@ -859,7 +859,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 		final JobVertex vertex = new JobVertex(taskName);
 		final TaskConfig config = new TaskConfig(vertex.getConfiguration());
 		vertex.setResources(node.getMinResources(), node.getPreferredResources());
-		vertex.setInvokableClass( (this.currentIteration != null && node.isOnDynamicPath()) ? IterationIntermediateTask.class : BatchTask.class);
+		vertex.setInvokableClass((this.currentIteration != null && node.isOnDynamicPath()) ? IterationIntermediateTask.class : BatchTask.class);
 
 		// set user code
 		config.setStubWrapper(node.getProgramOperator().getUserCodeWrapper());
@@ -1231,7 +1231,7 @@ public class JobGraphGenerator implements Visitor<PlanNode> {
 			boolean needsMemory = false;
 			// Don't add a pipeline breaker if the data exchange is already blocking, EXCEPT the channel is within an iteration.
 			if (tm.breaksPipeline() &&
-					(channel.isOnDynamicPath() || channel.getDataExchangeMode() != DataExchangeMode.BATCH) ) {
+					(channel.isOnDynamicPath() || channel.getDataExchangeMode() != DataExchangeMode.BATCH)) {
 				config.setInputAsynchronouslyMaterialized(inputNum, true);
 				needsMemory = true;
 			}
