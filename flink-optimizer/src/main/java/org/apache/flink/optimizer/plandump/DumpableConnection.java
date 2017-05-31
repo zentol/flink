@@ -25,7 +25,7 @@ import org.apache.flink.runtime.operators.shipping.ShipStrategyType;
  */
 public interface DumpableConnection<T extends DumpableNode<T>> {
 
-	public DumpableNode<T> getSource();
+	DumpableNode<T> getSource();
 
-	public ShipStrategyType getShipStrategy();
+	ShipStrategyType getShipStrategy();
 }

@@ -80,7 +80,7 @@ public class ChannelTest {
 //				"map"));
 //	}
 
-	private static final DataSourceNode getSourceNode() {
+	private static DataSourceNode getSourceNode() {
 		return new DataSourceNode(new GenericDataSourceBase<String, TextInputFormat>(
 				new TextInputFormat(new Path("/ignored")),
 				new OperatorInformation<String>(BasicTypeInfo.STRING_TYPE_INFO),

@@ -69,16 +69,16 @@ import java.util.Set;
  */
 public class RangePartitionRewriter implements Visitor<PlanNode> {
 
-	final static long SEED = 0;
-	final static String SIP_NAME = "RangePartition: LocalSample";
-	final static String SIC_NAME = "RangePartition: GlobalSample";
-	final static String RB_NAME = "RangePartition: Histogram";
-	final static String ARI_NAME = "RangePartition: PreparePartition";
-	final static String PR_NAME = "RangePartition: Partition";
+	static final long SEED = 0;
+	static final String SIP_NAME = "RangePartition: LocalSample";
+	static final String SIC_NAME = "RangePartition: GlobalSample";
+	static final String RB_NAME = "RangePartition: Histogram";
+	static final String ARI_NAME = "RangePartition: PreparePartition";
+	static final String PR_NAME = "RangePartition: Partition";
 
-	final static int SAMPLES_PER_PARTITION = 1000;
+	static final int SAMPLES_PER_PARTITION = 1000;
 
-	private final static IdPartitioner idPartitioner = new IdPartitioner();
+	private static final IdPartitioner idPartitioner = new IdPartitioner();
 
 	final OptimizedPlan plan;
 	final Set<IterationPlanNode> visitedIterationNodes;

@@ -308,7 +308,7 @@ public class JavaApiPostPass implements OptimizerPostPass {
 		return new RuntimePairComparatorFactory<T1, T2>();
 	}
 
-	private static final boolean[] getSortOrders(FieldList keys, boolean[] orders) {
+	private static boolean[] getSortOrders(FieldList keys, boolean[] orders) {
 		if (orders == null) {
 			orders = new boolean[keys.size()];
 			Arrays.fill(orders, true);

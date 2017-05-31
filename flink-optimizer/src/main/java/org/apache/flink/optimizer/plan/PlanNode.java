@@ -553,11 +553,11 @@ public abstract class PlanNode implements Visitable<PlanNode>, DumpableNode<Plan
 
 	// --------------------------------------------------------------------------------------------
 
-	public static enum SourceAndDamReport {
+	public enum SourceAndDamReport {
 		NOT_FOUND, FOUND_SOURCE, FOUND_SOURCE_AND_DAM
 	}
 
-	public static enum FeedbackPropertiesMeetRequirementsReport {
+	public enum FeedbackPropertiesMeetRequirementsReport {
 		/** Indicates that the path is irrelevant */
 		NO_PARTIAL_SOLUTION,
 
