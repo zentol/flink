@@ -19,6 +19,10 @@
 package org.apache.flink.runtime.webmonitor.metrics;
 
 import org.apache.flink.configuration.AkkaOptions;
+import org.apache.flink.runtime.concurrent.AcceptFunction;
+import org.apache.flink.runtime.concurrent.ApplyFunction;
+import org.apache.flink.runtime.concurrent.Future;
+import org.apache.flink.runtime.concurrent.impl.FlinkFuture;
 import org.apache.flink.runtime.instance.ActorGateway;
 import org.apache.flink.runtime.instance.Instance;
 import org.apache.flink.runtime.messages.JobManagerMessages;
@@ -33,8 +37,6 @@ import org.apache.flink.util.Preconditions;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.dispatch.OnFailure;
-import akka.dispatch.OnSuccess;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import org.slf4j.Logger;
@@ -45,8 +47,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import scala.Option;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.Future;
+import scala.concurrent.ExecutionContextExecutor;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
@@ -63,7 +64,7 @@ public class MetricFetcher {
 
 	private final ActorSystem actorSystem;
 	private final JobManagerRetriever retriever;
-	private final ExecutionContext ctx;
+	private final ExecutionContextExecutor ctx;
 	private final FiniteDuration timeout = new FiniteDuration(Duration.create(AkkaOptions.ASK_TIMEOUT.defaultValue()).toMillis(), TimeUnit.MILLISECONDS);
 
 	private MetricStore metrics = new MetricStore();
@@ -71,7 +72,7 @@ public class MetricFetcher {
 
 	private long lastUpdateTime;
 
-	public MetricFetcher(ActorSystem actorSystem, JobManagerRetriever retriever, ExecutionContext ctx) {
+	public MetricFetcher(ActorSystem actorSystem, JobManagerRetriever retriever, ExecutionContextExecutor ctx) {
 		this.actorSystem = Preconditions.checkNotNull(actorSystem);
 		this.retriever = Preconditions.checkNotNull(retriever);
 		this.ctx = Preconditions.checkNotNull(ctx);
@@ -102,17 +103,18 @@ public class MetricFetcher {
 	private void fetchMetrics() {
 		try {
 			Option<scala.Tuple2<ActorGateway, Integer>> jobManagerGatewayAndWebPort = retriever.getJobManagerGatewayAndWebPort();
+
 			if (jobManagerGatewayAndWebPort.isDefined()) {
 				ActorGateway jobManager = jobManagerGatewayAndWebPort.get()._1();
 
 				/**
 				 * Remove all metrics that belong to a job that is not running and no longer archived.
 				 */
-				Future<Object> jobDetailsFuture = jobManager.ask(new RequestJobDetails(true, true), timeout);
+				Future<Object> jobDetailsFuture = new FlinkFuture<>(jobManager.ask(new RequestJobDetails(true, true), timeout));
 				jobDetailsFuture
-					.onSuccess(new OnSuccess<Object>() {
+					.thenAcceptAsync(new AcceptFunction<Object>() {
 						@Override
-						public void onSuccess(Object result) throws Throwable {
+						public void accept(Object result) {
 							MultipleJobsDetails details = (MultipleJobsDetails) result;
 							ArrayList<String> toRetain = new ArrayList<>();
 							for (JobDetails job : details.getRunningJobs()) {
@@ -132,7 +134,7 @@ public class MetricFetcher {
 				String queryServicePath = jobManagerPath.substring(0, jobManagerPath.lastIndexOf('/') + 1) + MetricQueryService.METRIC_QUERY_SERVICE_NAME;
 				ActorRef jobManagerQueryService = actorSystem.actorFor(queryServicePath);
 
-				queryMetrics(jobManagerQueryService);
+				Future<Void> jmMetricsFuture = queryMetrics(jobManagerQueryService);
 
 				/**
 				 * We first request the list of all registered task managers from the job manager, and then
@@ -140,11 +142,12 @@ public class MetricFetcher {
 				 *
 				 * <p>All stored metrics that do not belong to a registered task manager will be removed.
 				 */
-				Future<Object> registeredTaskManagersFuture = jobManager.ask(JobManagerMessages.getRequestRegisteredTaskManagers(), timeout);
-				registeredTaskManagersFuture
-					.onSuccess(new OnSuccess<Object>() {
+				Future<Object> registeredTaskManagersFuture = new FlinkFuture<>(jobManager.ask(JobManagerMessages.getRequestRegisteredTaskManagers(), timeout));
+				Future<List<Future<Void>>> tmsMetricsFuture = registeredTaskManagersFuture
+					.thenApplyAsync(new ApplyFunction<Object, List<Future<Void>>>() {
 						@Override
-						public void onSuccess(Object result) throws Throwable {
+						public List<Future<Void>> apply(Object result) {
+							List<Future<Void>> futures = new ArrayList<>();
 							Iterable<Instance> taskManagers = ((JobManagerMessages.RegisteredTaskManagers) result).asJavaIterable();
 							List<String> activeTaskManagers = new ArrayList<>();
 							for (Instance taskManager : taskManagers) {
@@ -154,14 +157,18 @@ public class MetricFetcher {
 								String queryServicePath = taskManagerPath.substring(0, taskManagerPath.lastIndexOf('/') + 1) + MetricQueryService.METRIC_QUERY_SERVICE_NAME + "_" + taskManager.getTaskManagerID().getResourceIdString();
 								ActorRef taskManagerQueryService = actorSystem.actorFor(queryServicePath);
 
-								queryMetrics(taskManagerQueryService);
+								futures.add(queryMetrics(taskManagerQueryService));
 							}
 							synchronized (metrics) { // remove all metrics belonging to unregistered task managers
 								metrics.taskManagers.keySet().retainAll(activeTaskManagers);
 							}
+							return futures;
 						}
 					}, ctx);
 				logErrorOnFailure(registeredTaskManagersFuture, "Fetchin list of registered TaskManagers failed.");
+
+				jmMetricsFuture.get(10, TimeUnit.SECONDS);
+				tmsMetricsFuture.get(10, TimeUnit.SECONDS);
 			}
 		} catch (Exception e) {
 			LOG.warn("Exception while fetching metrics.", e);
@@ -169,10 +176,11 @@ public class MetricFetcher {
 	}
 
 	private void logErrorOnFailure(Future<Object> future, final String message) {
-		future.onFailure(new OnFailure() {
+		future.exceptionallyAsync(new ApplyFunction<Throwable, Void>() {
 			@Override
-			public void onFailure(Throwable failure) throws Throwable {
+			public Void apply(Throwable failure) {
 				LOG.debug(message, failure);
+				return null;
 			}
 		}, ctx);
 	}
@@ -182,16 +190,16 @@ public class MetricFetcher {
 	 *
 	 * @param actor ActorRef to request the dump from
      */
-	private void queryMetrics(ActorRef actor) {
-		Future<Object> metricQueryFuture = new BasicGateway(actor).ask(MetricQueryService.getCreateDump(), timeout);
-		metricQueryFuture
-			.onSuccess(new OnSuccess<Object>() {
-				@Override
-				public void onSuccess(Object result) throws Throwable {
+	private Future<Void> queryMetrics(ActorRef actor) {
+		Future<Object> metricQueryFuture = new FlinkFuture<>(new BasicGateway(actor).ask(MetricQueryService.getCreateDump(), timeout));
+		Future<Void> resultFuture = metricQueryFuture.thenAcceptAsync(new AcceptFunction<Object>() {
+			@Override
+			public void accept(Object result) {
 					addMetrics(result);
 				}
 			}, ctx);
 		logErrorOnFailure(metricQueryFuture, "Fetching metrics failed.");
+		return resultFuture;
 	}
 
 	private void addMetrics(Object result) {
@@ -220,7 +228,7 @@ public class MetricFetcher {
 		 * @param timeout Timeout until the Future is completed with an AskTimeoutException
 		 * @return Future which contains the response to the sent message
 		 */
-		public Future<Object> ask(Object message, FiniteDuration timeout) {
+		public scala.concurrent.Future<Object> ask(Object message, FiniteDuration timeout) {
 			return Patterns.ask(actor, message, new Timeout(timeout));
 		}
 	}

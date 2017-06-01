@@ -18,9 +18,13 @@
 
 package org.apache.flink.runtime.webmonitor.metrics;
 
+import org.apache.flink.runtime.webmonitor.JobManagerRetriever;
 import org.apache.flink.runtime.webmonitor.handlers.TaskManagersHandler;
 
 import java.util.Map;
+
+import scala.concurrent.ExecutionContextExecutor;
+import scala.concurrent.duration.FiniteDuration;
 
 /**
  * Request handler that returns for a given task manager a list of all available metrics or the values for a set of metrics.
@@ -37,8 +41,14 @@ public class TaskManagerMetricsHandler extends AbstractMetricsHandler {
 
 	private static final String TASKMANAGER_METRICS_REST_PATH = "/taskmanagers/:taskmanagerid/metrics";
 
-	public TaskManagerMetricsHandler(MetricFetcher fetcher) {
-		super(fetcher);
+	public TaskManagerMetricsHandler(
+			JobManagerRetriever retriever,
+			scala.concurrent.Future<String> localJobManagerAddressPromise,
+			FiniteDuration timeout,
+			boolean httpsEnabled,
+			ExecutionContextExecutor executor,
+			MetricFetcher fetcher) {
+		super(retriever, localJobManagerAddressPromise, timeout, httpsEnabled, executor, fetcher);
 	}
 
 	@Override

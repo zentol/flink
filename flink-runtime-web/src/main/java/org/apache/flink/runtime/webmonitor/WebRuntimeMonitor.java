@@ -257,7 +257,13 @@ public class WebRuntimeMonitor implements WebMonitor {
 		get(router, new JobVertexTaskManagersHandler(currentGraphs, metricFetcher));
 		get(router, new JobVertexAccumulatorsHandler(currentGraphs));
 		get(router, new JobVertexBackPressureHandler(currentGraphs,	backPressureStatsTracker, refreshInterval));
-		get(router, new JobVertexMetricsHandler(metricFetcher));
+		get(router, new JobVertexMetricsHandler(
+			retriever,
+			jobManagerAddressPromise.future(),
+			timeout,
+			enableSSL,
+			context,
+			metricFetcher));
 		get(router, new SubtasksAllAccumulatorsHandler(currentGraphs));
 		get(router, new SubtaskCurrentAttemptDetailsHandler(currentGraphs, metricFetcher));
 		get(router, new SubtaskExecutionAttemptDetailsHandler(currentGraphs, metricFetcher));
@@ -267,7 +273,13 @@ public class WebRuntimeMonitor implements WebMonitor {
 		get(router, new JobConfigHandler(currentGraphs));
 		get(router, new JobExceptionsHandler(currentGraphs));
 		get(router, new JobAccumulatorsHandler(currentGraphs));
-		get(router, new JobMetricsHandler(metricFetcher));
+		get(router, new JobMetricsHandler(
+			retriever,
+			jobManagerAddressPromise.future(),
+			timeout,
+			enableSSL,
+			context,
+			metricFetcher));
 
 		get(router, new TaskManagersHandler(DEFAULT_REQUEST_TIMEOUT, metricFetcher));
 		get(router,
@@ -290,7 +302,13 @@ public class WebRuntimeMonitor implements WebMonitor {
 				config,
 				enableSSL,
 				blobView));
-		get(router, new TaskManagerMetricsHandler(metricFetcher));
+		get(router, new TaskManagerMetricsHandler(
+			retriever,
+			jobManagerAddressPromise.future(),
+			timeout,
+			enableSSL,
+			context,
+			metricFetcher));
 
 		router
 			// log and stdout
@@ -302,7 +320,13 @@ public class WebRuntimeMonitor implements WebMonitor {
 				new StaticFileServerHandler(retriever, jobManagerAddressPromise.future(), timeout, logFiles.stdOutFile,
 					enableSSL));
 
-		get(router, new JobManagerMetricsHandler(metricFetcher));
+		get(router, new JobManagerMetricsHandler(
+			retriever,
+			jobManagerAddressPromise.future(),
+			timeout,
+			enableSSL,
+			context,
+			metricFetcher));
 
 		// Cancel a job via GET (for proper integration with YARN this has to be performed via GET)
 		get(router, new JobCancellationHandler());

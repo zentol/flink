@@ -18,7 +18,12 @@
 
 package org.apache.flink.runtime.webmonitor.metrics;
 
+import org.apache.flink.runtime.webmonitor.JobManagerRetriever;
+
 import java.util.Map;
+
+import scala.concurrent.ExecutionContextExecutor;
+import scala.concurrent.duration.FiniteDuration;
 
 /**
  * Request handler that returns for the job manager a list of all available metrics or the values for a set of metrics.
@@ -35,8 +40,14 @@ public class JobManagerMetricsHandler extends AbstractMetricsHandler {
 
 	private static final String JOBMANAGER_METRICS_REST_PATH = "/jobmanager/metrics";
 
-	public JobManagerMetricsHandler(MetricFetcher fetcher) {
-		super(fetcher);
+	public JobManagerMetricsHandler(
+			JobManagerRetriever retriever,
+			scala.concurrent.Future<String> localJobManagerAddressPromise,
+			FiniteDuration timeout,
+			boolean httpsEnabled,
+			ExecutionContextExecutor executor,
+			MetricFetcher fetcher) {
+		super(retriever, localJobManagerAddressPromise, timeout, httpsEnabled, executor, fetcher);
 	}
 
 	@Override
