@@ -81,8 +81,7 @@ public class RestEndpointITCase extends TestLogger {
 		TestHandler testHandler = new TestHandler(
 			CompletableFuture.completedFuture(address),
 			mockGatewayRetriever,
-			RpcUtils.INF_TIMEOUT,
-			true);
+			RpcUtils.INF_TIMEOUT);
 
 		RestServerEndpoint serverEndpoint = new TestRestServerEndpoint(serverConfig, testHandler);
 		RestClient clientEndpoint = new TestRestClient(clientConfig);
@@ -150,13 +149,11 @@ public class RestEndpointITCase extends TestLogger {
 		TestHandler(
 			CompletableFuture<String> localAddressFuture,
 			GatewayRetriever<RestfulGateway> leaderRetriever,
-			Time timeout,
-			boolean httpsEnabled) {
+			Time timeout) {
 			super(
 				localAddressFuture,
 				leaderRetriever,
 				timeout,
-				httpsEnabled,
 				new TestHeaders());
 		}
 

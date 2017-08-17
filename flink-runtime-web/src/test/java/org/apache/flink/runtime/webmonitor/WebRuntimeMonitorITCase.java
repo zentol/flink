@@ -479,41 +479,6 @@ public class WebRuntimeMonitorITCase extends TestLogger {
 		}
 	}
 
-	private WebRuntimeMonitor startWebRuntimeMonitor(
-			TestingCluster flink,
-			Time timeout) throws Exception {
-
-		ActorSystem jmActorSystem = flink.jobManagerActorSystems().get().head();
-		ActorRef jmActor = flink.jobManagerActors().get().head();
-
-		// Needs to match the leader address from the leader retrieval service
-		String jobManagerAddress = AkkaUtils.getAkkaURL(jmActorSystem, jmActor);
-
-		File logDir = temporaryFolder.newFolder("log");
-		Path logFile = Files.createFile(new File(logDir, "jobmanager.log").toPath());
-		Files.createFile(new File(logDir, "jobmanager.out").toPath());
-
-		// Web frontend on random port
-		Configuration config = new Configuration();
-		config.setInteger(WebOptions.PORT, 0);
-		config.setString(WebOptions.LOG_PATH, logFile.toString());
-
-		HighAvailabilityServices highAvailabilityServices = flink.highAvailabilityServices();
-
-		WebRuntimeMonitor webMonitor = new WebRuntimeMonitor(
-			config,
-			highAvailabilityServices.getJobManagerLeaderRetriever(HighAvailabilityServices.DEFAULT_JOB_ID),
-			highAvailabilityServices.createBlobStore(),
-			new AkkaJobManagerRetriever(jmActorSystem, timeout, 0, Time.milliseconds(50L)),
-			new AkkaQueryServiceRetriever(jmActorSystem, timeout),
-			timeout,
-			TestingUtils.defaultExecutor());
-
-		webMonitor.start();
-		flink.waitForActorsToBeAlive();
-		return webMonitor;
-	}
-
 	// ------------------------------------------------------------------------
 
 	private void waitForLeaderNotification(
