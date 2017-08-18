@@ -19,10 +19,15 @@
 package org.apache.flink.runtime.dispatcher;
 
 import org.apache.flink.api.common.time.Time;
+import org.apache.flink.runtime.messages.webmonitor.StatusOverviewWithVersion;
 import org.apache.flink.runtime.rest.RestServerEndpoint;
 import org.apache.flink.runtime.rest.RestServerEndpointConfiguration;
 import org.apache.flink.runtime.rest.handler.AbstractRestHandler;
+import org.apache.flink.runtime.rest.handler.LegacyRestHandlerAdapter;
+import org.apache.flink.runtime.rest.handler.legacy.ClusterOverviewHandler;
 import org.apache.flink.runtime.rest.handler.legacy.files.StaticFileServerHandler;
+import org.apache.flink.runtime.rest.messages.ClusterOverviewHeaders;
+import org.apache.flink.runtime.rest.messages.EmptyMessageParameters;
 import org.apache.flink.runtime.webmonitor.WebMonitorUtils;
 import org.apache.flink.runtime.webmonitor.retriever.GatewayRetriever;
 import org.apache.flink.util.FileUtils;
@@ -36,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * REST endpoint for the {@link Dispatcher} component.
@@ -45,21 +51,34 @@ public class DispatcherRestEndpoint extends RestServerEndpoint {
 	private final GatewayRetriever<DispatcherGateway> leaderRetriever;
 	private final Time timeout;
 	private final File tmpDir;
+	private final Executor executor;
 
 	public DispatcherRestEndpoint(
 			RestServerEndpointConfiguration configuration,
 			GatewayRetriever<DispatcherGateway> leaderRetriever,
 			Time timeout,
-			File tmpDir) {
+			File tmpDir,
+			Executor executor) {
 		super(configuration);
 		this.leaderRetriever = Preconditions.checkNotNull(leaderRetriever);
 		this.timeout = Preconditions.checkNotNull(timeout);
 		this.tmpDir = Preconditions.checkNotNull(tmpDir);
+		this.executor = Preconditions.checkNotNull(executor);
 	}
 
 	@Override
 	protected Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers(CompletableFuture<String> restAddressFuture) {
-		return Collections.emptySet();
+		LegacyRestHandlerAdapter<DispatcherGateway, StatusOverviewWithVersion, EmptyMessageParameters> clusterOverviewHandler = new LegacyRestHandlerAdapter<>(
+			restAddressFuture,
+			leaderRetriever,
+			timeout,
+			new ClusterOverviewHeaders(),
+			new ClusterOverviewHandler(
+				executor,
+				timeout));
+
+		return Collections.singleton(clusterOverviewHandler);
+//		return Collections.emptyList();
 	}
 
 	@Override

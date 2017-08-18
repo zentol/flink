@@ -18,6 +18,8 @@
 
 package org.apache.flink.runtime.messages.webmonitor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Response to the {@link RequestStatusOverview} message, carrying a description
  * of the Flink cluster status.
@@ -25,9 +27,18 @@ package org.apache.flink.runtime.messages.webmonitor;
 public class StatusOverview extends JobsOverview {
 
 	private static final long serialVersionUID = -729861859715105265L;
-	
+
+	public static final String FIELD_NAME_TASKMANAGERS = "taskmanagers";
+	public static final String FIELD_NAME_SLOTS_TOTAL = "slots-total";
+	public static final String FIELD_NAME_SLOTS_AVAILABLE = "slots-available";
+
+	@JsonProperty(FIELD_NAME_TASKMANAGERS)
 	private final int numTaskManagersConnected;
+
+	@JsonProperty(FIELD_NAME_SLOTS_TOTAL)
 	private final int numSlotsTotal;
+
+	@JsonProperty(FIELD_NAME_SLOTS_AVAILABLE)
 	private final int numSlotsAvailable;
 
 	public StatusOverview(int numTaskManagersConnected, int numSlotsTotal, int numSlotsAvailable,
