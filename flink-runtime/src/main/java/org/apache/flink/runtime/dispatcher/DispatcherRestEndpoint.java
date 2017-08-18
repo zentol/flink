@@ -18,24 +18,78 @@
 
 package org.apache.flink.runtime.dispatcher;
 
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.runtime.rest.RestServerEndpoint;
 import org.apache.flink.runtime.rest.RestServerEndpointConfiguration;
 import org.apache.flink.runtime.rest.handler.AbstractRestHandler;
+import org.apache.flink.runtime.rest.handler.legacy.files.StaticFileServerHandler;
+import org.apache.flink.runtime.webmonitor.WebMonitorUtils;
+import org.apache.flink.runtime.webmonitor.retriever.GatewayRetriever;
+import org.apache.flink.util.FileUtils;
+import org.apache.flink.util.Preconditions;
 
+import org.apache.flink.shaded.netty4.io.netty.handler.codec.http.router.Router;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * REST endpoint for the {@link Dispatcher} component.
  */
 public class DispatcherRestEndpoint extends RestServerEndpoint {
 
-	public DispatcherRestEndpoint(RestServerEndpointConfiguration configuration) {
+	private final GatewayRetriever<DispatcherGateway> leaderRetriever;
+	private final Time timeout;
+	private final File tmpDir;
+
+	public DispatcherRestEndpoint(
+			RestServerEndpointConfiguration configuration,
+			GatewayRetriever<DispatcherGateway> leaderRetriever,
+			Time timeout,
+			File tmpDir) {
 		super(configuration);
+		this.leaderRetriever = Preconditions.checkNotNull(leaderRetriever);
+		this.timeout = Preconditions.checkNotNull(timeout);
+		this.tmpDir = Preconditions.checkNotNull(tmpDir);
 	}
 
 	@Override
-	protected Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers() {
+	protected Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers(CompletableFuture<String> restAddressFuture) {
 		return Collections.emptySet();
+	}
+
+	@Override
+	protected void setupChannelHandlers(Router router, CompletableFuture<String> restAddressFuture) {
+		Optional<StaticFileServerHandler<DispatcherGateway>> optWebContent;
+
+		try {
+			optWebContent = WebMonitorUtils.tryLoadWebContent(
+				leaderRetriever,
+				restAddressFuture,
+				timeout,
+				tmpDir);
+		} catch (IOException e) {
+			log.warn("Could not load web content handler.", e);
+			optWebContent = Optional.empty();
+		}
+
+		optWebContent.ifPresent(
+			webContentHandler -> router.GET("/:*", webContentHandler));
+	}
+
+	@Override
+	public void shutdown(Time timeout) {
+		super.shutdown(timeout);
+
+		try {
+			log.info("Removing cache directory {}", tmpDir);
+			FileUtils.deleteDirectory(tmpDir);
+		} catch (Throwable t) {
+			log.warn("Error while deleting cache directory {}", tmpDir, t);
+		}
 	}
 }

@@ -38,6 +38,7 @@ import org.apache.flink.util.Preconditions;
 import org.apache.flink.util.TestLogger;
 
 import org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpResponseStatus;
+import org.apache.flink.shaded.netty4.io.netty.handler.codec.http.router.Router;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -137,8 +138,13 @@ public class RestEndpointITCase extends TestLogger {
 		}
 
 		@Override
-		protected Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers() {
+		protected Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers(CompletableFuture<String> restAddressFuture) {
 			return Collections.singleton(testHandler);
+		}
+
+		@Override
+		protected void setupChannelHandlers(Router router, CompletableFuture<String> restAddressFuture) {
+
 		}
 	}
 

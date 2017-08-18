@@ -81,13 +81,27 @@ public abstract class RestServerEndpoint {
 	/**
 	 * This method is called at the beginning of {@link #start()} to setup all handlers that the REST server endpoint
 	 * implementation requires.
+	 *
+	 * @param restAddressFuture future rest address of the RestServerEndpoint
+	 * @return Collection of AbstractRestHandler which are added to the server endpoint
 	 */
-	protected abstract Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers();
+	protected abstract Collection<AbstractRestHandler<?, ?, ?, ?>> initializeHandlers(CompletableFuture<String> restAddressFuture);
+
+	/**
+	 * This method is called at the beginning of {@link #start()} to setup channel handlers which the
+	 * REST server endpoint implementation requires.
+	 *
+	 * @param router to be used by the server channel
+	 * @param restAddressFuture future rest address of the RestServerEndpoint
+	 */
+	protected abstract void setupChannelHandlers(Router router, CompletableFuture<String> restAddressFuture);
 
 	/**
 	 * Starts this REST server endpoint.
+	 *
+	 * @throws Exception if we cannot start the RestServerEndpoint
 	 */
-	public void start() {
+	public void start() throws Exception {
 		synchronized (lock) {
 			if (started) {
 				// RestServerEndpoint already started
@@ -97,8 +111,11 @@ public abstract class RestServerEndpoint {
 			log.info("Starting rest endpoint.");
 
 			final Router router = new Router();
+			final CompletableFuture<String> restAddressFuture = new CompletableFuture<>();
 
-			initializeHandlers().forEach(handler -> registerHandler(router, handler));
+			initializeHandlers(restAddressFuture).forEach(handler -> registerHandler(router, handler));
+
+			setupChannelHandlers(router, restAddressFuture);
 
 			ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
 
@@ -149,7 +166,10 @@ public abstract class RestServerEndpoint {
 			} else {
 				protocol = "http://";
 			}
+
 			restAddress = protocol + address + ':' + port;
+
+			restAddressFuture.complete(restAddress);
 
 			started = true;
 		}
