@@ -30,6 +30,7 @@ import org.apache.flink.client.cli.CliFrontendParser;
 import org.apache.flink.client.cli.CommandLineOptions;
 import org.apache.flink.client.cli.CustomCommandLine;
 import org.apache.flink.client.cli.DefaultCLI;
+import org.apache.flink.client.cli.Flip6DefaultCLI;
 import org.apache.flink.client.cli.InfoOptions;
 import org.apache.flink.client.cli.ListOptions;
 import org.apache.flink.client.cli.ProgramOptions;
@@ -145,6 +146,8 @@ public class CliFrontend {
 		} catch (Exception e) {
 			LOG.warn("Could not load CLI class {}.", flinkYarnCLI, e);
 		}
+
+		customCommandLines.add(new Flip6DefaultCLI());
 		customCommandLines.add(new DefaultCLI());
 	}
 
@@ -958,6 +961,7 @@ public class CliFrontend {
 			client = activeCommandLine.retrieveCluster(options.getCommandLine(), config, configurationDirectory);
 			logAndSysout("Cluster configuration: " + client.getClusterIdentifier());
 		} catch (UnsupportedOperationException e) {
+			LOG.error("failure1", e);
 			try {
 				String applicationName = "Flink Application: " + program.getMainClassName();
 				client = activeCommandLine.createCluster(
@@ -968,6 +972,7 @@ public class CliFrontend {
 					program.getAllLibraries());
 				logAndSysout("Cluster started: " + client.getClusterIdentifier());
 			} catch (UnsupportedOperationException e2) {
+				LOG.error("failure1", e2);
 				throw new IllegalConfigurationException(
 					"The JobManager address is neither provided at the command-line, " +
 						"nor configured in flink-conf.yaml.");
@@ -977,7 +982,11 @@ public class CliFrontend {
 		// Avoid resolving the JobManager Gateway here to prevent blocking until we invoke the user's program.
 		final InetSocketAddress jobManagerAddress = client.getJobManagerAddress();
 		logAndSysout("Using address " + jobManagerAddress.getHostString() + ":" + jobManagerAddress.getPort() + " to connect to JobManager.");
-		logAndSysout("JobManager web interface address " + client.getWebInterfaceURL());
+		try {
+			logAndSysout("JobManager web interface address " + client.getWebInterfaceURL());
+		} catch (UnsupportedOperationException uoe) {
+			logAndSysout("JobManager web interface not active.");
+		}
 		return client;
 	}
 

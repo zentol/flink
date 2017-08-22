@@ -96,6 +96,8 @@ public class CliFrontendParser {
 			"directory is optional. If no directory is specified, the configured default " +
 			"directory (" + CoreOptions.SAVEPOINT_DIRECTORY.key() + ") is used.");
 
+	public static final Option FLIP_6 = new Option("flip6", "Switches the client to Flip-6 mode.");
+
 	static {
 		HELP_OPTION.setRequired(false);
 
@@ -135,6 +137,8 @@ public class CliFrontendParser {
 		CANCEL_WITH_SAVEPOINT_OPTION.setRequired(false);
 		CANCEL_WITH_SAVEPOINT_OPTION.setArgName("targetDirectory");
 		CANCEL_WITH_SAVEPOINT_OPTION.setOptionalArg(true);
+
+		FLIP_6.setRequired(false);
 	}
 
 	private static final Options RUN_OPTIONS = getRunOptions(buildGeneralOptions(new Options()));
@@ -181,6 +185,7 @@ public class CliFrontendParser {
 		options = getProgramSpecificOptions(options);
 		options.addOption(SAVEPOINT_PATH_OPTION);
 		options.addOption(SAVEPOINT_ALLOW_NON_RESTORED_OPTION);
+		options.addOption(FLIP_6);
 
 		options = getJobManagerAddressOption(options);
 		return addCustomCliOptions(options, true);

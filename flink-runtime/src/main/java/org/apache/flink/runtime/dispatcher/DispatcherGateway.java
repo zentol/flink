@@ -56,4 +56,12 @@ public interface DispatcherGateway extends FencedRpcGateway<DispatcherId>, Restf
 		@RpcTimeout Time timeout);
 
 	CompletableFuture<StatusOverview> requestStatusOverview(@RpcTimeout Time timeout);
+
+	/**
+	 * Returns the port of the blob server.
+	 *
+	 * @param timeout
+	 * @return
+	 */
+	CompletableFuture<Integer> getBlobServerPort(@RpcTimeout Time timeout);
 }

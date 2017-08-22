@@ -23,6 +23,7 @@ import org.apache.flink.api.common.accumulators.IntCounter;
 import org.apache.flink.api.common.accumulators.SimpleAccumulator;
 import org.apache.flink.core.testutils.CommonTestUtils;
 
+import org.apache.http.util.VersionInfo;
 import org.junit.Test;
 
 import java.io.IOException;
