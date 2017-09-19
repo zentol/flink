@@ -30,7 +30,7 @@ import org.apache.flink.runtime.io.disk.iomanager.IOManager;
 import org.apache.flink.runtime.io.disk.iomanager.IOManagerAsync;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.operators.Driver;
 import org.apache.flink.runtime.operators.TaskContext;
 import org.apache.flink.runtime.operators.ResettableDriver;
@@ -363,8 +363,8 @@ public abstract class UnaryOperatorTestBase<S extends Function, IN, OUT> extends
 	}
 	
 	@Override
-	public OperatorMetricGroup getMetricGroup() {
-		return new UnregisteredTaskMetricsGroup.DummyOperatorMetricGroup();
+	public InternalOperatorMetricGroup getMetricGroup() {
+		return new UnregisteredTaskMetricsGroup.DummyInternalOperatorMetricGroup();
 	}
 
 	// --------------------------------------------------------------------------------------------

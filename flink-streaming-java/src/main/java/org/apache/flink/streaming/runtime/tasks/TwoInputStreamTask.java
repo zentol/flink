@@ -80,7 +80,7 @@ public class TwoInputStreamTask<IN1, IN2, OUT> extends StreamTask<OUT, TwoInputS
 				this.headOperator);
 
 		// make sure that stream tasks report their I/O statistics
-		inputProcessor.setMetricGroup(getEnvironment().getMetricGroup().getIOMetricGroup());
+		inputProcessor.setMetricGroup(getEnvironment().getMetricGroup());
 	}
 
 	@Override

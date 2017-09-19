@@ -18,10 +18,11 @@
 
 package org.apache.flink.runtime.metrics.scope;
 
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.metrics.groups.TaskMetricGroup;
 
 /**
- * The scope format for the {@link org.apache.flink.runtime.metrics.groups.OperatorMetricGroup}.
+ * The scope format for the {@link InternalOperatorMetricGroup}.
  */
 public class OperatorScopeFormat extends ScopeFormat {
 

@@ -392,7 +392,7 @@ public class Task implements Runnable, TaskActions {
 				inputGateDeploymentDescriptor,
 				networkEnvironment,
 				this,
-				metricGroup.getIOMetricGroup());
+				metricGroup.getIOMetrics());
 
 			inputGates[counter] = gate;
 			inputGatesById.put(gate.getConsumedResultId(), gate);
@@ -612,12 +612,12 @@ public class Task implements Runnable, TaskActions {
 			network.registerTask(this);
 
 			// add metrics for buffers
-			this.metrics.getIOMetricGroup().initializeBufferMetrics(this);
+			this.metrics.getIOMetrics().initializeBufferMetrics(this);
 
 			// register detailed network metrics, if configured
 			if (taskManagerConfig.getConfiguration().getBoolean(TaskManagerOptions.NETWORK_DETAILED_METRICS)) {
 				// similar to MetricUtils.instantiateNetworkMetrics() but inside this IOMetricGroup
-				MetricGroup networkGroup = this.metrics.getIOMetricGroup().addGroup("Network");
+				MetricGroup networkGroup = this.metrics.addGroup("Network");
 				MetricGroup outputGroup = networkGroup.addGroup("Output");
 				MetricGroup inputGroup = networkGroup.addGroup("Input");
 

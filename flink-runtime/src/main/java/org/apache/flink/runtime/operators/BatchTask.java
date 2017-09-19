@@ -30,7 +30,7 @@ import org.apache.flink.api.common.typeutils.TypeComparatorFactory;
 import org.apache.flink.api.common.typeutils.TypeSerializerFactory;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.io.IOReadableWritable;
-import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
 import org.apache.flink.runtime.broadcast.BroadcastVariableMaterialization;
 import org.apache.flink.runtime.execution.CancelTaskException;
 import org.apache.flink.runtime.execution.Environment;
@@ -43,7 +43,7 @@ import org.apache.flink.runtime.io.network.partition.consumer.InputGate;
 import org.apache.flink.runtime.io.network.partition.consumer.UnionInputGate;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.operators.chaining.ChainedDriver;
 import org.apache.flink.runtime.operators.chaining.ExceptionInChainedStubException;
 import org.apache.flink.runtime.operators.resettable.SpillingResettableMutableObjectIterator;
@@ -213,7 +213,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 	 * The accumulator map used in the RuntimeContext.
 	 */
 	protected Map<String, Accumulator<?,?>> accumulatorMap;
-	private OperatorMetricGroup metrics;
+	private InternalOperatorMetricGroup metrics;
 
 	// --------------------------------------------------------------------------------------------
 	//                                  Task Interface
@@ -242,9 +242,9 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 		String headName =  getEnvironment().getTaskInfo().getTaskName().split("->")[0].trim();
 		this.metrics = getEnvironment().getMetricGroup()
 			.addOperator(headName.startsWith("CHAIN") ? headName.substring(6) : headName);
-		this.metrics.getIOMetricGroup().reuseInputMetricsForTask();
+		this.metrics.getIOMetrics().reuseInputMetricsForTask();
 		if (config.getNumberOfChainedStubs() == 0) {
-			this.metrics.getIOMetricGroup().reuseOutputMetricsForTask();
+			this.metrics.getIOMetrics().reuseOutputMetricsForTask();
 		}
 
 		// initialize the readers.
@@ -1016,7 +1016,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 				this.getExecutionConfig(), this.accumulatorMap);
 	}
 
-	public DistributedRuntimeUDFContext createRuntimeContext(MetricGroup metrics) {
+	public DistributedRuntimeUDFContext createRuntimeContext(OperatorMetricGroup metrics) {
 		Environment env = getEnvironment();
 
 		return new DistributedRuntimeUDFContext(env.getTaskInfo(), getUserCodeClassLoader(),
@@ -1068,7 +1068,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 	}
 
 	@Override
-	public OperatorMetricGroup getMetricGroup() {
+	public InternalOperatorMetricGroup getMetricGroup() {
 		return metrics;
 	}
 
@@ -1240,7 +1240,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 			final RecordWriter<SerializationDelegate<T>> recordWriter =
 					new RecordWriter<SerializationDelegate<T>>(task.getEnvironment().getWriter(outputOffset + i), oe);
 
-			recordWriter.setMetricGroup(task.getEnvironment().getMetricGroup().getIOMetricGroup());
+			recordWriter.setMetricGroup(task.getEnvironment().getMetricGroup().getIOMetrics());
 
 			writers.add(recordWriter);
 		}

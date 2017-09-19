@@ -77,7 +77,7 @@ public class SingleInputGateTest {
 			new IntermediateDataSetID(), ResultPartitionType.PIPELINED,
 			0, 2,
 			mock(TaskActions.class),
-			new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		assertEquals(ResultPartitionType.PIPELINED, inputGate.getConsumedPartitionType());
 
@@ -137,7 +137,7 @@ public class SingleInputGateTest {
 				resultId, ResultPartitionType.PIPELINED,
 				0, 2,
 				mock(TaskActions.class),
-				new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+				new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 		final BufferPool bufferPool = mock(BufferPool.class);
 		when(bufferPool.getNumberOfRequiredMemorySegments()).thenReturn(2);
 
@@ -146,12 +146,12 @@ public class SingleInputGateTest {
 		// Local
 		ResultPartitionID localPartitionId = new ResultPartitionID(new IntermediateResultPartitionID(), new ExecutionAttemptID());
 
-		InputChannel local = new LocalInputChannel(inputGate, 0, localPartitionId, partitionManager, taskEventDispatcher, new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+		InputChannel local = new LocalInputChannel(inputGate, 0, localPartitionId, partitionManager, taskEventDispatcher, new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		// Unknown
 		ResultPartitionID unknownPartitionId = new ResultPartitionID(new IntermediateResultPartitionID(), new ExecutionAttemptID());
 
-		InputChannel unknown = new UnknownInputChannel(inputGate, 1, unknownPartitionId, partitionManager, taskEventDispatcher, mock(ConnectionManager.class), 0, 0, new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+		InputChannel unknown = new UnknownInputChannel(inputGate, 1, unknownPartitionId, partitionManager, taskEventDispatcher, mock(ConnectionManager.class), 0, 0, new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		// Set channels
 		inputGate.setInputChannel(localPartitionId.getPartitionId(), local);
@@ -192,7 +192,7 @@ public class SingleInputGateTest {
 			ResultPartitionType.PIPELINED,
 			0,
 			1,
-			mock(TaskActions.class), new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			mock(TaskActions.class), new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		ResultPartitionManager partitionManager = mock(ResultPartitionManager.class);
 
@@ -203,7 +203,7 @@ public class SingleInputGateTest {
 			partitionManager,
 			new TaskEventDispatcher(),
 			new LocalConnectionManager(),
-			0, 0, new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			0, 0, new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		inputGate.setInputChannel(unknown.partitionId.getPartitionId(), unknown);
 
@@ -233,7 +233,7 @@ public class SingleInputGateTest {
 			0,
 			1,
 			mock(TaskActions.class),
-			new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		InputChannel unknown = new UnknownInputChannel(
 			inputGate,
@@ -243,7 +243,7 @@ public class SingleInputGateTest {
 			new TaskEventDispatcher(),
 			new LocalConnectionManager(),
 			0, 0,
-			new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		inputGate.setInputChannel(unknown.partitionId.getPartitionId(), unknown);
 
@@ -336,7 +336,7 @@ public class SingleInputGateTest {
 			gateDesc,
 			netEnv,
 			mock(TaskActions.class),
-			new UnregisteredTaskMetricsGroup.DummyTaskIOMetricGroup());
+			new UnregisteredTaskMetricsGroup.DummyTaskIOMetrics());
 
 		assertEquals(gateDesc.getConsumedPartitionType(), gate.getConsumedPartitionType());
 

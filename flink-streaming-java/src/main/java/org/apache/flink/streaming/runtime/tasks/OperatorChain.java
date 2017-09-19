@@ -26,7 +26,6 @@ import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.io.network.api.CancelCheckpointMarker;
 import org.apache.flink.runtime.io.network.api.CheckpointBarrier;
 import org.apache.flink.runtime.io.network.api.writer.ResultPartitionWriter;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.runtime.plugable.SerializationDelegate;
 import org.apache.flink.streaming.api.collector.selector.CopyingDirectedOutput;
 import org.apache.flink.streaming.api.collector.selector.DirectedOutput;
@@ -382,7 +381,7 @@ public class OperatorChain<OUT, OP extends StreamOperator<OUT>> implements Strea
 
 		StreamRecordWriter<SerializationDelegate<StreamRecord<T>>> output =
 				new StreamRecordWriter<>(bufferWriter, outputPartitioner, upStreamConfig.getBufferTimeout());
-		output.setMetricGroup(taskEnvironment.getMetricGroup().getIOMetricGroup());
+		output.setMetricGroup(taskEnvironment.getMetricGroup().getIOMetrics());
 
 		return new RecordWriterOutput<>(output, outSerializer, sideOutputTag, this);
 	}
@@ -405,7 +404,7 @@ public class OperatorChain<OUT, OP extends StreamOperator<OUT>> implements Strea
 				StreamStatusProvider streamStatusProvider,
 				OutputTag<T> outputTag) {
 			this.operator = operator;
-			this.numRecordsIn = ((OperatorMetricGroup) operator.getMetricGroup()).getIOMetricGroup().getNumRecordsInCounter();
+			this.numRecordsIn = operator.getMetricGroup().getIOMetrics().getNumRecordsInCounter();
 			this.streamStatusProvider = streamStatusProvider;
 			this.outputTag = outputTag;
 		}

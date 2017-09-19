@@ -28,7 +28,7 @@ import org.apache.flink.core.memory.MemoryType;
 import org.apache.flink.runtime.io.disk.iomanager.IOManager;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.operators.DriverStrategy;
 import org.apache.flink.runtime.operators.TaskContext;
 import org.apache.flink.runtime.operators.testutils.DummyInvokable;
@@ -226,7 +226,7 @@ public class TestTaskContext<S, T> implements TaskContext<S, T> {
 	}
 
 	@Override
-	public OperatorMetricGroup getMetricGroup() {
-		return new UnregisteredTaskMetricsGroup.DummyOperatorMetricGroup();
+	public InternalOperatorMetricGroup getMetricGroup() {
+		return new UnregisteredTaskMetricsGroup.DummyInternalOperatorMetricGroup();
 	}
 }

@@ -34,10 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Metric group that contains shareable pre-defined IO-related metrics. The metrics registration is
- * forwarded to the parent task metric group.
+ * This object contains shareable pre-defined IO-related metrics.
  */
-public class TaskIOMetricGroup extends ProxyMetricGroup<TaskMetricGroup> {
+public class InternalTaskIOMetrics {
+
+	private final TaskMetricGroup parent;
 
 	private final Counter numBytesOut;
 	private final Counter numBytesInLocal;
@@ -51,19 +52,18 @@ public class TaskIOMetricGroup extends ProxyMetricGroup<TaskMetricGroup> {
 	private final Meter numRecordsInRate;
 	private final Meter numRecordsOutRate;
 
-	public TaskIOMetricGroup(TaskMetricGroup parent) {
-		super(parent);
-
-		this.numBytesOut = counter(MetricNames.IO_NUM_BYTES_OUT);
-		this.numBytesInLocal = counter(MetricNames.IO_NUM_BYTES_IN_LOCAL);
-		this.numBytesInRemote = counter(MetricNames.IO_NUM_BYTES_IN_REMOTE);
-		this.numBytesOutRate = meter(MetricNames.IO_NUM_BYTES_OUT_RATE, new MeterView(numBytesOut, 60));
-		this.numBytesInRateLocal = meter(MetricNames.IO_NUM_BYTES_IN_LOCAL_RATE, new MeterView(numBytesInLocal, 60));
-		this.numBytesInRateRemote = meter(MetricNames.IO_NUM_BYTES_IN_REMOTE_RATE, new MeterView(numBytesInRemote, 60));
-		this.numRecordsIn = counter(MetricNames.IO_NUM_RECORDS_IN, new SumCounter());
-		this.numRecordsOut = counter(MetricNames.IO_NUM_RECORDS_OUT, new SumCounter());
-		this.numRecordsInRate = meter(MetricNames.IO_NUM_RECORDS_IN_RATE, new MeterView(numRecordsIn, 60));
-		this.numRecordsOutRate = meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
+	public InternalTaskIOMetrics(TaskMetricGroup parent) {
+		this.parent = parent;
+		this.numBytesOut = parent.counter(MetricNames.IO_NUM_BYTES_OUT);
+		this.numBytesInLocal = parent.counter(MetricNames.IO_NUM_BYTES_IN_LOCAL);
+		this.numBytesInRemote = parent.counter(MetricNames.IO_NUM_BYTES_IN_REMOTE);
+		this.numBytesOutRate = parent.meter(MetricNames.IO_NUM_BYTES_OUT_RATE, new MeterView(numBytesOut, 60));
+		this.numBytesInRateLocal = parent.meter(MetricNames.IO_NUM_BYTES_IN_LOCAL_RATE, new MeterView(numBytesInLocal, 60));
+		this.numBytesInRateRemote = parent.meter(MetricNames.IO_NUM_BYTES_IN_REMOTE_RATE, new MeterView(numBytesInRemote, 60));
+		this.numRecordsIn = parent.counter(MetricNames.IO_NUM_RECORDS_IN, new SumCounter());
+		this.numRecordsOut = parent.counter(MetricNames.IO_NUM_RECORDS_OUT, new SumCounter());
+		this.numRecordsInRate = parent.meter(MetricNames.IO_NUM_RECORDS_IN_RATE, new MeterView(numRecordsIn, 60));
+		this.numRecordsOutRate = parent.meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
 	}
 
 	public IOMetrics createSnapshot() {
@@ -113,7 +113,7 @@ public class TaskIOMetricGroup extends ProxyMetricGroup<TaskMetricGroup> {
 	 * Initialize Buffer Metrics for a task.
 	 */
 	public void initializeBufferMetrics(Task task) {
-		final MetricGroup buffers = addGroup("buffers");
+		final MetricGroup buffers = parent.addGroup("buffers");
 		buffers.gauge("inputQueueLength", new InputBuffersGauge(task));
 		buffers.gauge("outputQueueLength", new OutputBuffersGauge(task));
 		buffers.gauge("inPoolUsage", new InputBufferPoolUsageGauge(task));

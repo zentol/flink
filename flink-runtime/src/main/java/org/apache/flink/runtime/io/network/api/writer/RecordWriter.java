@@ -22,7 +22,7 @@ import org.apache.flink.core.io.IOReadableWritable;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.SimpleCounter;
 import org.apache.flink.runtime.io.network.api.serialization.EventSerializer;
-import org.apache.flink.runtime.metrics.groups.TaskIOMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalTaskIOMetrics;
 import org.apache.flink.runtime.event.AbstractEvent;
 import org.apache.flink.runtime.io.network.api.serialization.RecordSerializer;
 import org.apache.flink.runtime.io.network.api.serialization.SpanningRecordSerializer;
@@ -204,7 +204,7 @@ public class RecordWriter<T extends IOReadableWritable> {
 	 * Sets the metric group for this RecordWriter.
 	 * @param metrics
      */
-	public void setMetricGroup(TaskIOMetricGroup metrics) {
+	public void setMetricGroup(InternalTaskIOMetrics metrics) {
 		numBytesOut = metrics.getNumBytesOutCounter();
 	}
 

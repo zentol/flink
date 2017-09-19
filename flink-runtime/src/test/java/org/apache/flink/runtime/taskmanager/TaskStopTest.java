@@ -42,7 +42,7 @@ import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.jobgraph.tasks.InputSplitProvider;
 import org.apache.flink.runtime.jobgraph.tasks.StoppableTask;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.TaskIOMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalTaskIOMetrics;
 import org.apache.flink.runtime.metrics.groups.TaskMetricGroup;
 
 import org.junit.Test;
@@ -73,7 +73,7 @@ public class TaskStopTest {
 		when(tmRuntimeInfo.getConfiguration()).thenReturn(new Configuration());
 
 		TaskMetricGroup taskMetricGroup = mock(TaskMetricGroup.class);
-		when(taskMetricGroup.getIOMetricGroup()).thenReturn(mock(TaskIOMetricGroup.class));
+		when(taskMetricGroup.getIOMetrics()).thenReturn(mock(InternalTaskIOMetrics.class));
 
 		task = new Task(
 			mock(JobInformation.class),

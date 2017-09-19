@@ -21,13 +21,15 @@ package org.apache.flink.runtime.metrics.groups;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.MeterView;
+import org.apache.flink.metrics.OperatorIOMetrics;
 import org.apache.flink.runtime.metrics.MetricNames;
 
 /**
- * Metric group that contains shareable pre-defined IO-related metrics. The metrics registration is
- * forwarded to the parent operator metric group.
+ * This object contains shareable pre-defined IO-related metrics.
  */
-public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup> {
+public class InternalOperatorIOMetrics implements OperatorIOMetrics {
+
+	private final InternalOperatorMetricGroup parent;
 
 	private final Counter numRecordsIn;
 	private final Counter numRecordsOut;
@@ -35,12 +37,12 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 	private final Meter numRecordsInRate;
 	private final Meter numRecordsOutRate;
 
-	public OperatorIOMetricGroup(OperatorMetricGroup parentMetricGroup) {
-		super(parentMetricGroup);
-		numRecordsIn = parentMetricGroup.counter(MetricNames.IO_NUM_RECORDS_IN);
-		numRecordsOut = parentMetricGroup.counter(MetricNames.IO_NUM_RECORDS_OUT);
-		numRecordsInRate = parentMetricGroup.meter(MetricNames.IO_NUM_RECORDS_IN_RATE, new MeterView(numRecordsIn, 60));
-		numRecordsOutRate = parentMetricGroup.meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
+	public InternalOperatorIOMetrics(InternalOperatorMetricGroup parentMetricGroup) {
+		this.parent = parentMetricGroup;
+		numRecordsIn = parent.counter(MetricNames.IO_NUM_RECORDS_IN);
+		numRecordsOut = parent.counter(MetricNames.IO_NUM_RECORDS_OUT);
+		numRecordsInRate = parent.meter(MetricNames.IO_NUM_RECORDS_IN_RATE, new MeterView(numRecordsIn, 60));
+		numRecordsOutRate = parent.meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
 	}
 
 	public Counter getNumRecordsInCounter() {
@@ -49,6 +51,21 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 
 	public Counter getNumRecordsOutCounter() {
 		return numRecordsOut;
+	}
+
+	@Override
+	public Counter getNumBytesInLocalCounter() {
+		return parent.parent().getIOMetrics().getNumBytesInLocalCounter();
+	}
+
+	@Override
+	public Counter getNumBytesInRemoteCounter() {
+		return parent.parent().getIOMetrics().getNumBytesInRemoteCounter();
+	}
+
+	@Override
+	public Counter getNumBytesOutCounter() {
+		return parent.parent().getIOMetrics().getNumBytesOutCounter();
 	}
 
 	public Meter getNumRecordsInRateMeter() {
@@ -63,7 +80,7 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 	 * Causes the containing task to use this operators input record counter.
 	 */
 	public void reuseInputMetricsForTask() {
-		TaskIOMetricGroup taskIO = parentMetricGroup.parent().getIOMetricGroup();
+		InternalTaskIOMetrics taskIO = parent.parent().getIOMetrics();
 		taskIO.reuseRecordsInputCounter(this.numRecordsIn);
 
 	}
@@ -72,7 +89,7 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 	 * Causes the containing task to use this operators output record counter.
 	 */
 	public void reuseOutputMetricsForTask() {
-		TaskIOMetricGroup taskIO = parentMetricGroup.parent().getIOMetricGroup();
+		InternalTaskIOMetrics taskIO = parent.parent().getIOMetrics();
 		taskIO.reuseRecordsOutputCounter(this.numRecordsOut);
 	}
 }

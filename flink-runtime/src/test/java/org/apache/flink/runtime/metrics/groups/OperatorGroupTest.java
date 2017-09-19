@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for the {@link OperatorMetricGroup}.
+ * Tests for the {@link InternalOperatorMetricGroup}.
  */
 public class OperatorGroupTest extends TestLogger {
 
@@ -48,7 +48,7 @@ public class OperatorGroupTest extends TestLogger {
 		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName");
 		TaskMetricGroup taskGroup = new TaskMetricGroup(
 				registry, jmGroup,  new AbstractID(),  new AbstractID(), "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, "myOpName");
+		InternalOperatorMetricGroup opGroup = new InternalOperatorMetricGroup(registry, taskGroup, "myOpName");
 
 		assertArrayEquals(
 				new String[] { "theHostName", "taskmanager", "test-tm-id", "myJobName", "myOpName", "11" },
@@ -69,11 +69,11 @@ public class OperatorGroupTest extends TestLogger {
 		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName");
 		TaskMetricGroup taskGroup = new TaskMetricGroup(
 			registry, jmGroup, new AbstractID(), new AbstractID(), "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, "myOpName");
+		InternalOperatorMetricGroup opGroup = new InternalOperatorMetricGroup(registry, taskGroup, "myOpName");
 
-		assertNotNull(opGroup.getIOMetricGroup());
-		assertNotNull(opGroup.getIOMetricGroup().getNumRecordsInCounter());
-		assertNotNull(opGroup.getIOMetricGroup().getNumRecordsOutCounter());
+		assertNotNull(opGroup.getIOMetrics());
+		assertNotNull(opGroup.getIOMetrics().getNumRecordsInCounter());
+		assertNotNull(opGroup.getIOMetrics().getNumRecordsOutCounter());
 
 		registry.shutdown();
 	}
@@ -90,7 +90,7 @@ public class OperatorGroupTest extends TestLogger {
 		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, jid, "myJobName");
 		TaskMetricGroup taskGroup = new TaskMetricGroup(
 			registry, jmGroup,  tid,  eid, "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, "myOpName");
+		InternalOperatorMetricGroup opGroup = new InternalOperatorMetricGroup(registry, taskGroup, "myOpName");
 
 		Map<String, String> variables = opGroup.getAllVariables();
 
@@ -123,7 +123,7 @@ public class OperatorGroupTest extends TestLogger {
 		TaskManagerMetricGroup tm = new TaskManagerMetricGroup(registry, "host", "id");
 		TaskManagerJobMetricGroup job = new TaskManagerJobMetricGroup(registry, tm, jid, "jobname");
 		TaskMetricGroup task = new TaskMetricGroup(registry, job, vid, eid, "taskName", 4, 5);
-		OperatorMetricGroup operator = new OperatorMetricGroup(registry, task, "operator");
+		InternalOperatorMetricGroup operator = new InternalOperatorMetricGroup(registry, task, "operator");
 
 		QueryScopeInfo.OperatorQueryScopeInfo info = operator.createQueryServiceMetricInfo(new DummyCharacterFilter());
 		assertEquals("", info.scope);

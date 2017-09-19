@@ -29,13 +29,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for the {@link TaskIOMetricGroup}.
+ * Tests for the {@link InternalTaskIOMetrics}.
  */
-public class TaskIOMetricGroupTest {
+public class TaskIOMetricsTest {
 	@Test
 	public void testTaskIOMetricGroup() {
 		TaskMetricGroup task = new UnregisteredTaskMetricsGroup();
-		TaskIOMetricGroup taskIO = task.getIOMetricGroup();
+		InternalTaskIOMetrics taskIO = task.getIOMetrics();
 
 		// test counter forwarding
 		assertNotNull(taskIO.getNumRecordsInCounter());

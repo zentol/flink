@@ -57,7 +57,7 @@ public class OneInputStreamTask<IN, OUT> extends StreamTask<OUT, OneInputStreamO
 					this.headOperator);
 
 			// make sure that stream tasks report their I/O statistics
-			inputProcessor.setMetricGroup(getEnvironment().getMetricGroup().getIOMetricGroup());
+			inputProcessor.setMetricGroup(getEnvironment().getMetricGroup());
 		}
 	}
 

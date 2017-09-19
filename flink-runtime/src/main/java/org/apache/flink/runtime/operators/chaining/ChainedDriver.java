@@ -25,8 +25,8 @@ import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
-import org.apache.flink.runtime.metrics.groups.OperatorIOMetricGroup;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorIOMetrics;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.operators.BatchTask;
 import org.apache.flink.runtime.operators.util.DistributedRuntimeUDFContext;
 import org.apache.flink.runtime.operators.util.TaskConfig;
@@ -55,7 +55,7 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 
 	protected boolean objectReuseEnabled = false;
 	
-	protected OperatorMetricGroup metrics;
+	protected InternalOperatorMetricGroup metrics;
 	
 	protected Counter numRecordsIn;
 	
@@ -70,8 +70,8 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 		this.taskName = taskName;
 		this.userCodeClassLoader = userCodeClassLoader;
 		this.metrics = parent.getEnvironment().getMetricGroup().addOperator(taskName);
-		this.numRecordsIn = this.metrics.getIOMetricGroup().getNumRecordsInCounter();
-		this.numRecordsOut = this.metrics.getIOMetricGroup().getNumRecordsOutCounter();
+		this.numRecordsIn = this.metrics.getIOMetrics().getNumRecordsInCounter();
+		this.numRecordsOut = this.metrics.getIOMetrics().getNumRecordsOutCounter();
 		this.outputCollector = new CountingCollector<>(outputCollector, numRecordsOut);
 
 		Environment env = parent.getEnvironment();
@@ -105,8 +105,8 @@ public abstract class ChainedDriver<IT, OT> implements Collector<IT> {
 	@Override
 	public abstract void collect(IT record);
 
-	public OperatorIOMetricGroup getIOMetrics() {
-		return this.metrics.getIOMetricGroup();
+	public InternalOperatorIOMetrics getIOMetrics() {
+		return this.metrics.getIOMetrics();
 	}
 	
 	protected RuntimeContext getUdfRuntimeContext() {

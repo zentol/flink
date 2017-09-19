@@ -1337,7 +1337,7 @@ class TaskManager(
             task.getExecutionState,
             task.getFailureCause,
             accumulators,
-            task.getMetricGroup.getIOMetricGroup.createSnapshot())
+            task.getMetricGroup.getIOMetrics.createSnapshot())
         )
       )
     }

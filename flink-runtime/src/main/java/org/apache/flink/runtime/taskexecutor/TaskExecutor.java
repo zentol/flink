@@ -1040,7 +1040,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
 						task.getExecutionState(),
 						task.getFailureCause(),
 						accumulatorSnapshot,
-						task.getMetricGroup().getIOMetricGroup().createSnapshot()));
+						task.getMetricGroup().getIOMetrics().createSnapshot()));
 		} else {
 			log.error("Cannot find task with ID {} to unregister.", executionAttemptID);
 		}

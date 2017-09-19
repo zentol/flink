@@ -40,11 +40,11 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 @Internal
 public class TaskMetricGroup extends ComponentMetricGroup<TaskManagerJobMetricGroup> {
 
-	private final Map<String, OperatorMetricGroup> operators = new HashMap<>();
+	private final Map<String, InternalOperatorMetricGroup> operators = new HashMap<>();
 
 	static final int METRICS_OPERATOR_NAME_MAX_LENGTH = 80;
 
-	private final TaskIOMetricGroup ioMetrics;
+	private final InternalTaskIOMetrics ioMetrics;
 
 	/** The execution Id uniquely identifying the executed task represented by this metrics group. */
 	private final AbstractID executionId;
@@ -78,7 +78,7 @@ public class TaskMetricGroup extends ComponentMetricGroup<TaskManagerJobMetricGr
 		this.subtaskIndex = subtaskIndex;
 		this.attemptNumber = attemptNumber;
 
-		this.ioMetrics = new TaskIOMetricGroup(this);
+		this.ioMetrics = new InternalTaskIOMetrics(this);
 	}
 
 	// ------------------------------------------------------------------------
@@ -112,11 +112,11 @@ public class TaskMetricGroup extends ComponentMetricGroup<TaskManagerJobMetricGr
 	}
 
 	/**
-	 * Returns the TaskIOMetricGroup for this task.
+	 * Returns the InternalTaskIOMetrics for this task.
 	 *
-	 * @return TaskIOMetricGroup for this task.
+	 * @return InternalTaskIOMetrics for this task.
 	 */
-	public TaskIOMetricGroup getIOMetricGroup() {
+	public InternalTaskIOMetrics getIOMetrics() {
 		return ioMetrics;
 	}
 
@@ -132,15 +132,15 @@ public class TaskMetricGroup extends ComponentMetricGroup<TaskManagerJobMetricGr
 	//  operators and cleanup
 	// ------------------------------------------------------------------------
 
-	public OperatorMetricGroup addOperator(String name) {
+	public InternalOperatorMetricGroup addOperator(String name) {
 		if (name != null && name.length() > METRICS_OPERATOR_NAME_MAX_LENGTH) {
 			LOG.warn("The operator name {} exceeded the {} characters length limit and was truncated.", name, METRICS_OPERATOR_NAME_MAX_LENGTH);
 			name = name.substring(0, METRICS_OPERATOR_NAME_MAX_LENGTH);
 		}
-		OperatorMetricGroup operator = new OperatorMetricGroup(this.registry, this, name);
+		InternalOperatorMetricGroup operator = new InternalOperatorMetricGroup(this.registry, this, name);
 
 		synchronized (this) {
-			OperatorMetricGroup previous = operators.put(name, operator);
+			InternalOperatorMetricGroup previous = operators.put(name, operator);
 			if (previous == null) {
 				// no operator group so far
 				return operator;
