@@ -21,6 +21,7 @@ package org.apache.flink.runtime.dispatcher;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.JobStatus;
 import org.apache.flink.runtime.messages.Acknowledge;
 import org.apache.flink.runtime.rpc.FencedRpcGateway;
 import org.apache.flink.runtime.rpc.RpcTimeout;
@@ -79,4 +80,6 @@ public interface DispatcherGateway extends FencedRpcGateway<DispatcherId>, Restf
 	 * @return A future integer of the blob server port
 	 */
 	CompletableFuture<Integer> getBlobServerPort(@RpcTimeout Time timeout);
+
+	CompletableFuture<JobStatus> getJobTerminationFuture(JobID jobId, @RpcTimeout Time timeout);
 }

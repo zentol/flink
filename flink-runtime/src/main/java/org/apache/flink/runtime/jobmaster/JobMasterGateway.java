@@ -258,4 +258,6 @@ public interface JobMasterGateway extends CheckpointCoordinatorGateway, FencedRp
 	 * @return Future containing the current job status
 	 */
 	CompletableFuture<JobStatus> requestJobStatus(@RpcTimeout Time timeout);
+
+	CompletableFuture<JobStatus> requestJobTerminationFuture(@RpcTimeout Time timeout);
 }

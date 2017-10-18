@@ -20,25 +20,46 @@ package org.apache.flink.runtime.minicluster;
 
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.blob.BlobServer;
 import org.apache.flink.runtime.client.JobExecutionException;
 import org.apache.flink.runtime.clusterframework.types.ResourceID;
+import org.apache.flink.runtime.concurrent.FutureUtils;
+import org.apache.flink.runtime.dispatcher.Dispatcher;
+import org.apache.flink.runtime.dispatcher.DispatcherGateway;
+import org.apache.flink.runtime.dispatcher.DispatcherId;
+import org.apache.flink.runtime.executiongraph.AccessExecutionGraph;
 import org.apache.flink.runtime.heartbeat.HeartbeatServices;
 import org.apache.flink.runtime.highavailability.HighAvailabilityServices;
 import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.JobStatus;
 import org.apache.flink.runtime.jobmanager.OnCompletionActions;
 import org.apache.flink.runtime.jobmaster.JobManagerRunner;
 import org.apache.flink.runtime.jobmaster.JobManagerServices;
+import org.apache.flink.runtime.jobmaster.JobMasterGateway;
+import org.apache.flink.runtime.jobmaster.JobMasterId;
+import org.apache.flink.runtime.leaderretrieval.LeaderRetrievalListener;
+import org.apache.flink.runtime.leaderretrieval.LeaderRetrievalService;
+import org.apache.flink.runtime.messages.Acknowledge;
+import org.apache.flink.runtime.messages.webmonitor.ClusterOverview;
+import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.rpc.FatalErrorHandler;
 import org.apache.flink.runtime.rpc.RpcService;
+import org.apache.flink.runtime.webmonitor.retriever.GatewayRetriever;
+import org.apache.flink.runtime.webmonitor.retriever.LeaderGatewayRetriever;
+import org.apache.flink.runtime.webmonitor.retriever.impl.RpcGatewayRetriever;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.FlinkException;
+import org.apache.flink.util.FutureUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,7 +71,7 @@ import static org.apache.flink.util.Preconditions.checkState;
  * The dispatcher that runs in the mini cluster, waits for jobs, and starts job masters
  * upon receiving jobs.
  */
-public class MiniClusterJobDispatcher {
+public class MiniClusterJobDispatcher implements DispatcherGateway {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MiniClusterJobDispatcher.class);
 
@@ -320,6 +341,98 @@ public class MiniClusterJobDispatcher {
 		catch (Throwable t) {
 			LOG.warn("Could not clear job {} at the status registry of the high-availability services", jobID, t);
 		}
+	}
+
+	@Override
+	public CompletableFuture<Acknowledge> submitJob(JobGraph jobGraph, Time timeout) {
+		try {
+			runDetached(jobGraph);
+		} catch (JobExecutionException e) {
+			FutureUtils.completedExceptionally(e);
+		}
+		return CompletableFuture.completedFuture(Acknowledge.get());
+	}
+
+	@Override
+	public CompletableFuture<Collection<JobID>> listJobs(Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Acknowledge> cancelJob(JobID jobId, Time timeout) {
+		LeaderRetrievalService leaderRetrievalService = haServices
+			.getJobManagerLeaderRetriever(jobId);
+		LeaderGatewayRetriever<JobMasterGateway> jobMasterGatewayGatewayRetriever =
+			new RpcGatewayRetriever<>(rpcServices[0], JobMasterGateway.class, JobMasterId::new, 10, Time.seconds(5));
+		try {
+			leaderRetrievalService.start(jobMasterGatewayGatewayRetriever);
+		} catch (Exception e) {
+			LOG.error("Well shit.", e);
+		}
+		CompletableFuture<Acknowledge> ack = jobMasterGatewayGatewayRetriever.getFuture()
+			.thenCompose(jobMaster -> jobMaster.cancel(timeout));
+		ack.thenRun(() -> clearJobRunningState(jobId));
+		return ack;
+	}
+
+	@Override
+	public CompletableFuture<Acknowledge> stopJob(JobID jobId, Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Integer> getBlobServerPort(Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<JobStatus> getJobTerminationFuture(JobID jobId, Time timeout) {
+		LeaderRetrievalService leaderRetrievalService = haServices
+			.getJobManagerLeaderRetriever(jobId);
+		LeaderGatewayRetriever<JobMasterGateway> jobMasterGatewayGatewayRetriever =
+			new RpcGatewayRetriever<>(rpcServices[0], JobMasterGateway.class, JobMasterId::new, 10, Time.seconds(5));
+		try {
+			leaderRetrievalService.start(jobMasterGatewayGatewayRetriever);
+		} catch (Exception e) {
+			LOG.error("Well shit.", e);
+		}
+		return jobMasterGatewayGatewayRetriever.getFuture()
+			.thenCompose(jobMaster -> jobMaster.requestJobTerminationFuture(timeout));
+	}
+
+	@Override
+	public DispatcherId getFencingToken() {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<String> requestRestAddress(Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<AccessExecutionGraph> requestJob(JobID jobId, Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<MultipleJobsDetails> requestJobDetails(boolean includeRunning, boolean includeFinished, Time timeout) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<ClusterOverview> requestClusterOverview(Time timeout) {
+		return null;
+	}
+
+	@Override
+	public String getAddress() {
+		return null;
+	}
+
+	@Override
+	public String getHostname() {
+		return null;
 	}
 
 	// ------------------------------------------------------------------------

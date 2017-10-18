@@ -29,6 +29,7 @@ import org.apache.flink.runtime.blob.BlobServer;
 import org.apache.flink.runtime.client.JobExecutionException;
 import org.apache.flink.runtime.clusterframework.FlinkResourceManager;
 import org.apache.flink.runtime.clusterframework.types.ResourceID;
+import org.apache.flink.runtime.dispatcher.DispatcherGateway;
 import org.apache.flink.runtime.heartbeat.HeartbeatServices;
 import org.apache.flink.runtime.highavailability.HighAvailabilityServices;
 import org.apache.flink.runtime.highavailability.HighAvailabilityServicesUtils;
@@ -37,6 +38,8 @@ import org.apache.flink.runtime.leaderelection.LeaderAddressAndId;
 import org.apache.flink.runtime.leaderretrieval.LeaderRetrievalService;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
+import org.apache.flink.runtime.minicluster.v2.ClusterClientV2;
+import org.apache.flink.runtime.minicluster.v2.MiniClusterClusterClient;
 import org.apache.flink.runtime.resourcemanager.ResourceManagerGateway;
 import org.apache.flink.runtime.resourcemanager.ResourceManagerId;
 import org.apache.flink.runtime.resourcemanager.ResourceManagerRunner;
@@ -447,6 +450,18 @@ public class MiniCluster {
 				LOG.warn("Error shutting down leader listener for ResourceManager");
 			}
 		}
+	}
+	
+	//
+	//
+	//
+	
+	public ClusterClientV2 getClient() {
+		return new MiniClusterClusterClient(this);
+	}
+	
+	public DispatcherGateway getDispatcher() {
+		return jobDispatcher;
 	}
 
 	// ------------------------------------------------------------------------

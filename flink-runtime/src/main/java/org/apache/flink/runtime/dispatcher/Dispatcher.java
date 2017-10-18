@@ -50,6 +50,7 @@ import org.apache.flink.runtime.resourcemanager.ResourceOverview;
 import org.apache.flink.runtime.rpc.FatalErrorHandler;
 import org.apache.flink.runtime.rpc.FencedRpcEndpoint;
 import org.apache.flink.runtime.rpc.RpcService;
+import org.apache.flink.runtime.rpc.RpcTimeout;
 import org.apache.flink.runtime.rpc.RpcUtils;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.FlinkException;
@@ -514,6 +515,10 @@ public abstract class Dispatcher extends FencedRpcEndpoint<DispatcherId> impleme
 	@Override
 	public void handleError(final Exception exception) {
 		onFatalError(new DispatcherException("Received an error from the LeaderElectionService.", exception));
+	}
+
+	public CompletableFuture<JobStatus> getJobTerminationFuture(JobID jobId, @RpcTimeout Time timeout) {
+		return jobManagerRunners.get(jobId).getJobManagerGateway().requestJobTerminationFuture(timeout);
 	}
 
 	//------------------------------------------------------
