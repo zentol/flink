@@ -138,45 +138,56 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	 * @return logical scope
 	 */
 	public String getLogicalScope(CharacterFilter filter) {
-		return getLogicalScope(filter, registry.getDelimiter());
+		return createAndCacheLogicalScope(filter, registry.getDelimiter(), -1);
+	}
+
+	String getLogicalScope(CharacterFilter filter, int reporterIndex) {
+		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
+			? registry.getDelimiter()
+			: registry.getDelimiter(reporterIndex);
+
+		return createAndCacheLogicalScope(filter, delimiter, reporterIndex);
 	}
 
 	/**
 	 * Returns the logical scope of this group, for example
 	 * {@code "taskmanager.job.task"}.
 	 *
-	 * @param filter character filter which is applied to the scope components
-	 * @return logical scope
-	 */
-	public String getLogicalScope(CharacterFilter filter, char delimiter) {
-		return getLogicalScope(filter, delimiter, -1);
-	}
-
-	/**
-	 * Returns the logical scope of this group, for example
-	 * {@code "taskmanager.job.task"}.
+	 * <p>This method is package-private for backwards-compatibility, see {@link FrontMetricGroup#getLogicalScope(CharacterFilter, char)}.
 	 *
 	 * @param filter character filter which is applied to the scope components
 	 * @param delimiter delimiter to use for concatenating scope components
 	 * @param reporterIndex index of the reporter
 	 * @return logical scope
 	 */
-	String getLogicalScope(CharacterFilter filter, char delimiter, int reporterIndex) {
-		if (logicalScopeStrings.length == 0 || (reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length)) {
-			return createLogicalScope(filter, delimiter);
-		} else {
+	String createAndCacheLogicalScope(final CharacterFilter filter, final char delimiter, final int reporterIndex) {
+		final String logicalScope = createLogicalScope(filter, delimiter, reporterIndex);
+		if (reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length) {
 			if (logicalScopeStrings[reporterIndex] == null) {
-				logicalScopeStrings[reporterIndex] = createLogicalScope(filter, delimiter);
+				logicalScopeStrings[reporterIndex] = logicalScope;
 			}
-			return logicalScopeStrings[reporterIndex];
 		}
+		return logicalScope;
 	}
 
-	protected String createLogicalScope(CharacterFilter filter, char delimiter) {
+	private String createLogicalScope(final CharacterFilter filter, final char delimiter, final int reportedIndex) {
+		if (!includeInLogicalScope()) {
+			return parent.createAndCacheLogicalScope(filter, delimiter, reportedIndex);
+		}
+
 		final String groupName = getGroupName(filter);
 		return parent == null
 			? groupName
-			: parent.getLogicalScope(filter, delimiter) + delimiter + groupName;
+			: parent.createAndCacheLogicalScope(filter, delimiter, reportedIndex) + delimiter + groupName;
+	}
+
+	/**
+	 * Controls whether this group should be included in the logical scope.
+	 *
+	 * @return whether this group should be included in the logical scope
+	 */
+	protected boolean includeInLogicalScope() {
+		return true;
 	}
 
 	/**
