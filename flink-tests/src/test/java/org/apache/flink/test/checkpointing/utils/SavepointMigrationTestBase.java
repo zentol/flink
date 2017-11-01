@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -125,7 +126,7 @@ public class SavepointMigrationTestBase extends TestBaseUtils {
 			StreamExecutionEnvironment env,
 			String savepointPath,
 			Tuple2<String, Integer>... expectedAccumulators) throws Exception {
-
+		Set<Object> set = Collections.newSetFromMap()
 		// Retrieve the job manager
 		ActorGateway jobManager = Await.result(cluster.leaderGateway().future(), DEADLINE.timeLeft());
 

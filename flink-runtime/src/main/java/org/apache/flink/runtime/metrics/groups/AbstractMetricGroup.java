@@ -29,6 +29,7 @@ import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.SimpleCounter;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
+import org.apache.flink.runtime.metrics.scope.Scope;
 import org.apache.flink.runtime.metrics.scope.ScopeFormat;
 
 import org.slf4j.Logger;
@@ -99,6 +100,8 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 
 	/** Flag indicating whether this group has been closed. */
 	private volatile boolean closed;
+	
+	private final Scope s = null;
 
 	// ------------------------------------------------------------------------
 
@@ -110,18 +113,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	}
 
 	public Map<String, String> getAllVariables() {
-		if (variables == null) { // avoid synchronization for common case
-			synchronized (this) {
-				if (variables == null) {
-					if (parent != null) {
-						variables = parent.getAllVariables();
-					} else { // this case should only be true for mock groups
-						variables = new HashMap<>();
-					}
-				}
-			}
-		}
-		return variables;
+		return s.getAllVariables();
 	}
 
 	/**
