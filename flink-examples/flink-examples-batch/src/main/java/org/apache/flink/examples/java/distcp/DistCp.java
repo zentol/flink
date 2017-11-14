@@ -131,6 +131,7 @@ public class DistCp {
 				try {
 					outputStream = targetFs.create(outPath, FileSystem.WriteMode.OVERWRITE);
 					inputStream = task.getPath().getFileSystem().open(task.getPath());
+					
 					int bytes = IOUtils.copy(inputStream, outputStream);
 					bytesCounter.add(bytes);
 				} finally {

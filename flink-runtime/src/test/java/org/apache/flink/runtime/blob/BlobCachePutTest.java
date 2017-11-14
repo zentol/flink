@@ -28,7 +28,6 @@ import org.apache.flink.util.FlinkException;
 import org.apache.flink.util.OperatingSystem;
 import org.apache.flink.util.TestLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -40,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -803,7 +803,7 @@ public class BlobCachePutTest extends TestLogger {
 		if (blobType == PERMANENT_BLOB) {
 			// implement via JAR file upload instead:
 			File tmpFile = temporaryFolder.newFile();
-			FileUtils.writeByteArrayToFile(tmpFile, data);
+			Files.write(tmpFile.toPath(), data);
 			jars = Collections.singletonList(new Path(tmpFile.getAbsolutePath()));
 		} else {
 			jars = null;

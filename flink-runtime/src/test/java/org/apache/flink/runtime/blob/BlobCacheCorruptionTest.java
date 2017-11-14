@@ -24,7 +24,6 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.util.TestLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -191,7 +190,7 @@ public class BlobCacheCorruptionTest extends TestLogger {
 			if (corruptOnHAStore) {
 				File tmpFile = Files.createTempFile("blob", ".jar").toFile();
 				try {
-					FileUtils.writeByteArrayToFile(tmpFile, data2);
+					Files.write(tmpFile.toPath(), data2);
 					blobStore.put(tmpFile, jobId, key);
 				} finally {
 					//noinspection ResultOfMethodCallIgnored
@@ -205,7 +204,7 @@ public class BlobCacheCorruptionTest extends TestLogger {
 			} else {
 				File blobFile = server.getStorageLocation(jobId, key);
 				assertTrue(blobFile.exists());
-				FileUtils.writeByteArrayToFile(blobFile, data2);
+				Files.write(blobFile.toPath(), data2);
 			}
 
 			// issue a GET request that fails

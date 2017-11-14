@@ -32,7 +32,6 @@ import org.apache.flink.streaming.util.migration.MigrationTestUtil;
 import org.apache.flink.streaming.util.migration.MigrationVersion;
 import org.apache.flink.util.OperatingSystem;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.Path;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -46,10 +45,12 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 
@@ -184,7 +185,7 @@ public class BucketingSinkMigrationTest {
 		int compl = 0;
 		int val = 0;
 
-		for (File file: FileUtils.listFiles(outDir, null, true)) {
+		for (File file : Files.walk(outDir.toPath()).map(java.nio.file.Path::toFile).collect(Collectors.toList())) {
 			if (file.getAbsolutePath().endsWith("crc")) {
 				continue;
 			}

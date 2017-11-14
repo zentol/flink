@@ -54,8 +54,6 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.testkit.TestActorRef;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.zookeeper.data.Stat;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -64,12 +62,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import scala.Option;
 import scala.Some;
@@ -387,8 +388,7 @@ public class JobManagerHAJobGraphRecoveryITCase extends TestLogger {
 	 */
 	private void verifyCleanRecoveryState(Configuration config) throws Exception {
 		// File state backend empty
-		Collection<File> stateHandles = FileUtils.listFiles(
-				tempFolder.getRoot(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		Collection<File> stateHandles = Files.walk(tempFolder.getRoot().toPath()).map(Path::toFile).collect(Collectors.toList());
 
 		if (!stateHandles.isEmpty()) {
 			fail("File state backend is not clean: " + stateHandles);
@@ -418,8 +418,7 @@ public class JobManagerHAJobGraphRecoveryITCase extends TestLogger {
 	 */
 	private void verifyRecoveryState(Configuration config) throws Exception {
 		// File state backend empty
-		Collection<File> stateHandles = FileUtils.listFiles(
-				tempFolder.getRoot(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		Collection<File> stateHandles = Files.walk(tempFolder.getRoot().toPath()).map(Path::toFile).collect(Collectors.toList());
 
 		if (stateHandles.isEmpty()) {
 			fail("File state backend has been cleaned: " + stateHandles);

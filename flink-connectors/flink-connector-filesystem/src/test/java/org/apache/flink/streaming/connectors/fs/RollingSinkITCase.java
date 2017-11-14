@@ -44,7 +44,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.StringType;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificDatumReader;
-import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -68,8 +67,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Tests for {@link RollingSink}. These
@@ -844,7 +845,7 @@ public class RollingSinkITCase extends StreamingMultipleProgramsTestBase {
 		int compl = 0;
 		int val = 0;
 
-		for (File file: FileUtils.listFiles(outDir, null, true)) {
+		for (File file: Files.walk(tempFolder.getRoot().toPath()).map(java.nio.file.Path::toFile).collect(Collectors.toList())) {
 			if (file.getAbsolutePath().endsWith("crc")) {
 				continue;
 			}

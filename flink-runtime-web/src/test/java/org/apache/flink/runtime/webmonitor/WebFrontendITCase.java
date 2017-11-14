@@ -29,6 +29,7 @@ import org.apache.flink.runtime.minicluster.LocalFlinkMiniCluster;
 import org.apache.flink.runtime.testutils.StoppableInvokable;
 import org.apache.flink.runtime.webmonitor.testutils.HttpTestClient;
 import org.apache.flink.test.util.TestBaseUtils;
+import org.apache.flink.util.FileUtils;
 import org.apache.flink.util.TestLogger;
 
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +37,6 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMap
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpResponseStatus;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -178,11 +178,11 @@ public class WebFrontendITCase extends TestLogger {
 	public void getLogAndStdoutFiles() throws Exception {
 		WebMonitorUtils.LogFileLocation logFiles = WebMonitorUtils.LogFileLocation.find(cluster.configuration());
 
-		FileUtils.writeStringToFile(logFiles.logFile, "job manager log");
+		FileUtils.writeFileUtf8(logFiles.logFile, "job manager log");
 		String logs = TestBaseUtils.getFromHTTP("http://localhost:" + port + "/jobmanager/log");
 		assertTrue(logs.contains("job manager log"));
 
-		FileUtils.writeStringToFile(logFiles.stdOutFile, "job manager out");
+		FileUtils.writeFileUtf8(logFiles.stdOutFile, "job manager out");
 		logs = TestBaseUtils.getFromHTTP("http://localhost:" + port + "/jobmanager/stdout");
 		assertTrue(logs.contains("job manager out"));
 	}
@@ -201,11 +201,11 @@ public class WebFrontendITCase extends TestLogger {
 			WebMonitorUtils.LogFileLocation logFiles = WebMonitorUtils.LogFileLocation.find(cluster.configuration());
 
 			//we check for job manager log files, since no separate taskmanager logs exist
-			FileUtils.writeStringToFile(logFiles.logFile, "job manager log");
+			FileUtils.writeFileUtf8(logFiles.logFile, "job manager log");
 			String logs = TestBaseUtils.getFromHTTP("http://localhost:" + port + "/taskmanagers/" + id + "/log");
 			assertTrue(logs.contains("job manager log"));
 
-			FileUtils.writeStringToFile(logFiles.stdOutFile, "job manager out");
+			FileUtils.writeFileUtf8(logFiles.stdOutFile, "job manager out");
 			logs = TestBaseUtils.getFromHTTP("http://localhost:" + port + "/taskmanagers/" + id + "/stdout");
 			assertTrue(logs.contains("job manager out"));
 		} catch (Exception e) {

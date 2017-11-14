@@ -24,7 +24,6 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.util.TestLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -119,7 +118,7 @@ public class BlobServerCorruptionTest extends TestLogger {
 			data2[0] ^= 1;
 			File tmpFile = Files.createTempFile("blob", ".jar").toFile();
 			try {
-				FileUtils.writeByteArrayToFile(tmpFile, data2);
+				Files.write(tmpFile.toPath(), data2);
 				blobStore.put(tmpFile, jobId, key);
 			} finally {
 				//noinspection ResultOfMethodCallIgnored

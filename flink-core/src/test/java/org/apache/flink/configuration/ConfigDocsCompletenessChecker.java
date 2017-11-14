@@ -18,8 +18,6 @@
 
 package org.apache.flink.configuration;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -32,7 +30,7 @@ public class ConfigDocsCompletenessChecker {
 
 	public static void main(String[] args) throws Exception {
 		
-		String configFileContents = FileUtils.readFileToString(new File("docs/setup/config.md"));
+		String configFileContents = org.apache.flink.util.FileUtils.readFileUtf8(new File("docs/setup/config.md"));
 		Field[] fields = ConfigConstants.class.getFields();
 		
 		for (Field field : fields) {

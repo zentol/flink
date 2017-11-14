@@ -58,6 +58,7 @@ import org.junit.runners.Parameterized;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -410,6 +411,7 @@ public class ContinuousFileProcessingMigrationTest {
 		}
 		stream.close();
 
+		Files.move(tmp.toPath(), file.toPath());
 		FileUtils.moveFile(tmp, file);
 
 		Assert.assertTrue("No result file present", file.exists());

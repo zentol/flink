@@ -65,12 +65,12 @@ import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunctio
 import org.apache.flink.testutils.junit.RetryOnFailure;
 import org.apache.flink.testutils.junit.RetryRule;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.FileUtils;
 import org.apache.flink.util.TestLogger;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.PoisonPill;
-import org.apache.commons.io.FileUtils;
 import org.apache.curator.test.TestingServer;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -143,7 +144,7 @@ public class JobManagerHACheckpointRecoveryITCase extends TestLogger {
 	@Before
 	public void cleanUp() throws Exception {
 		if (FileStateBackendBasePath != null && FileStateBackendBasePath.exists()) {
-			FileUtils.cleanDirectory(FileStateBackendBasePath);
+			Files.list(FileStateBackendBasePath.toPath()).forEach(path -> FileUtils.deleteFileOrDirectory(path.toFile()));
 		}
 
 		ZooKeeper.deleteAll();

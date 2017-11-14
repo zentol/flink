@@ -41,7 +41,6 @@ import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificDatumReader;
-import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -65,8 +64,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Tests for the {@link BucketingSink}.
@@ -442,7 +443,7 @@ public class BucketingSinkTest {
 		int compl = 0;
 		int val = 0;
 
-		for (File file: FileUtils.listFiles(outDir, null, true)) {
+		for (File file : Files.walk(outDir.toPath()).map(java.nio.file.Path::toFile).collect(Collectors.toList())) {
 			if (file.getAbsolutePath().endsWith("crc")) {
 				continue;
 			}
@@ -737,7 +738,7 @@ public class BucketingSinkTest {
 
 		// we should have 4 buckets, with 1 file each
 		int numFiles = 0;
-		for (File file: FileUtils.listFiles(dataDir, null, true)) {
+		for (File file : Files.walk(dataDir.toPath()).map(java.nio.file.Path::toFile).collect(Collectors.toList())) {
 			if (file.getName().startsWith(PART_PREFIX)) {
 				numFiles++;
 			}
@@ -786,7 +787,7 @@ public class BucketingSinkTest {
 		// 2 of these buckets should have been finalised due to becoming inactive
 		int numFiles = 0;
 		int numInProgress = 0;
-		for (File file: FileUtils.listFiles(dataDir, null, true)) {
+		for (File file : Files.walk(dataDir.toPath()).map(java.nio.file.Path::toFile).collect(Collectors.toList())) {
 			if (file.getAbsolutePath().endsWith("crc")) {
 				continue;
 			}

@@ -29,7 +29,6 @@ import org.apache.flink.util.OperatingSystem;
 import org.apache.flink.util.Preconditions;
 import org.apache.flink.util.TestLogger;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -780,7 +779,7 @@ public class BlobServerPutTest extends TestLogger {
 				// implement via JAR file upload instead:
 				File tmpFile = Files.createTempFile("blob", ".jar").toFile();
 				try {
-					FileUtils.writeByteArrayToFile(tmpFile, data);
+					Files.write(tmpFile.toPath(), data);
 					InetSocketAddress serverAddress = new InetSocketAddress("localhost", service.getPort());
 					// uploading HA BLOBs works on BlobServer only (and, for now, via the BlobClient)
 					Configuration clientConfig = new Configuration();
