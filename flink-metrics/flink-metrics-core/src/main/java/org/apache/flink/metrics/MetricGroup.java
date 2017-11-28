@@ -77,8 +77,20 @@ public interface MetricGroup {
 	 * @param gauge gauge to register
 	 * @param <T>   return type of the gauge
 	 * @return the given gauge
+	 * @deprecated use {@link #gauge(int, NumberGauge)} or {@link #gauge(int, StringGauge)} instead.
 	 */
-	<T, G extends Gauge<T>> G gauge(int name, G gauge);
+	@Deprecated
+	default <T, G extends Gauge<T>> G gauge(int name, G gauge) {
+		gauge(name, (StringGauge) () -> {
+			T value = gauge.getValue();
+			if (value == null) {
+				return null;
+			} else {
+				return String.valueOf(value);
+			}
+		});
+		return gauge;
+	}
 
 	/**
 	 * Registers a new {@link org.apache.flink.metrics.Gauge} with Flink.
@@ -87,8 +99,56 @@ public interface MetricGroup {
 	 * @param gauge gauge to register
 	 * @param <T>   return type of the gauge
 	 * @return the given gauge
+	 * @deprecated use {@link #gauge(String, NumberGauge)} or {@link #gauge(String, StringGauge)} instead.
 	 */
-	<T, G extends Gauge<T>> G gauge(String name, G gauge);
+	@Deprecated
+	default <T, G extends Gauge<T>> G gauge(String name, G gauge) {
+		gauge(name, (StringGauge) () -> {
+			T value = gauge.getValue();
+			if (value == null) {
+				return null;
+			} else {
+				return String.valueOf(value);
+			}
+		});
+		return gauge;
+	}
+
+	/**
+	 * Registers a new {@link org.apache.flink.metrics.StringGauge} with Flink.
+	 *
+	 * @param name name of the gauge
+	 * @param gauge gauge to register
+	 * @return the given gauge
+	 */
+	<G extends StringGauge> G gauge(String name, G gauge);
+
+	/**
+	 * Registers a new {@link org.apache.flink.metrics.StringGauge} with Flink.
+	 *
+	 * @param name name of the gauge
+	 * @param gauge gauge to register
+	 * @return the given gauge
+	 */
+	<G extends StringGauge> G gauge(int name, G gauge);
+
+	/**
+	 * Registers a new {@link org.apache.flink.metrics.NumberGauge} with Flink.
+	 *
+	 * @param name name of the gauge
+	 * @param gauge gauge to register
+	 * @return the given gauge
+	 */
+	<G extends NumberGauge> G gauge(String name, G gauge);
+
+	/**
+	 * Registers a new {@link org.apache.flink.metrics.NumberGauge} with Flink.
+	 *
+	 * @param name name of the gauge
+	 * @param gauge gauge to register
+	 * @return the given gauge
+	 */
+	<G extends NumberGauge> G gauge(int name, G gauge);
 
 	/**
 	 * Registers a new {@link Histogram} with Flink.

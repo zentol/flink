@@ -27,6 +27,7 @@ import org.apache.flink.metrics.MetricConfig;
 import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.View;
 import org.apache.flink.metrics.reporter.MetricReporter;
+import org.apache.flink.metrics.reporter.MetricReporterV2;
 import org.apache.flink.metrics.reporter.Scheduled;
 import org.apache.flink.runtime.akka.AkkaUtils;
 import org.apache.flink.runtime.clusterframework.types.ResourceID;
@@ -133,6 +134,15 @@ public class MetricRegistryImpl implements MetricRegistry {
 					}
 
 					Class<?> reporterClass = Class.forName(className);
+					Object reporter = reporterClass.newInstance();
+					if (reporter instanceof MetricReporter) {
+						// legacy
+					} else if (reporter instanceof MetricReporterV2) {
+						// new shiny stuff
+					} else {
+						LOG.warn("Not a reporter!");
+						continue;
+					}
 					MetricReporter reporterInstance = (MetricReporter) reporterClass.newInstance();
 
 					MetricConfig metricConfig = new MetricConfig();

@@ -19,38 +19,9 @@
 package org.apache.flink.metrics;
 
 /**
- * Metric for measuring throughput.
+ * TODO: add javadoc.
  */
-public interface Meter extends NumberMetric {
+public interface NumberMetric extends Metric {
 
-	/**
-	 * Mark occurrence of an event.
-	 */
-	void markEvent();
-
-	/**
-	 * Mark occurrence of multiple events.
-	 *
-	 * @param n number of events occurred
-	 */
-	void markEvent(long n);
-
-	/**
-	 * Returns the current rate of events per second.
-	 *
-	 * @return current rate of events per second
-	 */
-	double getRate();
-
-	/**
-	 * Get number of events marked on the meter.
-	 *
-	 * @return number of events marked on the meter
-	 */
-	long getCount();
-
-	@Override
-	default Number getValue() {
-		return getRate();
-	}
+	Number getValue();
 }

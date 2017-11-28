@@ -21,7 +21,7 @@ package org.apache.flink.metrics;
 /**
  * A Counter is a {@link Metric} that measures a count.
  */
-public interface Counter extends Metric {
+public interface Counter extends NumberMetric {
 
 	/**
 	 * Increment the current count by 1.
@@ -53,4 +53,9 @@ public interface Counter extends Metric {
 	 * @return current count
 	 */
 	long getCount();
+
+	@Override
+	default Number getValue() {
+		return getCount();
+	}
 }
