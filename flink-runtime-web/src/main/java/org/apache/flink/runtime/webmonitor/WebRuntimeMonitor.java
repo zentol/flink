@@ -68,6 +68,7 @@ import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsD
 import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsHandler;
 import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsDetailsSubtasksHandler;
 import org.apache.flink.runtime.webmonitor.handlers.savepoints.JobCancellationWithSavepointHandlers;
+import org.apache.flink.runtime.webmonitor.handlers.savepoints.TriggerSavepointHandlers;
 import org.apache.flink.runtime.webmonitor.history.JsonArchivist;
 import org.apache.flink.runtime.webmonitor.metrics.JobManagerMetricsHandler;
 import org.apache.flink.runtime.webmonitor.metrics.JobMetricsHandler;
@@ -244,6 +245,10 @@ public class WebRuntimeMonitor implements WebMonitor {
 		RuntimeMonitorHandler triggerHandler = handler(cancelWithSavepoint.getTriggerHandler());
 		RuntimeMonitorHandler inProgressHandler = handler(cancelWithSavepoint.getInProgressHandler());
 
+		TriggerSavepointHandlers triggerSavepoint = new TriggerSavepointHandlers(currentGraphs, context, defaultSavepointDir);
+		RuntimeMonitorHandler triggerSavepointHandler = handler(triggerSavepoint.getTriggerHandler());
+		RuntimeMonitorHandler inProgressSavepointHandler = handler(triggerSavepoint.getInProgressHandler());
+
 		Router router = new Router();
 		// config how to interact with this web server
 		GET(router, new DashboardConfigHandler(cfg.getRefreshInterval()));
@@ -322,6 +327,9 @@ public class WebRuntimeMonitor implements WebMonitor {
 
 		GET(router, triggerHandler);
 		GET(router, inProgressHandler);
+
+		GET(router, triggerSavepointHandler);
+		GET(router, inProgressSavepointHandler);
 
 		// stop a job via GET (for proper integration with YARN this has to be performed via GET)
 		GET(router, new JobStoppingHandler());
