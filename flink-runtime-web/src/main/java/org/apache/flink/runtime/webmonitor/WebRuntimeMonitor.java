@@ -72,6 +72,7 @@ import org.apache.flink.runtime.rest.handler.legacy.metrics.MetricFetcher;
 import org.apache.flink.runtime.rest.handler.legacy.metrics.SubtaskMetricsHandler;
 import org.apache.flink.runtime.rest.handler.legacy.metrics.TaskManagerMetricsHandler;
 import org.apache.flink.runtime.rest.handler.legacy.savepoints.JobCancellationWithSavepointHandlers;
+import org.apache.flink.runtime.rest.handler.legacy.savepoints.TriggerSavepointHandlers;
 import org.apache.flink.runtime.webmonitor.handlers.JarAccessDeniedHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JarDeleteHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JarListHandler;
@@ -255,6 +256,10 @@ public class WebRuntimeMonitor implements WebMonitor {
 		RuntimeMonitorHandler triggerHandler = handler(cancelWithSavepoint.getTriggerHandler());
 		RuntimeMonitorHandler inProgressHandler = handler(cancelWithSavepoint.getInProgressHandler());
 
+		TriggerSavepointHandlers triggerSavepoint = new TriggerSavepointHandlers(executionGraphCache, scheduledExecutor, defaultSavepointDir);
+		RuntimeMonitorHandler triggerSavepointHandler = handler(triggerSavepoint.getTriggerHandler());
+		RuntimeMonitorHandler inProgressSavepointHandler = handler(triggerSavepoint.getInProgressHandler());
+
 		Router router = new Router();
 		// config how to interact with this web server
 		get(router, new DashboardConfigHandler(scheduledExecutor, cfg.getRefreshInterval()));
@@ -340,6 +345,9 @@ public class WebRuntimeMonitor implements WebMonitor {
 
 		get(router, triggerHandler);
 		get(router, inProgressHandler);
+
+		get(router, triggerSavepointHandler);
+		get(router, inProgressSavepointHandler);
 
 		// stop a job via GET (for proper integration with YARN this has to be performed via GET)
 		get(router, new JobStoppingHandler(scheduledExecutor, timeout));
