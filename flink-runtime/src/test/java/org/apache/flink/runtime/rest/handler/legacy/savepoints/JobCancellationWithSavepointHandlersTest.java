@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.runtime.rest.handler.legacy;
+package org.apache.flink.runtime.rest.handler.legacy.savepoints;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.api.common.time.Time;
@@ -27,6 +27,8 @@ import org.apache.flink.runtime.executiongraph.ExecutionGraph;
 import org.apache.flink.runtime.jobgraph.tasks.CheckpointCoordinatorConfiguration;
 import org.apache.flink.runtime.jobgraph.tasks.ExternalizedCheckpointSettings;
 import org.apache.flink.runtime.jobmaster.JobManagerGateway;
+import org.apache.flink.runtime.rest.handler.legacy.ExecutionGraphCache;
+import org.apache.flink.runtime.rest.handler.legacy.RequestHandler;
 import org.apache.flink.util.TestLogger;
 
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
@@ -65,16 +67,16 @@ public class JobCancellationWithSavepointHandlersTest extends TestLogger {
 
 	@Test
 	public void testGetPaths() {
-		JobCancellationWithSavepointHandlers handler = new JobCancellationWithSavepointHandlers(mock(ExecutionGraphCache.class), executor);
+		JobCancellationWithSavepointHandlers handler = new JobCancellationWithSavepointHandlers(mock(ExecutionGraphCache.class), executor, null);
 
-		JobCancellationWithSavepointHandlers.TriggerHandler triggerHandler = handler.getTriggerHandler();
+		RequestHandler triggerHandler = handler.getTriggerHandler();
 		String[] triggerPaths = triggerHandler.getPaths();
 		Assert.assertEquals(2, triggerPaths.length);
 		List<String> triggerPathsList = Arrays.asList(triggerPaths);
 		Assert.assertTrue(triggerPathsList.contains("/jobs/:jobid/cancel-with-savepoint"));
 		Assert.assertTrue(triggerPathsList.contains("/jobs/:jobid/cancel-with-savepoint/target-directory/:targetDirectory"));
 
-		JobCancellationWithSavepointHandlers.InProgressHandler progressHandler = handler.getInProgressHandler();
+		RequestHandler progressHandler = handler.getInProgressHandler();
 		String[] progressPaths = progressHandler.getPaths();
 		Assert.assertEquals(1, progressPaths.length);
 		Assert.assertEquals("/jobs/:jobid/cancel-with-savepoint/in-progress/:requestId", progressPaths[0]);
@@ -100,8 +102,8 @@ public class JobCancellationWithSavepointHandlersTest extends TestLogger {
 				ExternalizedCheckpointSettings.none(),
 				true));
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor);
-		JobCancellationWithSavepointHandlers.TriggerHandler handler = handlers.getTriggerHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor, null);
+		RequestHandler handler = handlers.getTriggerHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -135,7 +137,7 @@ public class JobCancellationWithSavepointHandlersTest extends TestLogger {
 				true));
 
 		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor, "the-default-directory");
-		JobCancellationWithSavepointHandlers.TriggerHandler handler = handlers.getTriggerHandler();
+		RequestHandler handler = handlers.getTriggerHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -187,9 +189,9 @@ public class JobCancellationWithSavepointHandlersTest extends TestLogger {
 				ExternalizedCheckpointSettings.none(),
 				true));
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor);
-		JobCancellationWithSavepointHandlers.TriggerHandler trigger = handlers.getTriggerHandler();
-		JobCancellationWithSavepointHandlers.InProgressHandler progress = handlers.getInProgressHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor, null);
+		RequestHandler trigger = handlers.getTriggerHandler();
+		RequestHandler progress = handlers.getInProgressHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -319,9 +321,9 @@ public class JobCancellationWithSavepointHandlersTest extends TestLogger {
 				ExternalizedCheckpointSettings.none(),
 				true));
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor);
-		JobCancellationWithSavepointHandlers.TriggerHandler trigger = handlers.getTriggerHandler();
-		JobCancellationWithSavepointHandlers.InProgressHandler progress = handlers.getInProgressHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, executor, null);
+		RequestHandler trigger = handlers.getTriggerHandler();
+		RequestHandler progress = handlers.getInProgressHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());

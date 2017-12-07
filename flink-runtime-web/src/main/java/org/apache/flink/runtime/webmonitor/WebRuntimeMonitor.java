@@ -38,7 +38,6 @@ import org.apache.flink.runtime.rest.handler.legacy.DashboardConfigHandler;
 import org.apache.flink.runtime.rest.handler.legacy.ExecutionGraphCache;
 import org.apache.flink.runtime.rest.handler.legacy.JobAccumulatorsHandler;
 import org.apache.flink.runtime.rest.handler.legacy.JobCancellationHandler;
-import org.apache.flink.runtime.rest.handler.legacy.JobCancellationWithSavepointHandlers;
 import org.apache.flink.runtime.rest.handler.legacy.JobConfigHandler;
 import org.apache.flink.runtime.rest.handler.legacy.JobDetailsHandler;
 import org.apache.flink.runtime.rest.handler.legacy.JobExceptionsHandler;
@@ -72,6 +71,7 @@ import org.apache.flink.runtime.rest.handler.legacy.metrics.JobVertexMetricsHand
 import org.apache.flink.runtime.rest.handler.legacy.metrics.MetricFetcher;
 import org.apache.flink.runtime.rest.handler.legacy.metrics.SubtaskMetricsHandler;
 import org.apache.flink.runtime.rest.handler.legacy.metrics.TaskManagerMetricsHandler;
+import org.apache.flink.runtime.rest.handler.legacy.savepoints.JobCancellationWithSavepointHandlers;
 import org.apache.flink.runtime.webmonitor.handlers.JarAccessDeniedHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JarDeleteHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JarListHandler;
