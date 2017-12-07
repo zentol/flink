@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.runtime.webmonitor.handlers;
+package org.apache.flink.runtime.webmonitor.handlers.savepoints;
 
 import akka.dispatch.ExecutionContexts$;
 import akka.dispatch.Futures;
@@ -34,6 +34,8 @@ import org.apache.flink.runtime.instance.ActorGateway;
 import org.apache.flink.runtime.messages.JobManagerMessages.CancelJobWithSavepoint;
 import org.apache.flink.runtime.messages.JobManagerMessages.CancellationSuccess;
 import org.apache.flink.runtime.webmonitor.ExecutionGraphHolder;
+import org.apache.flink.runtime.webmonitor.handlers.RequestHandler;
+
 import org.junit.Assert;
 import org.junit.Test;
 import scala.concurrent.ExecutionContext;
@@ -62,16 +64,16 @@ public class JobCancellationWithSavepointHandlersTest {
 
 	@Test
 	public void testGetPaths() {
-		JobCancellationWithSavepointHandlers handler = new JobCancellationWithSavepointHandlers(mock(ExecutionGraphHolder.class), EC);
+		JobCancellationWithSavepointHandlers handler = new JobCancellationWithSavepointHandlers(mock(ExecutionGraphHolder.class), EC, null);
 
-		JobCancellationWithSavepointHandlers.TriggerHandler triggerHandler = handler.getTriggerHandler();
+		RequestHandler triggerHandler = handler.getTriggerHandler();
 		String[] triggerPaths = triggerHandler.getPaths();
 		Assert.assertEquals(2, triggerPaths.length);
 		List<String> triggerPathsList = Arrays.asList(triggerPaths);
 		Assert.assertTrue(triggerPathsList.contains("/jobs/:jobid/cancel-with-savepoint"));
 		Assert.assertTrue(triggerPathsList.contains("/jobs/:jobid/cancel-with-savepoint/target-directory/:targetDirectory"));
 
-		JobCancellationWithSavepointHandlers.InProgressHandler progressHandler = handler.getInProgressHandler();
+		RequestHandler progressHandler = handler.getInProgressHandler();
 		String[] progressPaths = progressHandler.getPaths();
 		Assert.assertEquals(1, progressPaths.length);
 		Assert.assertEquals("/jobs/:jobid/cancel-with-savepoint/in-progress/:requestId", progressPaths[0]);
@@ -92,8 +94,8 @@ public class JobCancellationWithSavepointHandlersTest {
 		when(graph.getCheckpointCoordinator()).thenReturn(coord);
 		when(coord.getCheckpointTimeout()).thenReturn(timeout);
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC);
-		JobCancellationWithSavepointHandlers.TriggerHandler handler = handlers.getTriggerHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC, null);
+		RequestHandler handler = handlers.getTriggerHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -124,7 +126,7 @@ public class JobCancellationWithSavepointHandlersTest {
 		when(coord.getCheckpointTimeout()).thenReturn(timeout);
 
 		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC, "the-default-directory");
-		JobCancellationWithSavepointHandlers.TriggerHandler handler = handlers.getTriggerHandler();
+		RequestHandler handler = handlers.getTriggerHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -172,9 +174,9 @@ public class JobCancellationWithSavepointHandlersTest {
 		when(holder.getExecutionGraph(eq(jobId), any(ActorGateway.class))).thenReturn(graph);
 		when(graph.getCheckpointCoordinator()).thenReturn(coord);
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC);
-		JobCancellationWithSavepointHandlers.TriggerHandler trigger = handlers.getTriggerHandler();
-		JobCancellationWithSavepointHandlers.InProgressHandler progress = handlers.getInProgressHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC, null);
+		RequestHandler trigger = handlers.getTriggerHandler();
+		RequestHandler progress = handlers.getInProgressHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());
@@ -298,9 +300,9 @@ public class JobCancellationWithSavepointHandlersTest {
 		when(holder.getExecutionGraph(eq(jobId), any(ActorGateway.class))).thenReturn(graph);
 		when(graph.getCheckpointCoordinator()).thenReturn(coord);
 
-		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC);
-		JobCancellationWithSavepointHandlers.TriggerHandler trigger = handlers.getTriggerHandler();
-		JobCancellationWithSavepointHandlers.InProgressHandler progress = handlers.getInProgressHandler();
+		JobCancellationWithSavepointHandlers handlers = new JobCancellationWithSavepointHandlers(holder, EC, null);
+		RequestHandler trigger = handlers.getTriggerHandler();
+		RequestHandler progress = handlers.getInProgressHandler();
 
 		Map<String, String> params = new HashMap<>();
 		params.put("jobid", jobId.toString());

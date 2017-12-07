@@ -44,7 +44,6 @@ import org.apache.flink.runtime.webmonitor.handlers.JarRunHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JarUploadHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JobAccumulatorsHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JobCancellationHandler;
-import org.apache.flink.runtime.webmonitor.handlers.JobCancellationWithSavepointHandlers;
 import org.apache.flink.runtime.webmonitor.handlers.JobConfigHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JobDetailsHandler;
 import org.apache.flink.runtime.webmonitor.handlers.JobExceptionsHandler;
@@ -68,6 +67,7 @@ import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsC
 import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsDetailsHandler;
 import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsHandler;
 import org.apache.flink.runtime.webmonitor.handlers.checkpoints.CheckpointStatsDetailsSubtasksHandler;
+import org.apache.flink.runtime.webmonitor.handlers.savepoints.JobCancellationWithSavepointHandlers;
 import org.apache.flink.runtime.webmonitor.history.JsonArchivist;
 import org.apache.flink.runtime.webmonitor.metrics.JobManagerMetricsHandler;
 import org.apache.flink.runtime.webmonitor.metrics.JobMetricsHandler;
