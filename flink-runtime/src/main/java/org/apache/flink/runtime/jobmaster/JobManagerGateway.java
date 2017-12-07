@@ -62,6 +62,20 @@ public interface JobManagerGateway extends RestfulGateway {
 	CompletableFuture<Acknowledge> submitJob(JobGraph jobGraph, ListeningBehaviour listeningBehaviour, Time timeout);
 
 	/**
+	 * Triggers a ssavepoint for the given job returns its path.
+	 *
+	 * <p>If the savepointPath is null, then the JobManager will use the default savepoint directory
+	 * to store the savepoint in. After the savepoint has been taken, the path of the savepoint is returned.
+	 *
+	 * @param jobId identifying the job to trigger a savepoint for
+	 * @param savepointPath Optional path for the savepoint to be stored under; if null, then the default path is
+	 *                      taken
+	 * @param timeout for the asynchronous operation
+	 * @return Future containing the savepoint path of the taken savepoint or an Exception if the operation failed
+	 */
+	CompletableFuture<String> triggerSavepoint(JobID jobId, @Nullable String savepointPath, Time timeout);
+
+	/**
 	 * Cancels the given job after taking a savepoint and returning its path.
 	 *
 	 * If the savepointPath is null, then the JobManager will use the default savepoint directory

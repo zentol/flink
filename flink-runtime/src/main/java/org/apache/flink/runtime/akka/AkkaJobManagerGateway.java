@@ -41,6 +41,8 @@ import org.apache.flink.runtime.metrics.dump.MetricQueryService;
 import org.apache.flink.util.FlinkException;
 import org.apache.flink.util.Preconditions;
 
+import javax.annotation.Nullable;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -119,6 +121,23 @@ public class AkkaJobManagerGateway implements JobManagerGateway {
 					}
 				}
 			);
+	}
+
+	@Override
+	public CompletableFuture<String> triggerSavepoint(JobID jobId, @Nullable String savepointPath, Time timeout) {
+		CompletableFuture<JobManagerMessages.CancellationResponse> cancellationFuture = FutureUtils.toJava(
+			jobManagerGateway
+				.ask(new JobManagerMessages.TriggerSavepoint(jobId, Option.apply(savepointPath)), FutureUtils.toFiniteDuration(timeout))
+				.mapTo(ClassTag$.MODULE$.apply(JobManagerMessages.CancellationResponse.class)));
+
+		return cancellationFuture.thenApply(
+			(JobManagerMessages.CancellationResponse response) -> {
+				if (response instanceof JobManagerMessages.CancellationSuccess) {
+					return ((JobManagerMessages.CancellationSuccess) response).savepointPath();
+				} else {
+					throw new CompletionException(new FlinkException("Cancel with savepoint failed.", ((JobManagerMessages.CancellationFailure) response).cause()));
+				}
+			});
 	}
 
 	@Override
