@@ -43,7 +43,7 @@ import org.apache.flink.runtime.io.network.partition.consumer.InputGate;
 import org.apache.flink.runtime.io.network.partition.consumer.UnionInputGate;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.operators.chaining.ChainedDriver;
 import org.apache.flink.runtime.operators.chaining.ExceptionInChainedStubException;
 import org.apache.flink.runtime.operators.resettable.SpillingResettableMutableObjectIterator;
@@ -213,7 +213,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 	 * The accumulator map used in the RuntimeContext.
 	 */
 	protected Map<String, Accumulator<?,?>> accumulatorMap;
-	private OperatorMetricGroup metrics;
+	private InternalOperatorMetricGroup metrics;
 
 	// --------------------------------------------------------------------------------------------
 	//                                  Task Interface
@@ -1068,7 +1068,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 	}
 
 	@Override
-	public OperatorMetricGroup getMetricGroup() {
+	public InternalOperatorMetricGroup getMetricGroup() {
 		return metrics;
 	}
 

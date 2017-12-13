@@ -20,6 +20,8 @@ package org.apache.flink.runtime.metrics.groups;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.metrics.CharacterFilter;
+import org.apache.flink.metrics.groups.OperatorIOMetrics;
+import org.apache.flink.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.runtime.jobgraph.OperatorID;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
@@ -34,13 +36,13 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * Special {@link org.apache.flink.metrics.MetricGroup} representing an Operator.
  */
 @Internal
-public class OperatorMetricGroup extends ComponentMetricGroup<TaskMetricGroup> {
+public class InternalOperatorMetricGroup extends ComponentMetricGroup<TaskMetricGroup> implements OperatorMetricGroup {
 	private final String operatorName;
 	private final OperatorID operatorID;
 
 	private final OperatorIOMetricGroup ioMetrics;
 
-	public OperatorMetricGroup(MetricRegistry registry, TaskMetricGroup parent, OperatorID operatorID, String operatorName) {
+	public InternalOperatorMetricGroup(MetricRegistry registry, TaskMetricGroup parent, OperatorID operatorID, String operatorName) {
 		super(registry, registry.getScopeFormats().getOperatorFormat().formatScope(checkNotNull(parent), operatorID, operatorName), parent);
 		this.operatorID = operatorID;
 		this.operatorName = operatorName;
@@ -91,5 +93,10 @@ public class OperatorMetricGroup extends ComponentMetricGroup<TaskMetricGroup> {
 	@Override
 	protected String getGroupName(CharacterFilter filter) {
 		return "operator";
+	}
+
+	@Override
+	public OperatorIOMetrics getIOMetrics() {
+		return getIOMetricGroup();
 	}
 }

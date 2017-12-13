@@ -22,6 +22,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.MetricOptions;
 import org.apache.flink.metrics.Metric;
+import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.runtime.jobgraph.JobVertexID;
 import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
 import org.apache.flink.runtime.metrics.MetricRegistryImpl;
@@ -163,7 +164,7 @@ public class TaskMetricGroupTest extends TestLogger {
 		TaskMetricGroup taskMetricGroup = new TaskMetricGroup(registry, job, new JobVertexID(), new AbstractID(), "task", 0, 0);
 
 		String originalName = new String(new char[100]).replace("\0", "-");
-		OperatorMetricGroup operatorMetricGroup = taskMetricGroup.addOperator(originalName);
+		MetricGroup operatorMetricGroup = taskMetricGroup.addOperator(originalName);
 
 		String storedName = operatorMetricGroup.getScopeComponents()[0];
 		Assert.assertEquals(TaskMetricGroup.METRICS_OPERATOR_NAME_MAX_LENGTH, storedName.length());

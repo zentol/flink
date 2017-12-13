@@ -31,6 +31,7 @@ import org.apache.flink.api.common.functions.BroadcastVariableInitializer;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.groups.OperatorMetricGroup;
 
 /**
  * A standalone implementation of the {@link RuntimeContext}, created by runtime UDF operators.
@@ -44,7 +45,7 @@ public class RuntimeUDFContext extends AbstractRuntimeUDFContext {
 
 	public RuntimeUDFContext(TaskInfo taskInfo, ClassLoader userCodeClassLoader, ExecutionConfig executionConfig,
 								Map<String, Future<Path>> cpTasks, Map<String, Accumulator<?, ?>> accumulators,
-								MetricGroup metrics) {
+								OperatorMetricGroup metrics) {
 		super(taskInfo, userCodeClassLoader, executionConfig, accumulators, cpTasks, metrics);
 	}
 

@@ -19,6 +19,7 @@ package org.apache.flink.streaming.api.operators;
 
 import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.runtime.checkpoint.CheckpointOptions;
 import org.apache.flink.runtime.checkpoint.OperatorSubtaskState;
 import org.apache.flink.runtime.jobgraph.OperatorID;
@@ -132,7 +133,7 @@ public interface StreamOperator<OUT> extends Serializable {
 
 	void setChainingStrategy(ChainingStrategy strategy);
 
-	MetricGroup getMetricGroup();
+	OperatorMetricGroup getMetricGroup();
 
 	OperatorID getOperatorID();
 }

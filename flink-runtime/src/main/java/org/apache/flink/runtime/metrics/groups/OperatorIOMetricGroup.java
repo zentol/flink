@@ -21,13 +21,15 @@ package org.apache.flink.runtime.metrics.groups;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.MeterView;
+import org.apache.flink.metrics.SimpleCounter;
+import org.apache.flink.metrics.groups.OperatorIOMetrics;
 import org.apache.flink.runtime.metrics.MetricNames;
 
 /**
  * Metric group that contains shareable pre-defined IO-related metrics. The metrics registration is
  * forwarded to the parent operator metric group.
  */
-public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup> {
+public class OperatorIOMetricGroup extends ProxyMetricGroup<InternalOperatorMetricGroup> implements OperatorIOMetrics {
 
 	private final Counter numRecordsIn;
 	private final Counter numRecordsOut;
@@ -35,7 +37,7 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 	private final Meter numRecordsInRate;
 	private final Meter numRecordsOutRate;
 
-	public OperatorIOMetricGroup(OperatorMetricGroup parentMetricGroup) {
+	public OperatorIOMetricGroup(InternalOperatorMetricGroup parentMetricGroup) {
 		super(parentMetricGroup);
 		numRecordsIn = parentMetricGroup.counter(MetricNames.IO_NUM_RECORDS_IN);
 		numRecordsOut = parentMetricGroup.counter(MetricNames.IO_NUM_RECORDS_OUT);
@@ -43,12 +45,29 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<OperatorMetricGroup>
 		numRecordsOutRate = parentMetricGroup.meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
 	}
 
+	@Override
 	public Counter getNumRecordsInCounter() {
 		return numRecordsIn;
 	}
 
+	@Override
 	public Counter getNumRecordsOutCounter() {
 		return numRecordsOut;
+	}
+
+	@Override
+	public Counter getNumBytesInLocalCounter() {
+		return parentMetricGroup.parent.getIOMetricGroup().getNumBytesInLocalCounter();
+	}
+
+	@Override
+	public Counter getNumBytesInRemoteCounter() {
+		return parentMetricGroup.parent.getIOMetricGroup().getNumBytesInRemoteCounter();
+	}
+
+	@Override
+	public Counter getNumBytesOutCounter() {
+		return parentMetricGroup.parent.getIOMetricGroup().getNumBytesOutCounter();
 	}
 
 	public Meter getNumRecordsInRateMeter() {

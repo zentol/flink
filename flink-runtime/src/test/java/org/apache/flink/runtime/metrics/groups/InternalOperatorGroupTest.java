@@ -21,6 +21,8 @@ package org.apache.flink.runtime.metrics.groups;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.MetricOptions;
+import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.runtime.executiongraph.ExecutionAttemptID;
 import org.apache.flink.runtime.jobgraph.JobVertexID;
 import org.apache.flink.runtime.jobgraph.OperatorID;
@@ -41,19 +43,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for the {@link OperatorMetricGroup}.
+ * Tests for the {@link InternalOperatorMetricGroup}.
  */
-public class OperatorGroupTest extends TestLogger {
+public class InternalOperatorGroupTest extends TestLogger {
 
 	@Test
 	public void testGenerateScopeDefault() {
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
 
-		TaskManagerMetricGroup tmGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id");
-		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName");
-		TaskMetricGroup taskGroup = new TaskMetricGroup(
-				registry, jmGroup,  new JobVertexID(),  new AbstractID(), "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, new OperatorID(), "myOpName");
+		MetricGroup opGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id")
+			.addTaskForJob(new JobID(), "myJobName", new JobVertexID(), new ExecutionAttemptID(), "aTaskName", 11, 0)
+			.addOperator(new OperatorID(), "myOpName");
 
 		assertArrayEquals(
 				new String[] { "theHostName", "taskmanager", "test-tm-id", "myJobName", "myOpName", "11" },
@@ -62,8 +62,6 @@ public class OperatorGroupTest extends TestLogger {
 		assertEquals(
 				"theHostName.taskmanager.test-tm-id.myJobName.myOpName.11.name",
 				opGroup.getMetricIdentifier("name"));
-
-		registry.shutdown();
 	}
 
 	@Test
@@ -78,10 +76,9 @@ public class OperatorGroupTest extends TestLogger {
 			OperatorID operatorID = new OperatorID();
 			String operatorName = "operatorName";
 
-			OperatorMetricGroup operatorGroup =
-				new TaskManagerMetricGroup(registry, "theHostName", tmID)
-					.addTaskForJob(jid, "myJobName", vertexId, new ExecutionAttemptID(), "aTaskname", 13, 2)
-					.addOperator(operatorID, operatorName);
+			MetricGroup operatorGroup = new TaskManagerMetricGroup(registry, "theHostName", tmID)
+				.addTaskForJob(jid, "myJobName", vertexId, new ExecutionAttemptID(), "aTaskname", 13, 2)
+				.addOperator(operatorID, operatorName);
 
 			assertArrayEquals(
 				new String[]{tmID, jid.toString(), vertexId.toString(), operatorName, operatorID.toString()},
@@ -99,15 +96,13 @@ public class OperatorGroupTest extends TestLogger {
 	public void testIOMetricGroupInstantiation() {
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
 
-		TaskManagerMetricGroup tmGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id");
-		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName");
-		TaskMetricGroup taskGroup = new TaskMetricGroup(
-			registry, jmGroup, new JobVertexID(), new AbstractID(), "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, new OperatorID(), "myOpName");
+		OperatorMetricGroup opGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id")
+			.addTaskForJob(new JobID(), "myJobName", new JobVertexID(), new ExecutionAttemptID(), "aTaskName", 11, 0)
+			.addOperator(new OperatorID(), "myOpName");
 
-		assertNotNull(opGroup.getIOMetricGroup());
-		assertNotNull(opGroup.getIOMetricGroup().getNumRecordsInCounter());
-		assertNotNull(opGroup.getIOMetricGroup().getNumRecordsOutCounter());
+		assertNotNull(opGroup.getIOMetrics());
+		assertNotNull(opGroup.getIOMetrics().getNumRecordsInCounter());
+		assertNotNull(opGroup.getIOMetrics().getNumRecordsOutCounter());
 
 		registry.shutdown();
 	}
@@ -121,11 +116,9 @@ public class OperatorGroupTest extends TestLogger {
 		AbstractID eid = new AbstractID();
 		OperatorID oid = new OperatorID();
 
-		TaskManagerMetricGroup tmGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id");
-		TaskManagerJobMetricGroup jmGroup = new TaskManagerJobMetricGroup(registry, tmGroup, jid, "myJobName");
-		TaskMetricGroup taskGroup = new TaskMetricGroup(
-			registry, jmGroup,  tid,  eid, "aTaskName", 11, 0);
-		OperatorMetricGroup opGroup = new OperatorMetricGroup(registry, taskGroup, oid, "myOpName");
+		MetricGroup opGroup = new TaskManagerMetricGroup(registry, "theHostName", "test-tm-id")
+			.addTaskForJob(new JobID(), "myJobName", new JobVertexID(), new ExecutionAttemptID(), "aTaskName", 11, 0)
+			.addOperator(new OperatorID(), "myOpName");
 
 		Map<String, String> variables = opGroup.getAllVariables();
 
@@ -154,13 +147,13 @@ public class OperatorGroupTest extends TestLogger {
 	public void testCreateQueryServiceMetricInfo() {
 		JobID jid = new JobID();
 		JobVertexID vid = new JobVertexID();
-		AbstractID eid = new AbstractID();
+		ExecutionAttemptID eid = new ExecutionAttemptID();
 		OperatorID oid = new OperatorID();
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
-		TaskManagerMetricGroup tm = new TaskManagerMetricGroup(registry, "host", "id");
-		TaskManagerJobMetricGroup job = new TaskManagerJobMetricGroup(registry, tm, jid, "jobname");
-		TaskMetricGroup task = new TaskMetricGroup(registry, job, vid, eid, "taskName", 4, 5);
-		OperatorMetricGroup operator = new OperatorMetricGroup(registry, task, oid, "operator");
+
+		InternalOperatorMetricGroup operator = new TaskManagerMetricGroup(registry, "host", "id")
+			.addTaskForJob(jid, "jobname", vid, eid, "aTaskName", 4, 5)
+			.addOperator(oid, "operator");
 
 		QueryScopeInfo.OperatorQueryScopeInfo info = operator.createQueryServiceMetricInfo(new DummyCharacterFilter());
 		assertEquals("", info.scope);

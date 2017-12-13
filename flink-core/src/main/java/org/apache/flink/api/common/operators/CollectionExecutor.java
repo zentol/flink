@@ -47,7 +47,15 @@ import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.core.fs.local.LocalFileSystem;
+import org.apache.flink.metrics.CharacterFilter;
+import org.apache.flink.metrics.Counter;
+import org.apache.flink.metrics.Gauge;
+import org.apache.flink.metrics.Histogram;
+import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.SimpleCounter;
+import org.apache.flink.metrics.groups.OperatorIOMetrics;
+import org.apache.flink.metrics.groups.OperatorMetricGroup;
 import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
 import org.apache.flink.types.Value;
 import org.apache.flink.util.Visitor;
@@ -187,8 +195,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedSink.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
-			
+		OperatorMetricGroup metrics = new DummyOperatorMetricGroup();
 		if (RichOutputFormat.class.isAssignableFrom(typedSink.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 					new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -208,7 +215,7 @@ public class CollectionExecutor {
 		
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new DummyOperatorMetricGroup();
 		if (RichInputFormat.class.isAssignableFrom(typedSource.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 					new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -234,7 +241,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedOp.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new DummyOperatorMetricGroup();
 		if (RichFunction.class.isAssignableFrom(typedOp.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 					new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -274,8 +281,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedOp.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
-	
+		OperatorMetricGroup metrics = new DummyOperatorMetricGroup();
 		if (RichFunction.class.isAssignableFrom(typedOp.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 				new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -544,7 +550,7 @@ public class CollectionExecutor {
 
 		public IterationRuntimeUDFContext(TaskInfo taskInfo, ClassLoader classloader, ExecutionConfig executionConfig,
 											Map<String, Future<Path>> cpTasks, Map<String, Accumulator<?, ?>> accumulators,
-											MetricGroup metrics) {
+											OperatorMetricGroup metrics) {
 			super(taskInfo, classloader, executionConfig, cpTasks, accumulators, metrics);
 		}
 
@@ -602,6 +608,127 @@ public class CollectionExecutor {
 		@Override
 		public Path get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 			return get();
+		}
+	}
+
+	private static class DummyOperatorMetricGroup implements OperatorMetricGroup {
+
+		@Override
+		public OperatorIOMetrics getIOMetrics() {
+			return new DummyOperatorIOMetrics();
+		}
+
+		@Override
+		public Counter counter(int name) {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public Counter counter(String name) {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public <C extends Counter> C counter(int name, C counter) {
+			return counter;
+		}
+
+		@Override
+		public <C extends Counter> C counter(String name, C counter) {
+			return counter;
+		}
+
+		@Override
+		public <T, G extends Gauge<T>> G gauge(int name, G gauge) {
+			return gauge;
+		}
+
+		@Override
+		public <T, G extends Gauge<T>> G gauge(String name, G gauge) {
+			return gauge;
+		}
+
+		@Override
+		public <H extends Histogram> H histogram(String name, H histogram) {
+			return histogram;
+		}
+
+		@Override
+		public <H extends Histogram> H histogram(int name, H histogram) {
+			return histogram;
+		}
+
+		@Override
+		public <M extends Meter> M meter(String name, M meter) {
+			return meter;
+		}
+
+		@Override
+		public <M extends Meter> M meter(int name, M meter) {
+			return meter;
+		}
+
+		@Override
+		public MetricGroup addGroup(int name) {
+			return this;
+		}
+
+		@Override
+		public MetricGroup addGroup(String name) {
+			return this;
+		}
+
+		@Override
+		public MetricGroup addGroup(String key, String value) {
+			return this;
+		}
+
+		@Override
+		public String[] getScopeComponents() {
+			return new String[0];
+		}
+
+		@Override
+		public Map<String, String> getAllVariables() {
+			return Collections.emptyMap();
+		}
+
+		@Override
+		public String getMetricIdentifier(String metricName) {
+			return "";
+		}
+
+		@Override
+		public String getMetricIdentifier(String metricName, CharacterFilter filter) {
+			return "";
+		}
+	}
+
+	private static class DummyOperatorIOMetrics implements OperatorIOMetrics {
+
+		@Override
+		public Counter getNumRecordsInCounter() {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public Counter getNumRecordsOutCounter() {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public Counter getNumBytesInLocalCounter() {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public Counter getNumBytesInRemoteCounter() {
+			return new SimpleCounter();
+		}
+
+		@Override
+		public Counter getNumBytesOutCounter() {
+			return new SimpleCounter();
 		}
 	}
 }
