@@ -25,6 +25,11 @@ import org.apache.flink.configuration.ConfigGroups;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.WebOptions;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -40,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Class used for generating code based documentation of configuration parameters.
@@ -76,8 +82,13 @@ public class ConfigOptionsDocGenerator {
 				String fileName = entry.getFileName().toString();
 				Matcher matcher = p.matcher(fileName);
 				if (!fileName.equals("ConfigOptions.java") && matcher.matches()) {
+
 					Class<?> optionsClass = Class.forName(packageName + "." + matcher.group(1));
-					List<Tuple2<ConfigGroup, String>> tables = generateTablesForClass(optionsClass);
+
+					Path javadocDir = Paths.get(rootDir, module, "target/site/apidocs", packageName.replaceAll("\\.", "/"));
+					Map<String, String> javadocs = getFieldJavadocMapping(javadocDir.resolve(javadocDir.resolve(matcher.group(1) + ".html")));
+
+					List<Tuple2<ConfigGroup, String>> tables = generateTablesForClass(optionsClass, javadocs);
 					if (tables.size() > 0) {
 						for (Tuple2<ConfigGroup, String> group : tables) {
 
@@ -95,20 +106,20 @@ public class ConfigOptionsDocGenerator {
 	}
 
 	@VisibleForTesting
-	static List<Tuple2<ConfigGroup, String>> generateTablesForClass(Class<?> optionsClass) {
+	static List<Tuple2<ConfigGroup, String>> generateTablesForClass(Class<?> optionsClass, Map<String, String> javadocs) {
 		ConfigGroups configGroups = optionsClass.getAnnotation(ConfigGroups.class);
 		List<Tuple2<ConfigGroup, String>> tables = new ArrayList<>();
-		List<ConfigOption> allOptions = extractConfigOptions(optionsClass);
+		List<DocumentedConfigOption> allOptions = extractConfigOptions(optionsClass, javadocs);
 
 		if (configGroups != null) {
 			Tree tree = new Tree(configGroups.groups(), allOptions);
 
 			for (ConfigGroup group : configGroups.groups()) {
-				List<ConfigOption> configOptions = tree.findConfigOptions(group);
+				List<DocumentedConfigOption> configOptions = tree.findConfigOptions(group);
 				sortOptions(configOptions);
 				tables.add(Tuple2.of(group, toHtmlTable(configOptions)));
 			}
-			List<ConfigOption> configOptions = tree.getDefaultOptions();
+			List<DocumentedConfigOption> configOptions = tree.getDefaultOptions();
 			sortOptions(configOptions);
 			tables.add(Tuple2.of(null, toHtmlTable(configOptions)));
 		} else {
@@ -118,19 +129,29 @@ public class ConfigOptionsDocGenerator {
 		return tables;
 	}
 
-	private static List<ConfigOption> extractConfigOptions(Class<?> clazz) {
+	private static List<DocumentedConfigOption> extractConfigOptions(Class<?> clazz, Map<String, String> javadocs) {
 		try {
-			List<ConfigOption> configOptions = new ArrayList<>();
+			List<DocumentedConfigOption> configOptions = new ArrayList<>();
 			Field[] fields = clazz.getFields();
 			for (Field field : fields) {
 				if (field.getType().equals(ConfigOption.class) && field.getAnnotation(Deprecated.class) == null) {
-					configOptions.add((ConfigOption) field.get(null));
+					configOptions.add(new DocumentedConfigOption((ConfigOption) field.get(null), javadocs.get(field.getName())));
 				}
 			}
 
 			return configOptions;
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to extract config options from class " + clazz + ".", e);
+		}
+	}
+
+	private static class DocumentedConfigOption {
+		final ConfigOption<?> option;
+		final String javadoc;
+
+		private DocumentedConfigOption(ConfigOption<?> option, String javadoc) {
+			this.option = option;
+			this.javadoc = javadoc;
 		}
 	}
 
@@ -141,7 +162,7 @@ public class ConfigOptionsDocGenerator {
 	 * @param options list of options to include in this group
 	 * @return string containing HTML formatted table
 	 */
-	private static String toHtmlTable(final List<ConfigOption> options) {
+	private static String toHtmlTable(final List<DocumentedConfigOption> options) {
 		StringBuilder htmlTable = new StringBuilder();
 		htmlTable.append("<table class=\"table table-bordered\">\n");
 		htmlTable.append("    <thead>\n");
@@ -153,7 +174,7 @@ public class ConfigOptionsDocGenerator {
 		htmlTable.append("    </thead>\n");
 		htmlTable.append("    <tbody>\n");
 
-		for (ConfigOption option : options) {
+		for (DocumentedConfigOption option : options) {
 			htmlTable.append(toHtmlString(option));
 		}
 
@@ -169,19 +190,19 @@ public class ConfigOptionsDocGenerator {
 	 * @param option option to transform
 	 * @return row with the option description
 	 */
-	private static String toHtmlString(final ConfigOption<?> option) {
-		Object defaultValue = option.defaultValue();
+	private static String toHtmlString(final DocumentedConfigOption option) {
+		Object defaultValue = option.option.defaultValue();
 		// This is a temporary hack that should be removed once FLINK-6490 is resolved.
 		// These options use System.getProperty("java.io.tmpdir") as the default.
 		// As a result the generated table contains an actual path as the default, which is simply wrong.
-		if (option == WebOptions.TMP_DIR || option.key().equals("python.dc.tmp.dir")) {
+		if (option.option == WebOptions.TMP_DIR || option.option.key().equals("python.dc.tmp.dir")) {
 			defaultValue = null;
 		}
 		return "" +
 			"        <tr>\n" +
-			"            <td><h5>" + escapeCharacters(option.key()) + "</h5></td>\n" +
+			"            <td><h5>" + escapeCharacters(option.option.key()) + "</h5></td>\n" +
 			"            <td>" + escapeCharacters(defaultValueToHtml(defaultValue)) + "</td>\n" +
-			"            <td>" + escapeCharacters(option.description()) + "</td>\n" +
+			"            <td>" + option.javadoc + "</td>\n" +
 			"        </tr>\n";
 	}
 
@@ -202,10 +223,56 @@ public class ConfigOptionsDocGenerator {
 			.replaceAll(">", "&#62;");
 	}
 
-	private static void sortOptions(List<ConfigOption> configOptions) {
-		configOptions.sort(Comparator.comparing(ConfigOption::key));
+	private static void sortOptions(List<DocumentedConfigOption> configOptions) {
+		configOptions.sort(Comparator.comparing(o -> o.option.key()));
 	}
 
+	private static Map<String, String> getFieldJavadocMapping(Path file) throws IOException {
+		Document d = Jsoup.parse(file.toFile(), StandardCharsets.UTF_8.name());
+
+		Element body = d.body();
+
+		Elements memberSummary = body.getElementsByAttribute("summary");
+
+		List<Tuple2<String, String>> collect = memberSummary.stream()
+			.flatMap(element -> element.children().stream())
+			.filter(element -> element.tagName().equals("tbody"))
+			.flatMap(element -> element.children().stream())
+			.filter(element -> element.tagName().equals("tr"))
+			.filter(element -> element.classNames().contains("altColor") || element.classNames().contains("rowColor"))
+			.flatMap(element -> element.children().stream())
+			.filter(element -> element.tagName().equals("td") && element.classNames().contains("colLast"))
+			.map(ConfigOptionsDocGenerator::extractInfo)
+			.collect(Collectors.toList());
+
+		Map<String, String> mapping = new HashMap<>();
+		for (Tuple2<String, String> element : collect) {
+			mapping.put(element.f0, element.f1 != null ? element.f1 : "");
+		}
+		return mapping;
+	}
+
+	private static Tuple2<String, String> extractInfo(Element field) {
+
+		synchronized (GeneratorV2.class) {
+			String fieldName = field.getElementsByTag("code")
+				.get(0)
+				.getElementsByTag("span")
+				.get(0)
+				.getElementsByTag("a")
+				.get(0)
+				.text();
+
+			Elements div = field.getElementsByTag("div");
+			String fieldDoc = null;
+			if (div.size() > 0) {
+				fieldDoc = div.get(0).html();
+			}
+
+			return Tuple2.of(fieldName, fieldDoc);
+		}
+	}
+	
 	/**
 	 * Data structure used to assign {@link ConfigOption ConfigOptions} to the {@link ConfigGroup} with the longest
 	 * matching prefix.
@@ -213,7 +280,7 @@ public class ConfigOptionsDocGenerator {
 	private static class Tree {
 		private final Node root = new Node();
 
-		Tree(ConfigGroup[] groups, Collection<ConfigOption> options) {
+		Tree(ConfigGroup[] groups, Collection<DocumentedConfigOption> options) {
 			// generate a tree based on all key prefixes
 			for (ConfigGroup group : groups) {
 				String[] keyComponents = group.keyPrefix().split("\\.");
@@ -226,17 +293,17 @@ public class ConfigOptionsDocGenerator {
 
 			// assign options to their corresponding group, i.e. the last group root node encountered when traversing
 			// the tree based on the option key
-			for (ConfigOption<?> option : options) {
-				findGroupRoot(option.key()).assignOption(option);
+			for (DocumentedConfigOption option : options) {
+				findGroupRoot(option.option.key()).assignOption(option);
 			}
 		}
 
-		List<ConfigOption> findConfigOptions(ConfigGroup configGroup) {
+		List<DocumentedConfigOption> findConfigOptions(ConfigGroup configGroup) {
 			Node groupRoot = findGroupRoot(configGroup.keyPrefix());
 			return groupRoot.getConfigOptions();
 		}
 
-		List<ConfigOption> getDefaultOptions() {
+		List<DocumentedConfigOption> getDefaultOptions() {
 			return root.getConfigOptions();
 		}
 
@@ -250,7 +317,7 @@ public class ConfigOptionsDocGenerator {
 		}
 
 		private static class Node {
-			private final List<ConfigOption> configOptions = new ArrayList<>();
+			private final List<DocumentedConfigOption> configOptions = new ArrayList<>();
 			private final Map<String, Node> children = new HashMap<>();
 			private boolean isGroupRoot = false;
 
@@ -271,7 +338,7 @@ public class ConfigOptionsDocGenerator {
 				return child;
 			}
 
-			private void assignOption(ConfigOption option) {
+			private void assignOption(DocumentedConfigOption option) {
 				configOptions.add(option);
 			}
 
@@ -283,7 +350,7 @@ public class ConfigOptionsDocGenerator {
 				this.isGroupRoot = true;
 			}
 
-			private List<ConfigOption> getConfigOptions() {
+			private List<DocumentedConfigOption> getConfigOptions() {
 				return configOptions;
 			}
 		}

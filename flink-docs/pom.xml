@@ -92,6 +92,12 @@ under the License.
 		</dependency>
 
 		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+		<dependency>
 			<!-- Required because the surefire plugin tries to load the Flip6 category annotation -->
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-test-utils-junit</artifactId>
@@ -193,14 +199,6 @@ under the License.
 									<!--packages with configuration classes-->
 									<arg value="flink-core" />
 									<arg value="org.apache.flink.configuration" />
-									<arg value="flink-runtime" />
-									<arg value="org.apache.flink.runtime.io.network.netty" />
-									<arg value="flink-yarn" />
-									<arg value="org.apache.flink.yarn.configuration" />
-									<arg value="flink-mesos" />
-									<arg value="org.apache.flink.mesos.configuration" />
-									<arg value="flink-mesos" />
-									<arg value="org.apache.flink.mesos.runtime.clusterframework" />
 								</java>
 							</target>
 						</configuration>
