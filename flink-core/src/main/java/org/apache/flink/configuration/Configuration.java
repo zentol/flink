@@ -545,6 +545,24 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
 		setValueInternal(key, value);
 	}
 
+	public <X> X get(ConfigOption<X> configOption) {
+		Object x = getRawValueFromOption(configOption);
+		if (x == null) {
+			return configOption.defaultValue();
+		} else {
+			return configOption.parser().apply(x.toString());
+		}
+	}
+
+	public <X> X get(ConfigOption<X> configOption, X overrideDefault) {
+		Object x = getRawValueFromOption(configOption);
+		if (x == null) {
+			return overrideDefault;
+		} else {
+			return configOption.parser().apply(x.toString());
+		}
+	}
+	
 	/**
 	 * Adds the given value to the configuration object.
 	 * The main key of the config option will be used to map the value.

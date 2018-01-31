@@ -22,6 +22,7 @@ import org.apache.flink.annotation.PublicEvolving;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.Function;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
@@ -54,7 +55,45 @@ public class ConfigOption<T> {
 	/** The description for this option. */
 	private final String description;
 
+	private final Function<String, T> parser;
+
 	// ------------------------------------------------------------------------
+
+	static class StringConfigOption extends ConfigOption<String> {
+		StringConfigOption(String key, String defaultValue) {
+			super(key, defaultValue, value -> value);
+		}
+	}
+
+	static class IntegerConfigOption extends ConfigOption<Integer> {
+		IntegerConfigOption(String key, int defaultValue) {
+			super(key, defaultValue, Integer::parseInt);
+		}
+	}
+
+	static class LongConfigOption extends ConfigOption<Long> {
+		LongConfigOption(String key, long defaultValue) {
+			super(key, defaultValue, Long::parseLong);
+		}
+	}
+
+	static class FloatConfigOption extends ConfigOption<Float> {
+		FloatConfigOption(String key, float defaultValue) {
+			super(key, defaultValue, Float::parseFloat);
+		}
+	}
+
+	static class DoubleConfigOption extends ConfigOption<Double> {
+		DoubleConfigOption(String key, double defaultValue) {
+			super(key, defaultValue, Double::parseDouble);
+		}
+	}
+
+	static class BooleanConfigOption extends ConfigOption<Boolean> {
+		BooleanConfigOption(String key, boolean defaultValue) {
+			super(key, defaultValue, Boolean::parseBoolean);
+		}
+	}
 
 	/**
 	 * Creates a new config option with no deprecated keys.
@@ -62,11 +101,8 @@ public class ConfigOption<T> {
 	 * @param key             The current key for that config option
 	 * @param defaultValue    The default value for this option
 	 */
-	ConfigOption(String key, T defaultValue) {
-		this.key = checkNotNull(key);
-		this.description = "";
-		this.defaultValue = defaultValue;
-		this.deprecatedKeys = EMPTY;
+	ConfigOption(String key, T defaultValue, Function<String, T> parser) {
+		this(key, "", defaultValue, parser, EMPTY);
 	}
 
 	/**
@@ -76,11 +112,12 @@ public class ConfigOption<T> {
 	 * @param defaultValue    The default value for this option
 	 * @param deprecatedKeys  The list of deprecated keys, in the order to be checked
 	 */
-	ConfigOption(String key, String description, T defaultValue, String... deprecatedKeys) {
+	ConfigOption(String key, String description, T defaultValue, Function<String, T> parser, String... deprecatedKeys) {
 		this.key = checkNotNull(key);
 		this.description = description;
 		this.defaultValue = defaultValue;
 		this.deprecatedKeys = deprecatedKeys == null || deprecatedKeys.length == 0 ? EMPTY : deprecatedKeys;
+		this.parser = parser;
 	}
 
 	// ------------------------------------------------------------------------
@@ -97,7 +134,7 @@ public class ConfigOption<T> {
 	 * @return A new config options, with the given deprecated keys.
 	 */
 	public ConfigOption<T> withDeprecatedKeys(String... deprecatedKeys) {
-		return new ConfigOption<>(key, description, defaultValue, deprecatedKeys);
+		return new ConfigOption<>(key, description, defaultValue, parser, deprecatedKeys);
 	}
 
 	/**
@@ -110,7 +147,11 @@ public class ConfigOption<T> {
 	 * @return A new config option, with given description.
 	 */
 	public ConfigOption<T> withDescription(final String description) {
-		return new ConfigOption<>(key, description, defaultValue, deprecatedKeys);
+		return new ConfigOption<>(key, description, defaultValue, parser, deprecatedKeys);
+	}
+
+	public ConfigOption<T> withParser(Function<String, T> parser) {
+		return new ConfigOption<>(key, description, defaultValue, parser, deprecatedKeys);
 	}
 
 	// ------------------------------------------------------------------------
@@ -137,6 +178,10 @@ public class ConfigOption<T> {
 	 */
 	public T defaultValue() {
 		return defaultValue;
+	}
+
+	public Function<String, T> parser() {
+		return parser;
 	}
 
 	/**

@@ -370,6 +370,7 @@ public final class DelegatingConfiguration extends Configuration {
 		return new ConfigOption<>(key,
 			option.description(),
 			option.defaultValue(),
+			option.parser(),
 			deprecated);
 	}
 }

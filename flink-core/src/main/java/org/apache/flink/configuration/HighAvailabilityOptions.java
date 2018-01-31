@@ -59,6 +59,25 @@ public class HighAvailabilityOptions {
 			.noDefaultValue()
 			.withDeprecatedKeys("high-availability.zookeeper.storageDir", "recovery.zookeeper.storageDir");
 
+	public enum HighAvailabilityMode {
+		NONE,
+		ZOOKEEPER;
+	}
+	
+	public static final ConfigOption<HighAvailabilityMode> HA_MODE_ENUM =
+		key("high-availability-enum")
+			.defaultValue(HighAvailabilityMode.NONE)
+			.withParser(haMode -> {
+				if (haMode == null) {
+					return HighAvailabilityMode.NONE;
+				} else if (haMode.equalsIgnoreCase(ConfigConstants.DEFAULT_RECOVERY_MODE)) {
+					// Map old default to new default
+					return HighAvailabilityMode.NONE;
+				} else {
+					return HighAvailabilityMode.valueOf(haMode.toUpperCase());
+				}
+			})
+			.withDeprecatedKeys("recovery.mode");
 
 	// ------------------------------------------------------------------------
 	//  Recovery Options

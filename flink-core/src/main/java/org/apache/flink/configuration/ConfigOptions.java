@@ -20,6 +20,8 @@ package org.apache.flink.configuration;
 
 import org.apache.flink.annotation.PublicEvolving;
 
+import java.util.function.Function;
+
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
@@ -89,12 +91,51 @@ public class ConfigOptions {
 		 * one of the {@code noDefaultValue} methods.
 		 *
 		 * @param value The default value for the config option
+		 * @return The config option with the default value.
+		 */
+		public ConfigOption<String> defaultValue(String value) {
+			checkNotNull(value);
+			return new ConfigOption.StringConfigOption(key, value);
+		}
+
+		public ConfigOption<Integer> defaultValue(int value) {
+			checkNotNull(value);
+			return new ConfigOption.IntegerConfigOption(key, value);
+		}
+
+		public ConfigOption<Long> defaultValue(long value) {
+			checkNotNull(value);
+			return new ConfigOption.LongConfigOption(key, value);
+		}
+
+		public ConfigOption<Float> defaultValue(float value) {
+			checkNotNull(value);
+			return new ConfigOption.FloatConfigOption(key, value);
+		}
+
+		public ConfigOption<Double> defaultValue(double value) {
+			checkNotNull(value);
+			return new ConfigOption.DoubleConfigOption(key, value);
+		}
+
+		public ConfigOption<Boolean> defaultValue(boolean value) {
+			checkNotNull(value);
+			return new ConfigOption.BooleanConfigOption(key, value);
+		}
+
+		/**
+		 * Creates a ConfigOption with the given default value.
+		 *
+		 * <p>This method does not accept "null". For options with no default value, choose
+		 * one of the {@code noDefaultValue} methods.
+		 *
+		 * @param value The default value for the config option
 		 * @param <T> The type of the default value.
 		 * @return The config option with the default value.
 		 */
-		public <T> ConfigOption<T> defaultValue(T value) {
+		public <T> ParsingConfigOptionBuilder<T> defaultValue(T value) {
 			checkNotNull(value);
-			return new ConfigOption<>(key, value);
+			return new ParsingConfigOptionBuilder<>(key, value);
 		}
 
 		/**
@@ -105,7 +146,21 @@ public class ConfigOptions {
 		 * @return The created ConfigOption.
 		 */
 		public ConfigOption<String> noDefaultValue() {
-			return new ConfigOption<>(key, null);
+			return new ConfigOption<>(key, null, value -> value);
+		}
+	}
+	
+	public static final class ParsingConfigOptionBuilder<T> {
+		private final String key;
+		private final T value;
+
+		private ParsingConfigOptionBuilder(String key, T value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public ConfigOption<T> withParser(Function<String, T> parser) {
+			return new ConfigOption<>(key, value, parser);
 		}
 	}
 
