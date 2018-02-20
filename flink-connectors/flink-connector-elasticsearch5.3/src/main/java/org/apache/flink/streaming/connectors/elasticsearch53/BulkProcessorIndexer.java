@@ -20,7 +20,6 @@ package org.apache.flink.streaming.connectors.elasticsearch53;
 
 import org.apache.flink.streaming.connectors.elasticsearch.RequestIndexer;
 
-import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
 
@@ -28,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementation of a {@link RequestIndexer}, using a {@link BulkProcessor}.
- * {@link ActionRequest ActionRequests} will be converted to {@link DocWriteRequest}
+ * {@link DocWriteRequest DocWriteRequests} will be converted to {@link DocWriteRequest}
  * and will be buffered before sending a bulk request to the Elasticsearch cluster.
  */
 public class BulkProcessorIndexer implements RequestIndexer {
@@ -37,21 +36,19 @@ public class BulkProcessorIndexer implements RequestIndexer {
 	private final boolean flushOnCheckpoint;
 	private final AtomicLong numPendingRequestsRef;
 
-	public BulkProcessorIndexer(BulkProcessor bulkProcessor,
-								boolean flushOnCheckpoint,
-								AtomicLong numPendingRequests) {
+	public BulkProcessorIndexer(BulkProcessor bulkProcessor, boolean flushOnCheckpoint, AtomicLong numPendingRequests) {
 		this.bulkProcessor = bulkProcessor;
 		this.flushOnCheckpoint = flushOnCheckpoint;
 		this.numPendingRequestsRef = numPendingRequests;
 	}
 
 	@Override
-	public void add(ActionRequest... actionRequests) {
-		for (ActionRequest actionRequest : actionRequests) {
+	public void add(DocWriteRequest... actionRequests) {
+		for (DocWriteRequest actionRequest : actionRequests) {
 			if (flushOnCheckpoint) {
 				numPendingRequestsRef.getAndIncrement();
 			}
-			this.bulkProcessor.add((DocWriteRequest) actionRequest);
+			this.bulkProcessor.add(actionRequest);
 		}
 	}
 }
