@@ -26,11 +26,11 @@ import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.common.typeutils.TypeSerializerFactory;
 import org.apache.flink.api.java.typeutils.runtime.RuntimeSerializerFactory;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.metrics.OperatorMetricGroup;
 import org.apache.flink.runtime.io.disk.iomanager.IOManager;
 import org.apache.flink.runtime.io.disk.iomanager.IOManagerAsync;
 import org.apache.flink.runtime.jobgraph.tasks.AbstractInvokable;
 import org.apache.flink.runtime.memory.MemoryManager;
-import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.metrics.groups.UnregisteredMetricGroups;
 import org.apache.flink.runtime.operators.Driver;
 import org.apache.flink.runtime.operators.ResettableDriver;
@@ -371,7 +371,7 @@ public abstract class BinaryOperatorTestBase<S extends Function, IN, OUT> extend
 	}
 	
 	@Override
-	public InternalOperatorMetricGroup getMetricGroup() {
+	public OperatorMetricGroup getMetricGroup() {
 		return UnregisteredMetricGroups.createUnregisteredOperatorMetricGroup();
 	}
 

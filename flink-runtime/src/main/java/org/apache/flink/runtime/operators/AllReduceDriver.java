@@ -107,8 +107,8 @@ public class AllReduceDriver<T> implements Driver<ReduceFunction<T>, T> {
 			LOG.debug(this.taskContext.formatLogString("AllReduce preprocessing done. Running Reducer code."));
 		}
 
-		final Counter numRecordsIn = this.taskContext.getMetricGroup().getIOMetricGroup().getNumRecordsInCounter();
-		final Counter numRecordsOut = this.taskContext.getMetricGroup().getIOMetricGroup().getNumRecordsOutCounter();
+		final Counter numRecordsIn = this.taskContext.getMetricGroup().getIOMetrics().getNumRecordsInCounter();
+		final Counter numRecordsOut = this.taskContext.getMetricGroup().getIOMetrics().getNumRecordsOutCounter();
 
 		final ReduceFunction<T> stub = this.taskContext.getStub();
 		final MutableObjectIterator<T> input = this.input;
