@@ -29,7 +29,7 @@ import org.apache.flink.api.common.operators.UnaryOperatorInformation;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 
 import org.junit.Test;
 
@@ -118,13 +118,13 @@ public class MapOperatorTest implements java.io.Serializable {
 			
 			List<Integer> resultMutableSafe = op.executeOnCollections(input,
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks,
-							accumulatorMap, new UnregisteredMetricsGroup()),
+							accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			
 			executionConfig.enableObjectReuse();
 			List<Integer> resultRegular = op.executeOnCollections(input,
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks,
-							accumulatorMap, new UnregisteredMetricsGroup()),
+							accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			
 			assertEquals(asList(1, 2, 3, 4, 5, 6), resultMutableSafe);

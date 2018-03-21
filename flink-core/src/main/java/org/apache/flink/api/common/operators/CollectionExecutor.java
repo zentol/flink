@@ -47,8 +47,8 @@ import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.core.fs.local.LocalFileSystem;
-import org.apache.flink.metrics.MetricGroup;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.types.Value;
 import org.apache.flink.util.Visitor;
 
@@ -187,7 +187,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedSink.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new UnregisteredOperatorMetricGroup();
 			
 		if (RichOutputFormat.class.isAssignableFrom(typedSink.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
@@ -208,7 +208,7 @@ public class CollectionExecutor {
 		
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new UnregisteredOperatorMetricGroup();
 		if (RichInputFormat.class.isAssignableFrom(typedSource.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 					new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -234,7 +234,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedOp.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new UnregisteredOperatorMetricGroup();
 		if (RichFunction.class.isAssignableFrom(typedOp.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
 					new IterationRuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics);
@@ -274,7 +274,7 @@ public class CollectionExecutor {
 		TaskInfo taskInfo = new TaskInfo(typedOp.getName(), 1, 0, 1, 0);
 		RuntimeUDFContext ctx;
 
-		MetricGroup metrics = new UnregisteredMetricsGroup();
+		OperatorMetricGroup metrics = new UnregisteredOperatorMetricGroup();
 	
 		if (RichFunction.class.isAssignableFrom(typedOp.getUserCodeWrapper().getUserCodeClass())) {
 			ctx = superStep == 0 ? new RuntimeUDFContext(taskInfo, classLoader, executionConfig, cachedFiles, accumulators, metrics) :
@@ -544,7 +544,7 @@ public class CollectionExecutor {
 
 		public IterationRuntimeUDFContext(TaskInfo taskInfo, ClassLoader classloader, ExecutionConfig executionConfig,
 											Map<String, Future<Path>> cpTasks, Map<String, Accumulator<?, ?>> accumulators,
-											MetricGroup metrics) {
+											OperatorMetricGroup metrics) {
 			super(taskInfo, classloader, executionConfig, cpTasks, accumulators, metrics);
 		}
 

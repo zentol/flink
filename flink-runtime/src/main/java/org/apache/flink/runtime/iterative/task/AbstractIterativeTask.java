@@ -30,7 +30,7 @@ import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.common.typeutils.TypeSerializerFactory;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.core.memory.DataOutputView;
-import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
 import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.io.network.api.reader.MutableReader;
 import org.apache.flink.runtime.iterative.concurrent.BlockingBackChannel;
@@ -181,7 +181,7 @@ public abstract class AbstractIterativeTask<S extends Function, OT> extends Batc
 	}
 
 	@Override
-	public DistributedRuntimeUDFContext createRuntimeContext(MetricGroup metrics) {
+	public DistributedRuntimeUDFContext createRuntimeContext(OperatorMetricGroup metrics) {
 		Environment env = getEnvironment();
 		return new IterativeRuntimeUdfContext(env.getTaskInfo(), getUserCodeClassLoader(),
 				getExecutionConfig(), env.getDistributedCacheEntries(), this.accumulatorMap, metrics);
@@ -375,7 +375,7 @@ public abstract class AbstractIterativeTask<S extends Function, OT> extends Batc
 	private class IterativeRuntimeUdfContext extends DistributedRuntimeUDFContext implements IterationRuntimeContext {
 
 		public IterativeRuntimeUdfContext(TaskInfo taskInfo, ClassLoader userCodeClassLoader, ExecutionConfig executionConfig,
-											Map<String, Future<Path>> cpTasks, Map<String, Accumulator<?, ?>> accumulatorMap, MetricGroup metrics) {
+											Map<String, Future<Path>> cpTasks, Map<String, Accumulator<?, ?>> accumulatorMap, OperatorMetricGroup metrics) {
 			super(taskInfo, userCodeClassLoader, executionConfig, cpTasks, accumulatorMap, metrics);
 		}
 

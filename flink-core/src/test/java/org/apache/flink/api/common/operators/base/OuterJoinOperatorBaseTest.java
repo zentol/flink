@@ -29,7 +29,7 @@ import org.apache.flink.api.common.operators.BinaryOperatorInformation;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.util.Collector;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class OuterJoinOperatorBaseTest implements Serializable {
 		HashMap<String, Future<Path>> cpTasks = new HashMap<>();
 
 		runtimeContext = new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks,
-			accumulatorMap, new UnregisteredMetricsGroup());
+			accumulatorMap, new UnregisteredOperatorMetricGroup());
 	}
 
 	@Test

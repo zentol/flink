@@ -26,11 +26,11 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.io.InputSplit;
 import org.apache.flink.core.io.InputSplitAssigner;
-import org.apache.flink.metrics.MetricGroup;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
 import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.jobgraph.tasks.InputSplitProvider;
 import org.apache.flink.runtime.memory.MemoryManager;
+import org.apache.flink.runtime.metrics.groups.UnregisteredMetricGroups;
 import org.apache.flink.runtime.operators.testutils.MockEnvironment;
 import org.apache.flink.runtime.state.TestTaskStateManager;
 import org.apache.flink.streaming.api.operators.AbstractStreamOperator;
@@ -276,8 +276,8 @@ public class InputFormatSourceFunctionTest {
 		}
 
 		@Override
-		public MetricGroup getMetricGroup() {
-			return new UnregisteredMetricsGroup();
+		public OperatorMetricGroup getMetricGroup() {
+			return UnregisteredMetricGroups.createUnregisteredOperatorMetricGroup();
 		}
 
 		@Override
