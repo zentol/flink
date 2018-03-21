@@ -29,7 +29,7 @@ import org.apache.flink.runtime.io.network.api.CancelCheckpointMarker;
 import org.apache.flink.runtime.io.network.api.CheckpointBarrier;
 import org.apache.flink.runtime.metrics.MetricNames;
 import org.apache.flink.runtime.metrics.groups.OperatorIOMetricGroup;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.plugable.SerializationDelegate;
 import org.apache.flink.streaming.api.collector.selector.CopyingDirectedOutput;
 import org.apache.flink.streaming.api.collector.selector.DirectedOutput;
@@ -421,7 +421,7 @@ public class OperatorChain<OUT, OP extends StreamOperator<OUT>> implements Strea
 			{
 				Counter tmpNumRecordsIn;
 				try {
-					OperatorIOMetricGroup ioMetricGroup = ((OperatorMetricGroup) operator.getMetricGroup()).getIOMetricGroup();
+					OperatorIOMetricGroup ioMetricGroup = ((InternalOperatorMetricGroup) operator.getMetricGroup()).getIOMetricGroup();
 					ioMetricGroup.reuseInputMetricsForTask();
 					ioMetricGroup.reuseOutputMetricsForTask();
 					tmpNumRecordsIn = ioMetricGroup.getNumRecordsInCounter();

@@ -27,7 +27,7 @@ import org.apache.flink.runtime.io.network.api.CancelCheckpointMarker;
 import org.apache.flink.runtime.io.network.api.CheckpointBarrier;
 import org.apache.flink.runtime.jobgraph.OperatorID;
 import org.apache.flink.runtime.metrics.MetricNames;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.metrics.groups.TaskMetricGroup;
 import org.apache.flink.runtime.metrics.groups.UnregisteredMetricGroups;
 import org.apache.flink.runtime.metrics.util.InterceptingOperatorMetricGroup;
@@ -400,7 +400,7 @@ public class TwoInputStreamTaskTest {
 		InterceptingOperatorMetricGroup chainedOperatorMetricGroup = new InterceptingOperatorMetricGroup();
 		TaskMetricGroup taskMetricGroup = new UnregisteredMetricGroups.UnregisteredTaskMetricGroup() {
 			@Override
-			public OperatorMetricGroup addOperator(OperatorID id, String name) {
+			public InternalOperatorMetricGroup addOperator(OperatorID id, String name) {
 				if (id.equals(headOperatorId)) {
 					return headOperatorMetricGroup;
 				} else if (id.equals(chainedOperatorId)) {
