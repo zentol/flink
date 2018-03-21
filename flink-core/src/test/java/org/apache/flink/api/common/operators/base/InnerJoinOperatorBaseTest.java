@@ -30,7 +30,7 @@ import org.apache.flink.api.common.operators.BinaryOperatorInformation;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.util.Collector;
 
 import org.junit.Test;
@@ -130,13 +130,13 @@ public class InnerJoinOperatorBaseTest implements Serializable {
 			executionConfig.disableObjectReuse();
 			List<Integer> resultSafe = base.executeOnCollections(inputData1, inputData2,
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks,
-							accumulatorMap, new UnregisteredMetricsGroup()),
+							accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			
 			executionConfig.enableObjectReuse();
 			List<Integer> resultRegular = base.executeOnCollections(inputData1, inputData2,
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks,
-							accumulatorMap, new UnregisteredMetricsGroup()),
+							accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 
 			assertEquals(expected, resultSafe);

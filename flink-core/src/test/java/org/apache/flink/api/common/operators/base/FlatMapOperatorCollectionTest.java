@@ -29,7 +29,7 @@ import org.apache.flink.api.common.operators.UnaryOperatorInformation;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.util.Collector;
 
 import org.junit.Assert;
@@ -83,7 +83,7 @@ public class FlatMapOperatorCollectionTest implements Serializable {
 				.executeOnCollections(input,
 						new RuntimeUDFContext(
 							taskInfo,  null, executionConfig, new HashMap<String, Future<Path>>(),
-							new HashMap<String, Accumulator<?, ?>>(), new UnregisteredMetricsGroup()),
+							new HashMap<String, Accumulator<?, ?>>(), new UnregisteredOperatorMetricGroup()),
 						executionConfig);
 
 		Assert.assertEquals(input.size(), result.size());

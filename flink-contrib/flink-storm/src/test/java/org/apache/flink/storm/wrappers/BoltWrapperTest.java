@@ -24,7 +24,7 @@ import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.UnmodifiableConfiguration;
 import org.apache.flink.core.fs.CloseableRegistry;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.metrics.groups.UnregisteredMetricGroups;
 import org.apache.flink.runtime.util.TestingTaskManagerRuntimeInfo;
@@ -150,7 +150,7 @@ public class BoltWrapperTest extends AbstractTest {
 		final StreamingRuntimeContext taskContext = mock(StreamingRuntimeContext.class);
 		when(taskContext.getExecutionConfig()).thenReturn(mock(ExecutionConfig.class));
 		when(taskContext.getTaskName()).thenReturn("name");
-		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredMetricsGroup());
+		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredOperatorMetricGroup());
 
 		final IRichBolt bolt = mock(IRichBolt.class);
 
@@ -235,7 +235,7 @@ public class BoltWrapperTest extends AbstractTest {
 		final StreamingRuntimeContext taskContext = mock(StreamingRuntimeContext.class);
 		when(taskContext.getExecutionConfig()).thenReturn(taskConfig);
 		when(taskContext.getTaskName()).thenReturn("name");
-		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredMetricsGroup());
+		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredOperatorMetricGroup());
 
 		final SetupOutputFieldsDeclarer declarer = new SetupOutputFieldsDeclarer();
 		declarer.declare(new Fields("dummy"));
@@ -300,7 +300,7 @@ public class BoltWrapperTest extends AbstractTest {
 		final StreamingRuntimeContext taskContext = mock(StreamingRuntimeContext.class);
 		when(taskContext.getExecutionConfig()).thenReturn(taskConfig);
 		when(taskContext.getTaskName()).thenReturn("name");
-		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredMetricsGroup());
+		when(taskContext.getMetricGroup()).thenReturn(new UnregisteredOperatorMetricGroup());
 
 		final IRichBolt bolt = mock(IRichBolt.class);
 		BoltWrapper<Object, Object> wrapper = new BoltWrapper<Object, Object>(bolt);

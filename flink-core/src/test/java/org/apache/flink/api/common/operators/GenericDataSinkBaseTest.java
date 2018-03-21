@@ -28,7 +28,7 @@ import org.apache.flink.api.common.operators.util.TestNonRichInputFormat;
 import org.apache.flink.api.common.operators.util.TestRichOutputFormat;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.types.Nothing;
 
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class GenericDataSinkBaseTest implements java.io.Serializable {
 			in.reset();
 			
 			sink.executeOnCollections(asList(TestIOData.NAMES), new RuntimeUDFContext(
-					taskInfo, null, executionConfig, cpTasks, accumulatorMap, new UnregisteredMetricsGroup()),
+					taskInfo, null, executionConfig, cpTasks, accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 		
 				assertEquals(out.output, asList(TestIOData.RICH_NAMES));
@@ -108,7 +108,7 @@ public class GenericDataSinkBaseTest implements java.io.Serializable {
 			in.reset();
 			
 			sink.executeOnCollections(asList(TestIOData.NAMES), new RuntimeUDFContext(
-					taskInfo, null, executionConfig, cpTasks, accumulatorMap, new UnregisteredMetricsGroup()),
+					taskInfo, null, executionConfig, cpTasks, accumulatorMap, new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			assertEquals(out.output, asList(TestIOData.RICH_NAMES));
 		} catch(Exception e){

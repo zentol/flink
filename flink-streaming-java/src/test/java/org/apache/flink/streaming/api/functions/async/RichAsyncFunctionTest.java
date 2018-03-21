@@ -32,8 +32,8 @@ import org.apache.flink.api.common.state.ListStateDescriptor;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.state.ReducingStateDescriptor;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
-import org.apache.flink.metrics.MetricGroup;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 
 import org.junit.Test;
 
@@ -102,7 +102,7 @@ public class RichAsyncFunctionTest {
 		};
 
 		final String taskName = "foobarTask";
-		final MetricGroup metricGroup = new UnregisteredMetricsGroup();
+		final OperatorMetricGroup metricGroup = new UnregisteredOperatorMetricGroup();
 		final int numberOfParallelSubtasks = 42;
 		final int indexOfSubtask = 43;
 		final int attemptNumber = 1337;

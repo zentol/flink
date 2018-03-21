@@ -31,7 +31,7 @@ import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.TaskInfo;
 import org.apache.flink.api.common.accumulators.Accumulator;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.util.Collector;
 import org.apache.flink.api.common.functions.MapPartitionFunction;
 import org.apache.flink.api.common.functions.RichMapPartitionFunction;
@@ -92,7 +92,7 @@ public class PartitionMapOperatorTest implements java.io.Serializable {
 					new RuntimeUDFContext(taskInfo, null, executionConfig,
 							new HashMap<String, Future<Path>>(),
 							new HashMap<String, Accumulator<?, ?>>(),
-							new UnregisteredMetricsGroup()),
+							new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			
 			executionConfig.enableObjectReuse();
@@ -100,7 +100,7 @@ public class PartitionMapOperatorTest implements java.io.Serializable {
 					new RuntimeUDFContext(taskInfo, null, executionConfig,
 							new HashMap<String, Future<Path>>(),
 							new HashMap<String, Accumulator<?, ?>>(),
-							new UnregisteredMetricsGroup()),
+							new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 			
 			assertEquals(asList(1, 2, 3, 4, 5, 6), resultMutableSafe);

@@ -30,7 +30,7 @@ import org.apache.flink.api.common.typeutils.TypeComparatorFactory;
 import org.apache.flink.api.common.typeutils.TypeSerializerFactory;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.io.IOReadableWritable;
-import org.apache.flink.metrics.MetricGroup;
+import org.apache.flink.metrics.OperatorMetricGroup;
 import org.apache.flink.runtime.broadcast.BroadcastVariableMaterialization;
 import org.apache.flink.runtime.execution.CancelTaskException;
 import org.apache.flink.runtime.execution.Environment;
@@ -1029,7 +1029,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 				this.getExecutionConfig(), this.accumulatorMap);
 	}
 
-	public DistributedRuntimeUDFContext createRuntimeContext(MetricGroup metrics) {
+	public DistributedRuntimeUDFContext createRuntimeContext(OperatorMetricGroup metrics) {
 		Environment env = getEnvironment();
 
 		return new DistributedRuntimeUDFContext(env.getTaskInfo(), getUserCodeClassLoader(),

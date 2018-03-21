@@ -28,7 +28,8 @@ import org.apache.flink.api.common.operators.util.TestRichInputFormat;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.core.fs.Path;
 
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
+
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -88,7 +89,7 @@ public class GenericDataSourceBaseTest implements java.io.Serializable {
 			
 			List<String> resultMutableSafe = source.executeOnCollections(
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks, accumulatorMap,
-							new UnregisteredMetricsGroup()), executionConfig);
+							new UnregisteredOperatorMetricGroup()), executionConfig);
 			
 			assertEquals(true, in.hasBeenClosed());
 			assertEquals(true, in.hasBeenOpened());
@@ -100,7 +101,7 @@ public class GenericDataSourceBaseTest implements java.io.Serializable {
 			
 			List<String> resultRegular = source.executeOnCollections(
 					new RuntimeUDFContext(taskInfo, null, executionConfig, cpTasks, accumulatorMap,
-							new UnregisteredMetricsGroup()), executionConfig);
+							new UnregisteredOperatorMetricGroup()), executionConfig);
 			
 			assertEquals(true, in.hasBeenClosed());
 			assertEquals(true, in.hasBeenOpened());

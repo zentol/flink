@@ -26,7 +26,7 @@ import org.apache.flink.api.common.TaskInfo;
 import org.apache.flink.api.common.accumulators.Accumulator;
 import org.apache.flink.api.common.functions.util.RuntimeUDFContext;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.types.Value;
 
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class RichInputFormatTest {
 						taskInfo, getClass().getClassLoader(), new ExecutionConfig(),
 						new HashMap<String, Future<Path>>(),
 						new HashMap<String, Accumulator<?, ?>>(),
-						new UnregisteredMetricsGroup()));
+						new UnregisteredOperatorMetricGroup()));
 
 		assertEquals(inputFormat.getRuntimeContext().getIndexOfThisSubtask(), 1);
 		assertEquals(inputFormat.getRuntimeContext().getNumberOfParallelSubtasks(),3);

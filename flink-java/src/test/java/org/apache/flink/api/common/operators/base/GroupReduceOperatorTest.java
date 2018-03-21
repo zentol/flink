@@ -30,7 +30,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.typeutils.TypeInfoParser;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.metrics.groups.UnregisteredMetricsGroup;
+import org.apache.flink.metrics.groups.UnregisteredOperatorMetricGroup;
 import org.apache.flink.util.Collector;
 
 import org.junit.Test;
@@ -177,7 +177,7 @@ public class GroupReduceOperatorTest implements java.io.Serializable {
 					new RuntimeUDFContext(taskInfo, null, executionConfig,
 							new HashMap<String, Future<Path>>(),
 							new HashMap<String, Accumulator<?, ?>>(),
-							new UnregisteredMetricsGroup()),
+							new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 
 			executionConfig.enableObjectReuse();
@@ -185,7 +185,7 @@ public class GroupReduceOperatorTest implements java.io.Serializable {
 					new RuntimeUDFContext(taskInfo, null, executionConfig,
 							new HashMap<String, Future<Path>>(),
 							new HashMap<String, Accumulator<?, ?>>(),
-							new UnregisteredMetricsGroup()),
+							new UnregisteredOperatorMetricGroup()),
 					executionConfig);
 
 			Set<Tuple2<String, Integer>> resultSetMutableSafe = new HashSet<Tuple2<String, Integer>>(resultMutableSafe);
