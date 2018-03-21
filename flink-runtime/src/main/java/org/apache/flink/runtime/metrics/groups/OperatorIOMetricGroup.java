@@ -21,13 +21,14 @@ package org.apache.flink.runtime.metrics.groups;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.MeterView;
+import org.apache.flink.metrics.OperatorIOMetrics;
 import org.apache.flink.runtime.metrics.MetricNames;
 
 /**
  * Metric group that contains shareable pre-defined IO-related metrics. The metrics registration is
  * forwarded to the parent operator metric group.
  */
-public class OperatorIOMetricGroup extends ProxyMetricGroup<InternalOperatorMetricGroup> {
+public class OperatorIOMetricGroup extends ProxyMetricGroup<InternalOperatorMetricGroup> implements OperatorIOMetrics {
 
 	private final Counter numRecordsIn;
 	private final Counter numRecordsOut;
@@ -43,10 +44,12 @@ public class OperatorIOMetricGroup extends ProxyMetricGroup<InternalOperatorMetr
 		numRecordsOutRate = parentMetricGroup.meter(MetricNames.IO_NUM_RECORDS_OUT_RATE, new MeterView(numRecordsOut, 60));
 	}
 
+	@Override
 	public Counter getNumRecordsInCounter() {
 		return numRecordsIn;
 	}
 
+	@Override
 	public Counter getNumRecordsOutCounter() {
 		return numRecordsOut;
 	}

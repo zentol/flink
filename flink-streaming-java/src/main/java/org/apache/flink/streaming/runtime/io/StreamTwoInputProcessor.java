@@ -192,7 +192,7 @@ public class StreamTwoInputProcessor<IN1, IN2> {
 		}
 		if (numRecordsIn == null) {
 			try {
-				numRecordsIn = ((InternalOperatorMetricGroup) streamOperator.getMetricGroup()).getIOMetricGroup().getNumRecordsInCounter();
+				numRecordsIn = streamOperator.getMetricGroup().getIOMetrics().getNumRecordsInCounter();
 			} catch (Exception e) {
 				LOG.warn("An exception occurred during the metrics setup.", e);
 				numRecordsIn = new SimpleCounter();

@@ -1081,7 +1081,7 @@ public class BatchTask<S extends Function, OT> extends AbstractInvokable impleme
 	}
 
 	@Override
-	public InternalOperatorMetricGroup getMetricGroup() {
+	public OperatorMetricGroup getMetricGroup() {
 		return metrics;
 	}
 

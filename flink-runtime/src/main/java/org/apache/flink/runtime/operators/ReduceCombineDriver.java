@@ -111,7 +111,7 @@ public class ReduceCombineDriver<T> implements Driver<ReduceFunction<T>, T> {
 
 	@Override
 	public void prepare() throws Exception {
-		final Counter numRecordsOut = taskContext.getMetricGroup().getIOMetricGroup().getNumRecordsOutCounter();
+		final Counter numRecordsOut = taskContext.getMetricGroup().getIOMetrics().getNumRecordsOutCounter();
 
 		strategy = taskContext.getTaskConfig().getDriverStrategy();
 
@@ -159,7 +159,7 @@ public class ReduceCombineDriver<T> implements Driver<ReduceFunction<T>, T> {
 			LOG.debug("Combiner starting.");
 		}
 
-		final Counter numRecordsIn = taskContext.getMetricGroup().getIOMetricGroup().getNumRecordsInCounter();
+		final Counter numRecordsIn = taskContext.getMetricGroup().getIOMetrics().getNumRecordsInCounter();
 
 		final MutableObjectIterator<T> in = taskContext.getInput(0);
 		final TypeSerializer<T> serializer = this.serializer;
