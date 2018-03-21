@@ -34,13 +34,13 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * Special {@link org.apache.flink.metrics.MetricGroup} representing an Operator.
  */
 @Internal
-public class OperatorMetricGroup extends ComponentMetricGroup<TaskMetricGroup> {
+public class InternalOperatorMetricGroup extends ComponentMetricGroup<TaskMetricGroup> {
 	private final String operatorName;
 	private final OperatorID operatorID;
 
 	private final OperatorIOMetricGroup ioMetrics;
 
-	public OperatorMetricGroup(MetricRegistry registry, TaskMetricGroup parent, OperatorID operatorID, String operatorName) {
+	public InternalOperatorMetricGroup(MetricRegistry registry, TaskMetricGroup parent, OperatorID operatorID, String operatorName) {
 		super(registry, registry.getScopeFormats().getOperatorFormat().formatScope(checkNotNull(parent), operatorID, operatorName), parent);
 		this.operatorID = operatorID;
 		this.operatorName = operatorName;

@@ -35,7 +35,7 @@ import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.runtime.checkpoint.CheckpointOptions;
 import org.apache.flink.runtime.execution.Environment;
 import org.apache.flink.runtime.jobgraph.OperatorID;
-import org.apache.flink.runtime.metrics.groups.OperatorMetricGroup;
+import org.apache.flink.runtime.metrics.groups.InternalOperatorMetricGroup;
 import org.apache.flink.runtime.metrics.groups.TaskManagerJobMetricGroup;
 import org.apache.flink.runtime.metrics.groups.UnregisteredMetricGroups;
 import org.apache.flink.runtime.state.AbstractKeyedStateBackend;
@@ -145,7 +145,7 @@ public abstract class AbstractStreamOperator<OUT>
 	// --------------- Metrics ---------------------------
 
 	/** Metric group for the operator. */
-	protected transient OperatorMetricGroup metrics;
+	protected transient InternalOperatorMetricGroup metrics;
 
 	protected transient LatencyStats latencyStats;
 
@@ -171,7 +171,7 @@ public abstract class AbstractStreamOperator<OUT>
 		this.container = containingTask;
 		this.config = config;
 		try {
-			OperatorMetricGroup operatorMetricGroup = environment.getMetricGroup().addOperator(config.getOperatorID(), config.getOperatorName());
+			InternalOperatorMetricGroup operatorMetricGroup = environment.getMetricGroup().addOperator(config.getOperatorID(), config.getOperatorName());
 			this.output = new CountingOutput(output, operatorMetricGroup.getIOMetricGroup().getNumRecordsOutCounter());
 			if (config.isChainStart()) {
 				operatorMetricGroup.getIOMetricGroup().reuseInputMetricsForTask();
