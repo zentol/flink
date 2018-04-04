@@ -1360,7 +1360,55 @@
           <pre>
             <code>
 {
-  "type" : "any"
+  "type" : "object",
+  "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:JobConfigInfo",
+  "properties" : {
+    "jid" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:org:apache:flink:api:common:JobID",
+      "properties" : {
+        "upperPart" : {
+          "type" : "integer"
+        },
+        "lowerPart" : {
+          "type" : "integer"
+        },
+        "bytes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer"
+          }
+        }
+      }
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "execution-config" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:JobConfigInfo:ExecutionConfigInfo",
+      "properties" : {
+        "execution-mode" : {
+          "type" : "string"
+        },
+        "restart-strategy" : {
+          "type" : "string"
+        },
+        "job-parallelism" : {
+          "type" : "integer"
+        },
+        "object-reuse-mode" : {
+          "type" : "boolean"
+        },
+        "user-config" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
 }            </code>
           </pre>
          </div>

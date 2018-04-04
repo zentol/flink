@@ -20,43 +20,35 @@ package org.apache.flink.runtime.rest.messages;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.runtime.rest.handler.job.JobConfigHandler;
-import org.apache.flink.runtime.rest.util.RestMapperUtils;
 import org.apache.flink.util.Preconditions;
 
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonGenerator;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonParser;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.DeserializationContext;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonNode;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.SerializerProvider;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import javax.annotation.Nullable;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Response type of the {@link JobConfigHandler}.
  */
-@JsonSerialize(using = JobConfigInfo.Serializer.class)
-@JsonDeserialize(using = JobConfigInfo.Deserializer.class)
 public class JobConfigInfo implements ResponseBody {
 
 	public static final String FIELD_NAME_JOB_ID = "jid";
 	public static final String FIELD_NAME_JOB_NAME = "name";
 	public static final String FIELD_NAME_EXECUTION_CONFIG = "execution-config";
 
+	@JsonProperty(FIELD_NAME_JOB_ID)
 	private final JobID jobId;
 
+	@JsonProperty(FIELD_NAME_JOB_NAME)
 	private final String jobName;
 
-	@Nullable
+	@JsonProperty(FIELD_NAME_EXECUTION_CONFIG)
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private final ExecutionConfigInfo executionConfigInfo;
 
 	public JobConfigInfo(
@@ -68,14 +60,17 @@ public class JobConfigInfo implements ResponseBody {
 		this.executionConfigInfo = executionConfigInfo;
 	}
 
+	@JsonIgnore
 	public JobID getJobId() {
 		return jobId;
 	}
 
+	@JsonIgnore
 	public String getJobName() {
 		return jobName;
 	}
 
+	@JsonIgnore
 	@Nullable
 	public ExecutionConfigInfo getExecutionConfigInfo() {
 		return executionConfigInfo;
@@ -103,67 +98,6 @@ public class JobConfigInfo implements ResponseBody {
 	//---------------------------------------------------------------------------------
 	// Static helper classes
 	//---------------------------------------------------------------------------------
-
-	/**
-	 * Json serializer for the {@link JobConfigInfo}.
-	 */
-	public static final class Serializer extends StdSerializer<JobConfigInfo> {
-
-		private static final long serialVersionUID = -1551666039618928811L;
-
-		public Serializer() {
-			super(JobConfigInfo.class);
-		}
-
-		@Override
-		public void serialize(
-				JobConfigInfo jobConfigInfo,
-				JsonGenerator jsonGenerator,
-				SerializerProvider serializerProvider) throws IOException {
-			jsonGenerator.writeStartObject();
-
-			jsonGenerator.writeStringField(FIELD_NAME_JOB_ID, jobConfigInfo.getJobId().toString());
-			jsonGenerator.writeStringField(FIELD_NAME_JOB_NAME, jobConfigInfo.getJobName());
-
-			if (jobConfigInfo.getExecutionConfigInfo() != null) {
-				jsonGenerator.writeObjectField(FIELD_NAME_EXECUTION_CONFIG, jobConfigInfo.getExecutionConfigInfo());
-			}
-
-			jsonGenerator.writeEndObject();
-		}
-	}
-
-	/**
-	 * Json deserializer for the {@link JobConfigInfo}.
-	 */
-	public static final class Deserializer extends StdDeserializer<JobConfigInfo> {
-
-		private static final long serialVersionUID = -3580088509877177213L;
-
-		public Deserializer() {
-			super(JobConfigInfo.class);
-		}
-
-		@Override
-		public JobConfigInfo deserialize(
-				JsonParser jsonParser,
-				DeserializationContext deserializationContext) throws IOException {
-			JsonNode rootNode = jsonParser.readValueAsTree();
-
-			final JobID jobId = JobID.fromHexString(rootNode.get(FIELD_NAME_JOB_ID).asText());
-			final String jobName = rootNode.get(FIELD_NAME_JOB_NAME).asText();
-
-			final ExecutionConfigInfo executionConfigInfo;
-
-			if (rootNode.has(FIELD_NAME_EXECUTION_CONFIG)) {
-				executionConfigInfo = RestMapperUtils.getStrictObjectMapper().treeToValue(rootNode.get(FIELD_NAME_EXECUTION_CONFIG), ExecutionConfigInfo.class);
-			} else {
-				executionConfigInfo = null;
-			}
-
-			return new JobConfigInfo(jobId, jobName, executionConfigInfo);
-		}
-	}
 
 	/**
 	 * Nested class to encapsulate the execution configuration.
