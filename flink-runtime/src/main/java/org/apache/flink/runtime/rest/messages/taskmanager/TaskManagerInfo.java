@@ -56,7 +56,7 @@ public class TaskManagerInfo implements ResponseBody, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@JsonProperty(FIELD_NAME_RESOURCE_ID)
-	@JsonSerialize(using = ResourceIDSerializer.class)
+	@JsonSerialize(converter = ResourceIDSerializer.class)
 	private final ResourceID resourceId;
 
 	@JsonProperty(FIELD_NAME_ADDRESS)
@@ -79,7 +79,7 @@ public class TaskManagerInfo implements ResponseBody, Serializable {
 
 	@JsonCreator
 	public TaskManagerInfo(
-			@JsonDeserialize(using = ResourceIDDeserializer.class) @JsonProperty(FIELD_NAME_RESOURCE_ID) ResourceID resourceId,
+			@JsonDeserialize(converter = ResourceIDDeserializer.class) @JsonProperty(FIELD_NAME_RESOURCE_ID) ResourceID resourceId,
 			@JsonProperty(FIELD_NAME_ADDRESS) String address,
 			@JsonProperty(FIELD_NAME_DATA_PORT) int dataPort,
 			@JsonProperty(FIELD_NAME_LAST_HEARTBEAT) long lastHeartbeat,

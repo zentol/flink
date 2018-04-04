@@ -249,7 +249,7 @@
         "id" : "urn:jsonschema:org:apache:flink:runtime:messages:webmonitor:JobIdsWithStatusOverview:JobIdWithStatus",
         "properties" : {
           "id" : {
-            "type" : "any"
+            "type" : "string"
           },
           "status" : {
             "type" : "string",
@@ -412,7 +412,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:job:JobDetailsInfo",
   "properties" : {
     "jid" : {
-      "type" : "any"
+      "type" : "string"
     },
     "name" : {
       "type" : "string"
@@ -449,7 +449,7 @@
         "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:job:JobDetailsInfo:JobVertexDetailsInfo",
         "properties" : {
           "id" : {
-            "type" : "any"
+            "type" : "string"
           },
           "name" : {
             "type" : "string"
@@ -662,7 +662,10 @@
     "serialized-user-task-accumulators" : {
       "type" : "object",
       "additionalProperties" : {
-        "type" : "any"
+        "type" : "array",
+        "items" : {
+          "type" : "integer"
+        }
       }
     }
   }
@@ -1020,7 +1023,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:checkpoints:CheckpointConfigInfo",
   "properties" : {
     "mode" : {
-      "type" : "any"
+      "type" : "string"
     },
     "interval" : {
       "type" : "integer"
@@ -1685,7 +1688,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:handler:async:TriggerResponse",
   "properties" : {
     "request-id" : {
-      "type" : "any"
+      "type" : "string"
     }
   }
 }            </code>
@@ -1816,7 +1819,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:handler:async:TriggerResponse",
   "properties" : {
     "request-id" : {
-      "type" : "any"
+      "type" : "string"
     }
   }
 }            </code>
@@ -1937,7 +1940,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:JobVertexDetailsInfo",
   "properties" : {
     "id" : {
-      "type" : "any"
+      "type" : "string"
     },
     "name" : {
       "type" : "string"
@@ -2739,7 +2742,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:JobVertexTaskManagersInfo",
   "properties" : {
     "id" : {
-      "type" : "any"
+      "type" : "string"
     },
     "name" : {
       "type" : "string"
@@ -2926,7 +2929,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:handler:async:TriggerResponse",
   "properties" : {
     "request-id" : {
-      "type" : "any"
+      "type" : "string"
     }
   }
 }            </code>
@@ -3041,7 +3044,7 @@
         "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:taskmanager:TaskManagerInfo",
         "properties" : {
           "id" : {
-            "type" : "any"
+            "type" : "string"
           },
           "path" : {
             "type" : "string"
@@ -3131,7 +3134,7 @@
   "id" : "urn:jsonschema:org:apache:flink:runtime:rest:messages:taskmanager:TaskManagerDetailsInfo",
   "properties" : {
     "id" : {
-      "type" : "any"
+      "type" : "string"
     },
     "path" : {
       "type" : "string"

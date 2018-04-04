@@ -26,12 +26,9 @@ import org.apache.flink.util.SerializedValue;
 
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonParser;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonToken;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.DeserializationContext;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JavaType;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.type.TypeFactory;
 
 import javax.annotation.Nullable;
 
@@ -59,10 +56,7 @@ public class JobResultDeserializer extends StdDeserializer<JobResult> {
 
 	public JobResultDeserializer() {
 		super(JobResult.class);
-		final JavaType objectSerializedValueType = TypeFactory.defaultInstance()
-			.constructType(new TypeReference<SerializedValue<Object>>() {
-			});
-		serializedValueDeserializer = new SerializedValueDeserializer(objectSerializedValueType);
+		serializedValueDeserializer = new SerializedValueDeserializer();
 	}
 
 	@Override
@@ -83,7 +77,7 @@ public class JobResultDeserializer extends StdDeserializer<JobResult> {
 			switch (fieldName) {
 				case JobResultSerializer.FIELD_NAME_JOB_ID:
 					assertNextToken(p, JsonToken.VALUE_STRING);
-					jobId = jobIdDeserializer.deserialize(p, ctxt);
+					jobId = jobIdDeserializer.convert(p.getValueAsString());
 					break;
 				case JobResultSerializer.FIELD_NAME_NET_RUNTIME:
 					assertNextToken(p, JsonToken.VALUE_NUMBER_INT);
@@ -133,7 +127,7 @@ public class JobResultDeserializer extends StdDeserializer<JobResult> {
 			p.nextValue();
 			accumulatorResults.put(
 				accumulatorName,
-				(SerializedValue<OptionalFailure<Object>>) serializedValueDeserializer.deserialize(p, ctxt));
+				(SerializedValue<OptionalFailure<Object>>) serializedValueDeserializer.convert(p.getBinaryValue()));
 		}
 		return accumulatorResults;
 	}
