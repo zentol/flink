@@ -211,6 +211,16 @@ under the License.
 
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>0.11.0.2</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<profiles>
 		<profile>
 			<!-- Create SQL Client uber jars for releases -->
