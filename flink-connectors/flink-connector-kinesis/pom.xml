@@ -124,6 +124,11 @@ under the License.
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-core</artifactId>
+				<version>1.11.319</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
