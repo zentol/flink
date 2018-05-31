@@ -86,7 +86,6 @@ under the License.
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-kinesis</artifactId>
-			<version>${aws.sdk.version}</version>
 		</dependency>
 
 		<dependency>
@@ -128,6 +127,11 @@ under the License.
 				<groupId>com.amazonaws</groupId>
 				<artifactId>aws-java-sdk-core</artifactId>
 				<version>1.11.319</version>
+			</dependency>
+			<dependency>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-kinesis</artifactId>
+				<version>${aws.sdk.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
