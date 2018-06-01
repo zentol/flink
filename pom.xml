@@ -357,6 +357,12 @@ under the License.
 			<dependency>
 				<!-- For dependency convergence -->
 				<groupId>org.scala-lang.modules</groupId>
+				<artifactId>scala-xml_${scala.binary.version}</artifactId>
+				<version>1.0.5</version>
+			</dependency>
+			<dependency>
+				<!-- For dependency convergence -->
+				<groupId>org.scala-lang.modules</groupId>
 				<artifactId>scala-parser-combinators_${scala.binary.version}</artifactId>
 				<version>1.0.4</version>
 			</dependency>
