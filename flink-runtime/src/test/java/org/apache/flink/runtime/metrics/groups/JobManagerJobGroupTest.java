@@ -21,6 +21,7 @@ package org.apache.flink.runtime.metrics.groups;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.MetricOptions;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
 import org.apache.flink.runtime.metrics.MetricRegistryImpl;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
@@ -42,7 +43,7 @@ public class JobManagerJobGroupTest extends TestLogger {
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
 
 		JobManagerMetricGroup tmGroup = new JobManagerMetricGroup(registry, "theHostName");
-		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName");
+		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, new JobID(), "myJobName", ResourceID.generate());
 
 		assertArrayEquals(
 				new String[] { "theHostName", "jobmanager", "myJobName"},
@@ -59,20 +60,21 @@ public class JobManagerJobGroupTest extends TestLogger {
 	public void testGenerateScopeCustom() throws Exception {
 		Configuration cfg = new Configuration();
 		cfg.setString(MetricOptions.SCOPE_NAMING_JM, "abc");
-		cfg.setString(MetricOptions.SCOPE_NAMING_JM_JOB, "some-constant.<job_name>");
+		cfg.setString(MetricOptions.SCOPE_NAMING_JM_JOB, "some-constant.<job_name>.<jm_id>");
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(cfg));
 
 		JobID jid = new JobID();
+		ResourceID jmid = ResourceID.generate();
 
 		JobManagerMetricGroup tmGroup = new JobManagerMetricGroup(registry, "theHostName");
-		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, jid, "myJobName");
+		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, jid, "myJobName", jmid);
 
 		assertArrayEquals(
-				new String[] { "some-constant", "myJobName" },
+				new String[] { "some-constant", "myJobName" , jmid.getResourceIdString()},
 				jmGroup.getScopeComponents());
 
 		assertEquals(
-				"some-constant.myJobName.name",
+				"some-constant.myJobName." + jmid.getResourceIdString() + ".name",
 				jmGroup.getMetricIdentifier("name"));
 
 		registry.shutdown().get();
@@ -88,7 +90,7 @@ public class JobManagerJobGroupTest extends TestLogger {
 		JobID jid = new JobID();
 
 		JobManagerMetricGroup tmGroup = new JobManagerMetricGroup(registry, "theHostName");
-		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, jid, "myJobName");
+		JobMetricGroup jmGroup = new JobManagerJobMetricGroup(registry, tmGroup, jid, "myJobName", ResourceID.generate());
 
 		assertArrayEquals(
 				new String[] { "peter", "some-constant", jid.toString() },
@@ -106,7 +108,7 @@ public class JobManagerJobGroupTest extends TestLogger {
 		JobID jid = new JobID();
 		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
 		JobManagerMetricGroup jm = new JobManagerMetricGroup(registry, "host");
-		JobManagerJobMetricGroup jmj = new JobManagerJobMetricGroup(registry, jm, jid, "jobname");
+		JobManagerJobMetricGroup jmj = new JobManagerJobMetricGroup(registry, jm, jid, "jobname", ResourceID.generate());
 
 		QueryScopeInfo.JobQueryScopeInfo info = jmj.createQueryServiceMetricInfo(new DummyCharacterFilter());
 		assertEquals("", info.scope);

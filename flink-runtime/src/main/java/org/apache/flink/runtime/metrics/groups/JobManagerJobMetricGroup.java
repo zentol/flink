@@ -20,11 +20,14 @@ package org.apache.flink.runtime.metrics.groups;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.metrics.MetricRegistry;
+import org.apache.flink.runtime.metrics.scope.ScopeFormat;
 
 import javax.annotation.Nullable;
 
 import java.util.Collections;
+import java.util.Map;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
@@ -34,12 +37,17 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  */
 @Internal
 public class JobManagerJobMetricGroup extends JobMetricGroup<JobManagerMetricGroup> {
+	@Nullable
+	private final ResourceID jobManagerId;
+
 	public JobManagerJobMetricGroup(
 			MetricRegistry registry,
 			JobManagerMetricGroup parent,
 			JobID jobId,
-			@Nullable String jobName) {
-		super(registry, checkNotNull(parent), jobId, jobName, registry.getScopeFormats().getJobManagerJobFormat().formatScope(checkNotNull(parent), jobId, jobName));
+			@Nullable String jobName,
+			@Nullable ResourceID jobManagerId) {
+		super(registry, checkNotNull(parent), jobId, jobName, registry.getScopeFormats().getJobManagerJobFormat().formatScope(checkNotNull(parent), jobId, jobName, jobManagerId));
+		this.jobManagerId = jobManagerId;
 	}
 
 	public final JobManagerMetricGroup parent() {
@@ -49,6 +57,14 @@ public class JobManagerJobMetricGroup extends JobMetricGroup<JobManagerMetricGro
 	// ------------------------------------------------------------------------
 	//  Component Metric Group Specifics
 	// ------------------------------------------------------------------------
+
+	@Override
+	protected void putVariables(Map<String, String> variables) {
+		super.putVariables(variables);
+		if (jobManagerId != null) {
+			variables.put(ScopeFormat.SCOPE_JOBMANAGER_ID, jobManagerId.getResourceIdString());
+		}
+	}
 
 	@Override
 	protected Iterable<? extends ComponentMetricGroup> subComponents() {

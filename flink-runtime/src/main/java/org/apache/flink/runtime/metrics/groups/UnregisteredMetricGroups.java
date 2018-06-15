@@ -19,6 +19,7 @@
 package org.apache.flink.runtime.metrics.groups;
 
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.executiongraph.ExecutionAttemptID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.JobVertexID;
@@ -79,9 +80,10 @@ public class UnregisteredMetricGroups {
 	public static class UnregisteredJobManagerJobMetricGroup extends JobManagerJobMetricGroup {
 		private static final JobID DEFAULT_JOB_ID = new JobID(0, 0);
 		private static final String DEFAULT_JOB_NAME = "UnregisteredJob";
+		private static final ResourceID DEFAULT_JOB_MANAGER_ID = new ResourceID("");
 
 		protected UnregisteredJobManagerJobMetricGroup() {
-			super(NoOpMetricRegistry.INSTANCE, new UnregisteredJobManagerMetricGroup(), DEFAULT_JOB_ID, DEFAULT_JOB_NAME);
+			super(NoOpMetricRegistry.INSTANCE, new UnregisteredJobManagerMetricGroup(), DEFAULT_JOB_ID, DEFAULT_JOB_NAME, DEFAULT_JOB_MANAGER_ID);
 		}
 	}
 

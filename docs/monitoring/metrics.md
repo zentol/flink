@@ -515,7 +515,7 @@ or by assigning unique names to jobs and operators.
 
 - JobManager: &lt;host&gt;
 - TaskManager: &lt;host&gt;, &lt;tm_id&gt;
-- Job: &lt;job_id&gt;, &lt;job_name&gt;
+- Job: &lt;job_id&gt;, &lt;job_name&gt;, &lt;jm_id&gt;
 - Task: &lt;task_id&gt;, &lt;task_name&gt;, &lt;task_attempt_id&gt;, &lt;task_attempt_num&gt;, &lt;subtask_index&gt;
 - Operator: &lt;operator_id&gt;,&lt;operator_name&gt;, &lt;subtask_index&gt;
 

@@ -19,7 +19,10 @@
 package org.apache.flink.runtime.metrics.scope;
 
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.metrics.groups.JobManagerMetricGroup;
+
+import javax.annotation.Nullable;
 
 /**
  * The scope format for the {@link org.apache.flink.runtime.metrics.groups.JobMetricGroup}.
@@ -30,16 +33,18 @@ public class JobManagerJobScopeFormat extends ScopeFormat {
 		super(format, parentFormat, new String[] {
 				SCOPE_HOST,
 				SCOPE_JOB_ID,
-				SCOPE_JOB_NAME
+				SCOPE_JOB_NAME,
+				SCOPE_JOBMANAGER_ID
 		});
 	}
 
-	public String[] formatScope(JobManagerMetricGroup parent, JobID jid, String jobName) {
+	public String[] formatScope(JobManagerMetricGroup parent, JobID jid, String jobName, @Nullable ResourceID jobManagerId) {
 		final String[] template = copyTemplate();
 		final String[] values = {
 				parent.hostname(),
 				valueOrNull(jid),
-				valueOrNull(jobName)
+				valueOrNull(jobName),
+				valueOrNull(jobManagerId)
 		};
 		return bindVariables(template, values);
 	}

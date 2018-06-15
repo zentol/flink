@@ -18,6 +18,7 @@
 
 package org.apache.flink.runtime.jobmaster.factories;
 
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.metrics.groups.JobManagerJobMetricGroup;
 import org.apache.flink.runtime.metrics.groups.JobManagerMetricGroup;
@@ -31,13 +32,16 @@ import javax.annotation.Nonnull;
 public class DefaultJobManagerJobMetricGroupFactory implements JobManagerJobMetricGroupFactory {
 
 	private final JobManagerMetricGroup jobManagerMetricGroup;
+	@Nonnull
+	private final ResourceID jobManagerId;
 
-	public DefaultJobManagerJobMetricGroupFactory(@Nonnull JobManagerMetricGroup jobManagerMetricGroup) {
+	public DefaultJobManagerJobMetricGroupFactory(@Nonnull JobManagerMetricGroup jobManagerMetricGroup, @Nonnull ResourceID jobManagerId) {
 		this.jobManagerMetricGroup = jobManagerMetricGroup;
+		this.jobManagerId = jobManagerId;
 	}
 
 	@Override
 	public JobManagerJobMetricGroup create(@Nonnull JobGraph jobGraph) {
-		return jobManagerMetricGroup.addJob(jobGraph);
+		return jobManagerMetricGroup.addJob(jobGraph, jobManagerId);
 	}
 }

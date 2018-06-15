@@ -284,8 +284,9 @@ public abstract class Dispatcher extends FencedRpcEndpoint<DispatcherId> impleme
 	private JobManagerRunner createJobManagerRunner(JobGraph jobGraph) throws Exception {
 		final JobID jobId = jobGraph.getJobID();
 
+		final ResourceID resourceID = ResourceID.generate();
 		final JobManagerRunner jobManagerRunner = jobManagerRunnerFactory.createJobManagerRunner(
-			ResourceID.generate(),
+			resourceID,
 			jobGraph,
 			configuration,
 			getRpcService(),
@@ -293,7 +294,7 @@ public abstract class Dispatcher extends FencedRpcEndpoint<DispatcherId> impleme
 			heartbeatServices,
 			blobServer,
 			jobManagerSharedServices,
-			new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),
+			new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup, resourceID),
 			fatalErrorHandler);
 
 		jobManagerRunner.getResultFuture().whenCompleteAsync(

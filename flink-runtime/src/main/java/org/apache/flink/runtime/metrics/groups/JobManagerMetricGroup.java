@@ -20,10 +20,13 @@ package org.apache.flink.runtime.metrics.groups;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.metrics.CharacterFilter;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
 import org.apache.flink.runtime.metrics.scope.ScopeFormat;
+
+import javax.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +62,10 @@ public class JobManagerMetricGroup extends ComponentMetricGroup<JobManagerMetric
 	// ------------------------------------------------------------------------
 
 	public JobManagerJobMetricGroup addJob(JobGraph job) {
+		return addJob(job, null);
+	}
+
+	public JobManagerJobMetricGroup addJob(JobGraph job, @Nullable ResourceID jobManagerId) {
 		JobID jobId = job.getJobID();
 		String jobName = job.getName();
 		// get or create a jobs metric group
@@ -68,7 +75,7 @@ public class JobManagerMetricGroup extends ComponentMetricGroup<JobManagerMetric
 				currentJobGroup = jobs.get(jobId);
 
 				if (currentJobGroup == null || currentJobGroup.isClosed()) {
-					currentJobGroup = new JobManagerJobMetricGroup(registry, this, jobId, jobName);
+					currentJobGroup = new JobManagerJobMetricGroup(registry, this, jobId, jobName, jobManagerId);
 					jobs.put(jobId, currentJobGroup);
 				}
 				return currentJobGroup;
