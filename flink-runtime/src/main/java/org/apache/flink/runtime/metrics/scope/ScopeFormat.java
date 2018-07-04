@@ -70,6 +70,14 @@ public abstract class ScopeFormat {
 
 	public static final String SCOPE_HOST = asVariable("host");
 
+	// ----- Dispatcher ----
+
+	public static final String SCOPE_DISPATCHER_ID = asVariable("dp_id");
+
+	// ----- Job Manager ----
+
+	public static final String SCOPE_JOBMANAGER_ID = asVariable("jm_id");
+
 	// ----- Task Manager ----
 
 	public static final String SCOPE_TASKMANAGER_ID = asVariable("tm_id");
@@ -78,7 +86,6 @@ public abstract class ScopeFormat {
 
 	public static final String SCOPE_JOB_ID = asVariable("job_id");
 	public static final String SCOPE_JOB_NAME = asVariable("job_name");
-	public static final String SCOPE_JOBMANAGER_ID = asVariable("jm_id");
 
 	// ----- Task ----
 

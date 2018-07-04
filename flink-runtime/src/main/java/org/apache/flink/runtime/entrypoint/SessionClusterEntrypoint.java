@@ -24,6 +24,7 @@ import org.apache.flink.configuration.ConfigurationUtils;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.runtime.blob.BlobServer;
 import org.apache.flink.runtime.blob.TransientBlobService;
+import org.apache.flink.runtime.clusterframework.types.ResourceID;
 import org.apache.flink.runtime.concurrent.ScheduledExecutor;
 import org.apache.flink.runtime.dispatcher.ArchivedExecutionGraphStore;
 import org.apache.flink.runtime.dispatcher.Dispatcher;
@@ -121,7 +122,7 @@ public abstract class SessionClusterEntrypoint extends ClusterEntrypoint {
 		// create the default dispatcher
 		return new StandaloneDispatcher(
 			rpcService,
-			Dispatcher.DISPATCHER_NAME,
+			Dispatcher.DISPATCHER_NAME + '_' + ResourceID.generate(),
 			configuration,
 			highAvailabilityServices,
 			resourceManagerGateway,
