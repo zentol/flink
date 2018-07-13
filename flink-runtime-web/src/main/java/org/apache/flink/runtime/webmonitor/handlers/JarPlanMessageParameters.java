@@ -33,11 +33,11 @@ public class JarPlanMessageParameters extends MessageParameters {
 
 	private final JarIdPathParameter jarIdPathParameter = new JarIdPathParameter();
 
-	private final EntryClassQueryParameter entryClassQueryParameter = new EntryClassQueryParameter();
+	public final EntryClassQueryParameter entryClassQueryParameter = new EntryClassQueryParameter();
 
-	private final ParallelismQueryParameter parallelismQueryParameter = new ParallelismQueryParameter();
+	public final ParallelismQueryParameter parallelismQueryParameter = new ParallelismQueryParameter();
 
-	private final ProgramArgsQueryParameter programArgsQueryParameter = new ProgramArgsQueryParameter();
+	public final ProgramArgsQueryParameter programArgsQueryParameter = new ProgramArgsQueryParameter();
 
 	@Override
 	public Collection<MessagePathParameter<?>> getPathParameters() {

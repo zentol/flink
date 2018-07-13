@@ -48,6 +48,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.flink.runtime.rest.handler.util.HandlerRequestUtils.getQueryParameter;
 import static org.apache.flink.runtime.webmonitor.handlers.utils.JarHandlerUtils.tokenizeArguments;
 import static org.apache.flink.shaded.guava18.com.google.common.base.Strings.emptyToNull;
 
@@ -55,7 +56,7 @@ import static org.apache.flink.shaded.guava18.com.google.common.base.Strings.emp
  * This handler handles requests to fetch the plan for a jar.
  */
 public class JarPlanHandler
-		extends AbstractRestHandler<RestfulGateway, EmptyRequestBody, JobPlanInfo, JarPlanMessageParameters> {
+		extends AbstractRestHandler<RestfulGateway, JarPlanRequestBody, JobPlanInfo, JarPlanMessageParameters> {
 
 	private final Path jarDir;
 
@@ -68,7 +69,7 @@ public class JarPlanHandler
 			final GatewayRetriever<? extends RestfulGateway> leaderRetriever,
 			final Time timeout,
 			final Map<String, String> responseHeaders,
-			final MessageHeaders<EmptyRequestBody, JobPlanInfo, JarPlanMessageParameters> messageHeaders,
+			final MessageHeaders<JarPlanRequestBody, JobPlanInfo, JarPlanMessageParameters> messageHeaders,
 			final Path jarDir,
 			final Configuration configuration,
 			final Executor executor) {
@@ -80,14 +81,33 @@ public class JarPlanHandler
 
 	@Override
 	protected CompletableFuture<JobPlanInfo> handleRequest(
-			@Nonnull final HandlerRequest<EmptyRequestBody, JarPlanMessageParameters> request,
+			@Nonnull final HandlerRequest<JarPlanRequestBody, JarPlanMessageParameters> request,
 			@Nonnull final RestfulGateway gateway) throws RestHandlerException {
 
-		final String jarId = request.getPathParameter(JarIdPathParameter.class);
-		final String entryClass = emptyToNull(HandlerRequestUtils.getQueryParameter(request, EntryClassQueryParameter.class));
-		final Integer parallelism = HandlerRequestUtils.getQueryParameter(request, ParallelismQueryParameter.class, ExecutionConfig.PARALLELISM_DEFAULT);
-		final List<String> programArgs = tokenizeArguments(HandlerRequestUtils.getQueryParameter(request, ProgramArgsQueryParameter.class));
-		final Path jarFile = jarDir.resolve(jarId);
+		final JarPlanRequestBody requestBody = request.getRequestBody();
+
+		final String pathParameter = request.getPathParameter(JarIdPathParameter.class);
+		final Path jarFile = jarDir.resolve(pathParameter);
+
+		final String entryClass = JarRunHandler.fromRequestBodyOrQueryParameter(
+			emptyToNull(requestBody.getEntryClassName()),
+			() -> emptyToNull(getQueryParameter(request, EntryClassQueryParameter.class)),
+			null,
+			log);
+
+		final List<String> programArgs = tokenizeArguments(
+			JarRunHandler.fromRequestBodyOrQueryParameter(
+				emptyToNull(requestBody.getProgramArguments()),
+				() -> getQueryParameter(request, ProgramArgsQueryParameter.class),
+				null,
+				log));
+
+		// this appears to have no effect on the final result
+		final int parallelism = JarRunHandler.fromRequestBodyOrQueryParameter(
+			requestBody.getParallelism(),
+			() -> getQueryParameter(request, ParallelismQueryParameter.class),
+			ExecutionConfig.PARALLELISM_DEFAULT,
+			log);
 
 		return CompletableFuture.supplyAsync(() -> {
 			final JobGraph jobGraph;

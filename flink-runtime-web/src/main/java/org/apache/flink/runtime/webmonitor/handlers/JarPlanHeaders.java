@@ -19,7 +19,6 @@
 package org.apache.flink.runtime.webmonitor.handlers;
 
 import org.apache.flink.runtime.rest.HttpMethodWrapper;
-import org.apache.flink.runtime.rest.messages.EmptyRequestBody;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.runtime.rest.messages.MessageHeaders;
 
@@ -28,7 +27,7 @@ import org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpResponseSt
 /**
  * Message headers for {@link JarPlanHandler}.
  */
-public class JarPlanHeaders implements MessageHeaders<EmptyRequestBody, JobPlanInfo, JarPlanMessageParameters> {
+public class JarPlanHeaders implements MessageHeaders<JarPlanRequestBody, JobPlanInfo, JarPlanMessageParameters> {
 
 	private static final JarPlanHeaders INSTANCE = new JarPlanHeaders();
 
@@ -43,8 +42,8 @@ public class JarPlanHeaders implements MessageHeaders<EmptyRequestBody, JobPlanI
 	}
 
 	@Override
-	public Class<EmptyRequestBody> getRequestClass() {
-		return EmptyRequestBody.class;
+	public Class<JarPlanRequestBody> getRequestClass() {
+		return JarPlanRequestBody.class;
 	}
 
 	@Override
