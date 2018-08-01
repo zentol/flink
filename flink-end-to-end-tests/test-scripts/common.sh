@@ -538,10 +538,19 @@ function rollback_flink_slf4j_metric_reporter() {
   rm $FLINK_DIR/lib/flink-metrics-slf4j-*.jar
 }
 
+function get_operator_metric {
+  JOB_NAME=$1
+  OPERATOR_WITH_SUBTASK_INDEX=$2
+  METRIC=$3
+  
+  N=$(grep ".${JOB_NAME}.${OPERATOR_WITH_SUBTASK_INDEX}.${METRIC}:" $FLINK_DIR/log/*taskexecutor*.log | sed 's/.* //g' | tail -1)
+  echo $N
+}
+
 function get_metric_processed_records {
   OPERATOR=$1
   JOB_NAME="${2:-General purpose test job}"
-  N=$(grep ".${JOB_NAME}.$OPERATOR.numRecordsIn:" $FLINK_DIR/log/*taskexecutor*.log | sed 's/.* //g' | tail -1)
+  N=$(get_operator_metric "${JOB_NAME}" "${OPERATOR}" "numRecordsIn")
   if [ -z $N ]; then
     N=0
   fi
