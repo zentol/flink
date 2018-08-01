@@ -63,18 +63,22 @@ function get_completed_number_of_checkpoints {
         sed 's/,.*//'     # 24
 }
 
-TEST_PROGRAM_JAR=${END_TO_END_DIR}/flink-bucketing-sink-test/target/StreamingFileSinkTestProgram.jar
+TEST_PROGRAM_JAR=${END_TO_END_DIR}/flink-streaming-file-sink-test/target/StreamingFileSinkTestProgram.jar
 
 backup_config
-set_conf_ssl
 start_cluster
 $FLINK_DIR/bin/taskmanager.sh start
 $FLINK_DIR/bin/taskmanager.sh start
 $FLINK_DIR/bin/taskmanager.sh start
 
+CLIENT_OUTPUT=$($FLINK_DIR/bin/flink run -d ${TEST_PROGRAM_JAR} --outputPath $TEST_DATA_DIR/out/result)
+JOB_ID=$("${CLIENT_OUTPUT}" | grep "Job has been submitted with JobID" | sed 's/.* //g')
 
-JOB_ID=$($FLINK_DIR/bin/flink run -d -p 4 $TEST_PROGRAM_JAR -outputPath $TEST_DATA_DIR/out/result \
-  | grep "Job has been submitted with JobID" | sed 's/.* //g')
+if [[ -z $JOB_ID ]]; then
+    echo "Job could not be submitted."
+    echo "${CLIENT_OUTPUT}"
+    exit 1
+fi
 
 wait_job_running ${JOB_ID}
 

@@ -44,7 +44,7 @@ public class StreamingFileSinkProgram {
 	public static void main(String[] args) throws Exception {
 		ParameterTool params = ParameterTool.fromArgs(args);
 		String outputPath = params.getRequired("outputPath");
-		
+
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		env.setParallelism(4);
@@ -128,8 +128,6 @@ public class StreamingFileSinkProgram {
 				}
 				Thread.sleep(idlenessMs);
 			}
-
-			System.out.println(numRecordsEmitted);
 
 			while (!canceled) {
 				Thread.sleep(50);
