@@ -1359,6 +1359,9 @@ under the License.
 						<arg>-Xlint:all</arg>
 						<!-- Prevents recompilation due to missing package-info.class, see MCOMPILER-205 -->
 						<arg>-Xpkginfo:always</arg>
+						<arg>--add-modules=java.sql,java.xml.bind</arg>
+						<arg>--add-exports=java.base/sun.net.util=ALL-UNNAMED</arg>
+						<arg>--add-exports=java.management/sun.management=ALL-UNNAMED</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -1377,7 +1380,7 @@ under the License.
 						<log4j.configuration>${log4j.configuration}</log4j.configuration>
 						<codebase>${codebase}</codebase>
 					</systemPropertyVariables>
-					<argLine>-Xms256m -Xmx2048m -Dmvn.forkNumber=${surefire.forkNumber} -XX:+UseG1GC</argLine>
+					<argLine>-Xms256m -Xmx2048m -Dmvn.forkNumber=${surefire.forkNumber} -XX:+UseG1GC --add-modules java.sql,java.xml.bind --add-exports java.base/sun.net.util=ALL-UNNAMED --add-exports java.management/sun.management=ALL-UNNAMED</argLine>
 				</configuration>
 				<executions>
 					<!--execute all the unit tests-->
