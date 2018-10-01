@@ -33,6 +33,11 @@ mkdir -p $ARTIFACTS_DIR || { echo "FAILURE: cannot create log directory '${ARTIF
 
 echo "Build for commit ${TRAVIS_COMMIT} of ${TRAVIS_REPO_SLUG} [build ID: ${TRAVIS_BUILD_ID}, job number: $TRAVIS_JOB_NUMBER]." | tee "${ARTIFACTS_DIR}/build_info"
 
+git clone --single-branch -b asm_6 https://github.com/zentol/flink-shaded.git
+cd flink-shaded
+mvn clean install
+cd ..
+
 # =============================================================================
 # CONFIG
 # =============================================================================
