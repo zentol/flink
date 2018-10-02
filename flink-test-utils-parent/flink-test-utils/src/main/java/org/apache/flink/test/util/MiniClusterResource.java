@@ -53,17 +53,19 @@ public class MiniClusterResource extends ExternalResource {
 
 	private final MiniClusterResourceConfiguration miniClusterResourceConfiguration;
 
-	private JobExecutorService jobExecutorService;
+	JobExecutorService jobExecutorService;
 
 	private ClusterClient<?> clusterClient;
 
 	private Configuration restClusterClientConfig;
 
-	private int numberSlots = -1;
+	int numberSlots = -1;
 
 	private TestEnvironment executionEnvironment;
 
 	private int webUIPort = -1;
+
+	MiniCluster miniCluster;
 
 	public MiniClusterResource(final MiniClusterResourceConfiguration miniClusterResourceConfiguration) {
 		this.miniClusterResourceConfiguration = Preconditions.checkNotNull(miniClusterResourceConfiguration);
@@ -163,7 +165,7 @@ public class MiniClusterResource extends ExternalResource {
 			.setNumSlotsPerTaskManager(miniClusterResourceConfiguration.getNumberSlotsPerTaskManager())
 			.build();
 
-		final MiniCluster miniCluster = new MiniCluster(miniClusterConfiguration);
+		miniCluster = new MiniCluster(miniClusterConfiguration);
 
 		miniCluster.start();
 
