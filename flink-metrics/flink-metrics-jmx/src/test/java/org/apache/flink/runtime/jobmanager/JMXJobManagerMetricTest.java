@@ -38,12 +38,14 @@ import org.apache.flink.runtime.jobgraph.tasks.CheckpointCoordinatorConfiguratio
 import org.apache.flink.runtime.jobgraph.tasks.JobCheckpointingSettings;
 import org.apache.flink.runtime.testingUtils.TestingUtils;
 import org.apache.flink.test.util.MiniClusterResource;
+import org.apache.flink.test.util.MiniClusterResourceClientExtension;
 import org.apache.flink.test.util.MiniClusterResourceConfiguration;
 import org.apache.flink.util.TestLogger;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -61,13 +63,18 @@ import static org.junit.Assert.assertEquals;
  */
 public class JMXJobManagerMetricTest extends TestLogger {
 
-	@ClassRule
-	public static final MiniClusterResource MINI_CLUSTER_RESOURCE = new MiniClusterResource(
+	private static final MiniClusterResource MINI_CLUSTER_RESOURCE = new MiniClusterResource(
 		new MiniClusterResourceConfiguration.Builder()
 			.setConfiguration(getConfiguration())
 			.setNumberSlotsPerTaskManager(1)
 			.setNumberTaskManagers(1)
 			.build());
+
+	private static final MiniClusterResourceClientExtension MINI_CLUSTER_CLIENT_EXTENSION = new MiniClusterResourceClientExtension(MINI_CLUSTER_RESOURCE);
+
+	@ClassRule
+	public static final RuleChain ruleChain = RuleChain.outerRule(MINI_CLUSTER_RESOURCE)
+		.around(MINI_CLUSTER_CLIENT_EXTENSION);
 
 	private static Configuration getConfiguration() {
 		Configuration flinkConfiguration = new Configuration();
@@ -103,7 +110,7 @@ public class JMXJobManagerMetricTest extends TestLogger {
 					true),
 				null));
 
-			ClusterClient<?> client = MINI_CLUSTER_RESOURCE.getClusterClient();
+			ClusterClient<?> client = MINI_CLUSTER_CLIENT_EXTENSION.getClusterClient();
 			client.setDetached(true);
 			client.submitJob(jobGraph, JMXJobManagerMetricTest.class.getClassLoader());
 

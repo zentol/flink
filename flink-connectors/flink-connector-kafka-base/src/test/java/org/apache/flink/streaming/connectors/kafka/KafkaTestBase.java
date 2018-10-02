@@ -27,6 +27,7 @@ import org.apache.flink.runtime.client.JobExecutionException;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.util.TestStreamEnvironment;
 import org.apache.flink.test.util.MiniClusterResource;
+import org.apache.flink.test.util.MiniClusterResourceClientExtension;
 import org.apache.flink.test.util.MiniClusterResourceConfiguration;
 import org.apache.flink.test.util.SuccessException;
 import org.apache.flink.util.InstantiationUtil;
@@ -36,6 +37,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,13 +82,18 @@ public abstract class KafkaTestBase extends TestLogger {
 
 	protected static Properties standardProps;
 
-	@ClassRule
-	public static MiniClusterResource flink = new MiniClusterResource(
+	static final MiniClusterResource flink = new MiniClusterResource(
 		new MiniClusterResourceConfiguration.Builder()
 			.setConfiguration(getFlinkConfiguration())
 			.setNumberTaskManagers(NUM_TMS)
 			.setNumberSlotsPerTaskManager(TM_SLOTS)
 			.build());
+
+	static final MiniClusterResourceClientExtension flinkClientExtension = new MiniClusterResourceClientExtension(flink);
+
+	@ClassRule
+	public static final RuleChain ruleChain = RuleChain.outerRule(flink)
+		.around(flinkClientExtension);
 
 	protected static FiniteDuration timeout = new FiniteDuration(10, TimeUnit.SECONDS);
 
