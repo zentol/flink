@@ -23,13 +23,13 @@ import org.apache.flink.metrics.Counter;
 import java.util.List;
 
 /**
- * Mapping of counter between Flink and Datadog.
+ * Mapping of count between Flink and Datadog.
  */
 public class DCounter extends DMetric {
 	private final Counter counter;
 
 	public DCounter(Counter c, String metricName, String host, List<String> tags) {
-		super(MetricType.counter, metricName, host, tags);
+		super(MetricType.count, metricName, host, tags);
 		counter = c;
 	}
 
