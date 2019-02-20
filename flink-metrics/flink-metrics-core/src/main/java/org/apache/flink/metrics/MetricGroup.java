@@ -202,4 +202,12 @@ public interface MetricGroup {
 	 * @return fully qualified metric name
 	 */
 	String getMetricIdentifier(String metricName, CharacterFilter filter);
+
+	String getLogicalScope();
+
+	String getLogicalScope(CharacterFilter filter);
+
+	String getLogicalMetricIdentifier(String metricName);
+
+	String getLogicalMetricIdentifier(String metricName, CharacterFilter filter);
 }

@@ -237,7 +237,7 @@ public class JMXReporter implements MetricReporter, DelimiterProvider {
 	}
 
 	static String generateJmxDomain(String metricName, MetricGroup group) {
-		return JMX_DOMAIN_PREFIX + ((FrontMetricGroup<AbstractMetricGroup<?>>) group).getLogicalScope(CHARACTER_FILTER) + '.' + metricName;
+		return JMX_DOMAIN_PREFIX + group.getLogicalMetricIdentifier(metricName, CHARACTER_FILTER);
 	}
 
 	/**

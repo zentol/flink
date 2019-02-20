@@ -30,7 +30,7 @@ import org.apache.flink.metrics.CharacterFilter;
  */
 public class FrontMetricGroup<P extends AbstractMetricGroup<?>> extends ProxyMetricGroup<P> {
 
-	protected int reporterIndex;
+	private final int reporterIndex;
 
 	public FrontMetricGroup(int reporterIndex, P reference) {
 		super(reference);
@@ -47,18 +47,23 @@ public class FrontMetricGroup<P extends AbstractMetricGroup<?>> extends ProxyMet
 		return parentMetricGroup.getMetricIdentifier(metricName, filter, this.reporterIndex);
 	}
 
-	public String getLogicalScope(CharacterFilter filter) {
+	@Override
+	public String getLogicalScope() {
+		return getLogicalScope(null);
+	}
+
+	@Override
+	public String getLogicalScope(final CharacterFilter filter) {
 		return parentMetricGroup.getLogicalScope(filter, this.reporterIndex);
 	}
 
-	/**
-	 * This method only exists for backwards compatibility, and should be removed once a public alternative was
-	 * provided, see FLINK-7957.
-	 *
-	 * @deprecated Use {@link #getLogicalScope(CharacterFilter)} instead
-	 */
-	@Deprecated
-	public String getLogicalScope(CharacterFilter filter, char delimiter) {
-		return parentMetricGroup.createAndCacheLogicalScope(filter, delimiter, this.reporterIndex);
+	@Override
+	public String getLogicalMetricIdentifier(final String metricName) {
+		return getLogicalMetricIdentifier(metricName, null);
+	}
+
+	@Override
+	public String getLogicalMetricIdentifier(final String metricName, final CharacterFilter filter) {
+		return parentMetricGroup.getLogicalMetricIdentifier(metricName, filter);
 	}
 }

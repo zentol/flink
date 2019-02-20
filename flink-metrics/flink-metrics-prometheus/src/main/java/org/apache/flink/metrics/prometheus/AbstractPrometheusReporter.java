@@ -30,8 +30,6 @@ import org.apache.flink.metrics.MetricConfig;
 import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.reporter.DelimiterProvider;
 import org.apache.flink.metrics.reporter.MetricReporter;
-import org.apache.flink.runtime.metrics.groups.AbstractMetricGroup;
-import org.apache.flink.runtime.metrics.groups.FrontMetricGroup;
 
 import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
@@ -112,7 +110,7 @@ public abstract class AbstractPrometheusReporter implements MetricReporter, Deli
 		}
 
 		final String scopedMetricName = getScopedName(metricName, group);
-		final String helpString = metricName + " (scope: " + getLogicalScope(group) + ")";
+		final String helpString = metricName + " (scope: " + group.getLogicalScope(CHARACTER_FILTER) + ")";
 
 		final Collector collector;
 		Integer count = 0;
@@ -136,7 +134,7 @@ public abstract class AbstractPrometheusReporter implements MetricReporter, Deli
 	}
 
 	private static String getScopedName(String metricName, MetricGroup group) {
-		return SCOPE_PREFIX + getLogicalScope(group) + SCOPE_SEPARATOR + CHARACTER_FILTER.filterCharacters(metricName);
+		return SCOPE_PREFIX + group.getLogicalMetricIdentifier(metricName, CHARACTER_FILTER);
 	}
 
 	private Collector createCollector(Metric metric, List<String> dimensionKeys, List<String> dimensionValues, String scopedMetricName, String helpString) {
@@ -215,11 +213,6 @@ public abstract class AbstractPrometheusReporter implements MetricReporter, Deli
 				collectorsWithCountByMetricName.put(scopedMetricName, new AbstractMap.SimpleImmutableEntry<>(collector, count - 1));
 			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static String getLogicalScope(MetricGroup group) {
-		return ((FrontMetricGroup<AbstractMetricGroup<?>>) group).getLogicalScope(CHARACTER_FILTER);
 	}
 
 	@VisibleForTesting

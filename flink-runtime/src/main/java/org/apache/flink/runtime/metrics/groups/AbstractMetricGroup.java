@@ -130,13 +130,30 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	protected void putVariables(Map<String, String> variables) {
 	}
 
-	/**
-	 * Returns the logical scope of this group, for example
-	 * {@code "taskmanager.job.task"}.
-	 *
-	 * @param filter character filter which is applied to the scope components
-	 * @return logical scope
-	 */
+	@Override
+	public String getLogicalMetricIdentifier(final String metricName) {
+		return getLogicalMetricIdentifier(metricName, null);
+	}
+
+	@Override
+	public String getLogicalMetricIdentifier(final String metricName, final CharacterFilter filter) {
+		return getLogicalMetricIdentifier(metricName, filter, registry.getDelimiter());
+	}
+
+	String getLogicalMetricIdentifier(final String metricName, final CharacterFilter filter, final int reporterIndex) {
+		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
+			? registry.getDelimiter()
+			: registry.getDelimiter(reporterIndex);
+
+		return createAndCacheLogicalScope(filter, delimiter, reporterIndex) + delimiter + metricName;
+	}
+
+	@Override
+	public String getLogicalScope() {
+		return getLogicalScope(null);
+	}
+
+	@Override
 	public String getLogicalScope(CharacterFilter filter) {
 		return createAndCacheLogicalScope(filter, registry.getDelimiter(), -1);
 	}
