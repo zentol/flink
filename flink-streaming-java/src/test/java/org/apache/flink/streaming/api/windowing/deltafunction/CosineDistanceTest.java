@@ -63,7 +63,7 @@ public class CosineDistanceTest {
 		}
 	}
 
-	private String arrayToString(double[] in){
+	private String arrayToString(double[] in) {
 		if (in.length == 0) {
 			return "{}";
 		}

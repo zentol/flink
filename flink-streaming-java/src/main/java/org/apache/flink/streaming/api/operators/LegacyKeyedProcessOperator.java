@@ -136,7 +136,7 @@ public class LegacyKeyedProcessOperator<K, IN, OUT>
 		}
 	}
 
-	private class OnTimerContextImpl extends ProcessFunction<IN, OUT>.OnTimerContext{
+	private class OnTimerContextImpl extends ProcessFunction<IN, OUT>.OnTimerContext {
 
 		private final TimerService timerService;
 

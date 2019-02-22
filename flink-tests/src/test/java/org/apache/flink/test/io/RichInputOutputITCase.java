@@ -78,17 +78,17 @@ public class RichInputOutputITCase extends JavaProgramTestBase {
 		}
 
 		@Override
-		public void open(FileInputSplit split) throws IOException{
+		public void open(FileInputSplit split) throws IOException {
 			try {
 				getRuntimeContext().addAccumulator("DATA_SOURCE_ACCUMULATOR", counter);
-			} catch (UnsupportedOperationException e){
+			} catch (UnsupportedOperationException e) {
 				// the accumulator is already added
 			}
 			super.open(split);
 		}
 
 		@Override
-		public String nextRecord(String reuse) throws IOException{
+		public String nextRecord(String reuse) throws IOException {
 			readCalls.add(1);
 			counter.add(1);
 			return super.nextRecord(reuse);
@@ -103,10 +103,10 @@ public class RichInputOutputITCase extends JavaProgramTestBase {
 		public void configure(Configuration parameters){}
 
 		@Override
-		public void open(int a, int b){
+		public void open(int a, int b) {
 			try {
 				getRuntimeContext().addAccumulator("DATA_SINK_ACCUMULATOR", counter);
-			} catch (UnsupportedOperationException e){
+			} catch (UnsupportedOperationException e) {
 				// the accumulator is already added
 			}
 		}
@@ -115,7 +115,7 @@ public class RichInputOutputITCase extends JavaProgramTestBase {
 		public void close() throws IOException{}
 
 		@Override
-		public void writeRecord(String record){
+		public void writeRecord(String record) {
 			writeCalls.add(1);
 			counter.add(1);
 		}

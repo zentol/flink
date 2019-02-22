@@ -106,35 +106,35 @@ public class MutableIOMetrics extends IOMetrics {
 					 * In case a metric is missing for a parallel instance of a task, we set the complete flag as
 					 * false.
 					 */
-					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_LOCAL) == null){
+					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_LOCAL) == null) {
 						this.numBytesInLocalComplete = false;
 					}
 					else {
 						this.numBytesInLocal += Long.valueOf(metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_LOCAL));
 					}
 
-					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_REMOTE) == null){
+					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_REMOTE) == null) {
 						this.numBytesInRemoteComplete = false;
 					}
 					else {
 						this.numBytesInRemote += Long.valueOf(metrics.getMetric(MetricNames.IO_NUM_BYTES_IN_REMOTE));
 					}
 
-					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_OUT) == null){
+					if (metrics.getMetric(MetricNames.IO_NUM_BYTES_OUT) == null) {
 						this.numBytesOutComplete = false;
 					}
 					else {
 						this.numBytesOut += Long.valueOf(metrics.getMetric(MetricNames.IO_NUM_BYTES_OUT));
 					}
 
-					if (metrics.getMetric(MetricNames.IO_NUM_RECORDS_IN) == null){
+					if (metrics.getMetric(MetricNames.IO_NUM_RECORDS_IN) == null) {
 						this.numRecordsInComplete = false;
 					}
 					else {
 						this.numRecordsIn += Long.valueOf(metrics.getMetric(MetricNames.IO_NUM_RECORDS_IN));
 					}
 
-					if (metrics.getMetric(MetricNames.IO_NUM_RECORDS_OUT) == null){
+					if (metrics.getMetric(MetricNames.IO_NUM_RECORDS_OUT) == null) {
 						this.numRecordsOutComplete = false;
 					}
 					else {

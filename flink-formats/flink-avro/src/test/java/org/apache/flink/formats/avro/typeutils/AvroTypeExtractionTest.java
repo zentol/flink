@@ -65,14 +65,14 @@ public class AvroTypeExtractionTest extends MultipleProgramsTestBase {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Before
-	public void before() throws Exception{
+	public void before() throws Exception {
 		resultPath = tempFolder.newFile().toURI().toString();
 		inFile = tempFolder.newFile();
 		AvroRecordInputFormatTest.writeTestFile(inFile);
 	}
 
 	@After
-	public void after() throws Exception{
+	public void after() throws Exception {
 		compareResultsByLinesInMemory(expected, resultPath);
 	}
 

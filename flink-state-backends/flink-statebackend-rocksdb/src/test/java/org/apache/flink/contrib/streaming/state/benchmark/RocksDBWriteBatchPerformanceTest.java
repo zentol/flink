@@ -100,7 +100,7 @@ public class RocksDBWriteBatchPerformanceTest extends TestLogger {
 		log.info("WriteBatch with disableWAL is true for {} records costs {}" , num, t2);
 	}
 
-	private enum WRITETYPE {PUT, WRITE_BATCH}
+	private enum WRITETYPE { PUT, WRITE_BATCH }
 
 	private long benchMarkHelper(List<Tuple2<byte[], byte[]>> data, boolean disableWAL, WRITETYPE type) throws Exception {
 		final File rocksDir = folder.newFolder();

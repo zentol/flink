@@ -60,7 +60,7 @@ public class NFAStatusChangeITCase {
 	}
 
 	@After
-	public void clear() throws Exception{
+	public void clear() throws Exception {
 		sharedBufferAccessor.close();
 	}
 

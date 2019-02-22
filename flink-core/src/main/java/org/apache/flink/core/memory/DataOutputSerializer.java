@@ -335,7 +335,7 @@ public class DataOutputSerializer implements DataOutputView {
 
 	@Override
 	public void skipBytesToWrite(int numBytes) throws IOException {
-		if (buffer.length - this.position < numBytes){
+		if (buffer.length - this.position < numBytes) {
 			throw new EOFException("Could not skip " + numBytes + " bytes.");
 		}
 
@@ -344,7 +344,7 @@ public class DataOutputSerializer implements DataOutputView {
 
 	@Override
 	public void write(DataInputView source, int numBytes) throws IOException {
-		if (buffer.length - this.position < numBytes){
+		if (buffer.length - this.position < numBytes) {
 			throw new EOFException("Could not write " + numBytes + " bytes. Buffer overflow.");
 		}
 

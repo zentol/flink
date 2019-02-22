@@ -706,7 +706,7 @@ public class ExecutionVertex implements AccessExecutionVertex, Archiveable<Archi
 		}
 	}
 
-	public void cachePartitionInfo(PartialInputChannelDeploymentDescriptor partitionInfo){
+	public void cachePartitionInfo(PartialInputChannelDeploymentDescriptor partitionInfo) {
 		getCurrentExecutionAttempt().cachePartitionInfo(partitionInfo);
 	}
 

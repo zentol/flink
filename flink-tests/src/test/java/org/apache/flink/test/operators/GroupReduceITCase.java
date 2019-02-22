@@ -63,7 +63,7 @@ import scala.math.BigInt;
 @RunWith(Parameterized.class)
 public class GroupReduceITCase extends MultipleProgramsTestBase {
 
-	public GroupReduceITCase(TestExecutionMode mode){
+	public GroupReduceITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -99,7 +99,7 @@ public class GroupReduceITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testCorrectnessOfGroupReduceOnTuplesWithKeyFieldSelector() throws Exception{
+	public void testCorrectnessOfGroupReduceOnTuplesWithKeyFieldSelector() throws Exception {
 		/*
 		 * check correctness of groupReduce on tuples with key field selector
 		 */
@@ -305,7 +305,7 @@ public class GroupReduceITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testCorrectnessOfGroupReduceIfUDFReturnsInputObjectsMultipleTimesWhileChangingThem() throws Exception{
+	public void testCorrectnessOfGroupReduceIfUDFReturnsInputObjectsMultipleTimesWhileChangingThem() throws Exception {
 		/*
 		 * check correctness of groupReduce if UDF returns input objects multiple times and changes it in between
 		 */

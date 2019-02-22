@@ -525,7 +525,7 @@ public class NestedMethodAnalyzer extends BasicInterpreter {
 						analyzer.handleNullReturn();
 					}
 					// valid return value with input dependencies
-					else if (hasImportantDependencies(values.get(1))){
+					else if (hasImportantDependencies(values.get(1))) {
 						// add a copy and a reference
 						// to capture the current state and future changes in alternative paths
 						analyzer.getCollectorValues().add(tagged(values.get(1)));
@@ -673,7 +673,7 @@ public class NestedMethodAnalyzer extends BasicInterpreter {
 		if (isTagged(value) && tagged(value).isNull() && topLevelMethod) {
 			analyzer.handleNullReturn();
 		}
-		else if (hasImportantDependencies(value)){
+		else if (hasImportantDependencies(value)) {
 			// add a copy and a reference
 			// to capture the current state and future changes in alternative paths
 			returnValues.add(tagged(value));

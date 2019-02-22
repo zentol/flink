@@ -207,7 +207,7 @@ public abstract class KafkaTableSourceBase implements
 	 *
 	 * @return The deserialization schema
 	 */
-	public DeserializationSchema<Row> getDeserializationSchema(){
+	public DeserializationSchema<Row> getDeserializationSchema() {
 		return deserializationSchema;
 	}
 

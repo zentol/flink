@@ -230,7 +230,7 @@ public class EvictingWindowOperator<K, IN, OUT, W extends Window>
 		// late arriving tag has been set
 		// windowAssigner is event time and current timestamp + allowed lateness no less than element timestamp
 		if (isSkippedElement && isElementLate(element)) {
-			if (lateDataOutputTag != null){
+			if (lateDataOutputTag != null) {
 				sideOutput(element);
 			} else {
 				this.numLateRecordsDropped.inc();
@@ -441,7 +441,7 @@ public class EvictingWindowOperator<K, IN, OUT, W extends Window>
 	}
 
 	@Override
-	public void dispose() throws Exception{
+	public void dispose() throws Exception {
 		super.dispose();
 		evictorContext = null;
 	}

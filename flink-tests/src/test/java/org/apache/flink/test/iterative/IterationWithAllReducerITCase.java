@@ -41,7 +41,7 @@ public class IterationWithAllReducerITCase extends JavaProgramTestBase {
 
 		IterativeDataSet<String> iteration = initialInput.iterate(5).name("Loop");
 
-		DataSet<String> sumReduce = iteration.reduce(new ReduceFunction<String>(){
+		DataSet<String> sumReduce = iteration.reduce(new ReduceFunction<String>() {
 			@Override
 			public String reduce(String value1, String value2) throws Exception {
 				return value1;

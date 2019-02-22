@@ -163,7 +163,7 @@ public class NFACompiler {
 			createStartState(sinkState);
 		}
 
-		AfterMatchSkipStrategy getAfterMatchSkipStrategy(){
+		AfterMatchSkipStrategy getAfterMatchSkipStrategy() {
 			return afterMatchSkipStrategy;
 		}
 

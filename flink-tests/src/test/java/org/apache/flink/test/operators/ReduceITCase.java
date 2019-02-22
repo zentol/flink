@@ -52,7 +52,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class ReduceITCase extends MultipleProgramsTestBase {
 
-	public ReduceITCase(TestExecutionMode mode){
+	public ReduceITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -81,7 +81,7 @@ public class ReduceITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testReduceOnTupleWithMultipleKeyFieldSelectors() throws Exception{
+	public void testReduceOnTupleWithMultipleKeyFieldSelectors() throws Exception {
 		/*
 		 * Reduce on tuples with multiple key field selectors
 		 */

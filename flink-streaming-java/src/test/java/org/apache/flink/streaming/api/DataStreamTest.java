@@ -544,7 +544,7 @@ public class DataStreamTest extends TestLogger {
 	 * Tests whether resources get set.
 	 */
 	@Test
-	public void testResources() throws Exception{
+	public void testResources() throws Exception {
 		StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		ResourceSpec minResource1 = ResourceSpec.newBuilder().setCpuCores(1.0).setHeapMemoryInMB(100).build();

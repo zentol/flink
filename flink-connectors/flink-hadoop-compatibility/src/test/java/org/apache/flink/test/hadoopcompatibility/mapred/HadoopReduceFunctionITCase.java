@@ -46,7 +46,7 @@ import java.util.Iterator;
 @RunWith(Parameterized.class)
 public class HadoopReduceFunctionITCase extends MultipleProgramsTestBase {
 
-	public HadoopReduceFunctionITCase(TestExecutionMode mode){
+	public HadoopReduceFunctionITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -54,7 +54,7 @@ public class HadoopReduceFunctionITCase extends MultipleProgramsTestBase {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
-	public void testStandardGrouping() throws Exception{
+	public void testStandardGrouping() throws Exception {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 		DataSet<Tuple2<IntWritable, Text>> ds = HadoopTestData.getKVPairDataSet(env).

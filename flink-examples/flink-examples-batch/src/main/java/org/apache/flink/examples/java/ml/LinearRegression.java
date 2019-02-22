@@ -127,7 +127,7 @@ public class LinearRegression {
 	/**
 	 * A simple data sample, x means the input, and y means the target.
 	 */
-	public static class Data implements Serializable{
+	public static class Data implements Serializable {
 		public double x, y;
 
 		public Data() {}
@@ -147,7 +147,7 @@ public class LinearRegression {
 	/**
 	 * A set of parameters -- theta0, theta1.
 	 */
-	public static class Params implements Serializable{
+	public static class Params implements Serializable {
 
 		private double theta0, theta1;
 
@@ -211,7 +211,7 @@ public class LinearRegression {
 		@Override
 		public Tuple2<Params, Integer> map(Data in) throws Exception {
 
-			for (Params p : parameters){
+			for (Params p : parameters) {
 				this.parameter = p;
 			}
 

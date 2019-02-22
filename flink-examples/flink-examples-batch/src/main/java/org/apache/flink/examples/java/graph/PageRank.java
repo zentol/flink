@@ -178,7 +178,7 @@ public class PageRank {
 	public static final class JoinVertexWithEdgesMatch implements FlatMapFunction<Tuple2<Tuple2<Long, Double>, Tuple2<Long, Long[]>>, Tuple2<Long, Double>> {
 
 		@Override
-		public void flatMap(Tuple2<Tuple2<Long, Double>, Tuple2<Long, Long[]>> value, Collector<Tuple2<Long, Double>> out){
+		public void flatMap(Tuple2<Tuple2<Long, Double>, Tuple2<Long, Long[]>> value, Collector<Tuple2<Long, Double>> out) {
 			Long[] neighbors = value.f1.f1;
 			double rank = value.f0.f1;
 			double rankToDistribute = rank / ((double) neighbors.length);

@@ -812,7 +812,7 @@ public class ContinuousFileProcessingTest {
 
 		// second condition for the source to have updated its state: it's not on the lock anymore,
 		// this means it has processed all the splits and updated its state.
-		synchronized (sourceContext.getCheckpointLock()) {}
+		synchronized (sourceContext.getCheckpointLock()) { }
 
 		OperatorSubtaskState snapshot = testHarness.snapshot(0, 0);
 		monitoringFunction.cancel();

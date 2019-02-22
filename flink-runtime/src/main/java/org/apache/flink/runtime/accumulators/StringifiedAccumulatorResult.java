@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Container class that transports the result of an accumulator as set of strings.
  */
-public class StringifiedAccumulatorResult implements java.io.Serializable{
+public class StringifiedAccumulatorResult implements java.io.Serializable {
 	private static final Logger LOG = LoggerFactory.getLogger(StringifiedAccumulatorResult.class);
 
 	private static final long serialVersionUID = -4642311296836822611L;

@@ -32,7 +32,7 @@ import java.io.Serializable;
  * This class is used by the {@link ContinuousFileMonitoringFunction} and the
  * {@link ContinuousFileReaderOperator} to perform continuous file processing.
  * */
-public class TimestampedFileInputSplit extends FileInputSplit implements Comparable<TimestampedFileInputSplit>{
+public class TimestampedFileInputSplit extends FileInputSplit implements Comparable<TimestampedFileInputSplit> {
 
 	/** The modification time of the file this split belongs to. */
 	private final long modificationTime;

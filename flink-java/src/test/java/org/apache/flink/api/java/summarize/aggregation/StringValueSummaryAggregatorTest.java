@@ -44,7 +44,7 @@ public class StringValueSummaryAggregatorTest extends StringSummaryAggregatorTes
 			}
 		}
 
-		return new AggregateCombineHarness<StringValue, StringColumnSummary, ValueSummaryAggregator.StringValueSummaryAggregator>(){
+		return new AggregateCombineHarness<StringValue, StringColumnSummary, ValueSummaryAggregator.StringValueSummaryAggregator>() {
 
 			@Override
 			protected void compareResults(StringColumnSummary result1, StringColumnSummary result2) {

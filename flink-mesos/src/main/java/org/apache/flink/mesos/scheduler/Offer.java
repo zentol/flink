@@ -152,7 +152,7 @@ public class Offer implements VirtualMachineLease {
 		return diskMB;
 	}
 
-	public Protos.Offer getOffer(){
+	public Protos.Offer getOffer() {
 		return offer;
 	}
 

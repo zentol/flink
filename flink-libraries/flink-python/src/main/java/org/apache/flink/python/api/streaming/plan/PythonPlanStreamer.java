@@ -143,7 +143,8 @@ public class PythonPlanStreamer {
 			} else {
 				return ProcessState.STOPPED;
 			}
-		} catch (IllegalThreadStateException ignored) {//Process still running
+		} catch (IllegalThreadStateException ignored) {
+			//Process still running
 			return ProcessState.RUNNING;
 		}
 	}

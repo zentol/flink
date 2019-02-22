@@ -82,7 +82,7 @@ public class VersionInfo {
 		return info.getProperty("srcChecksum", "Unknown");
 	}
 
-	protected String _getBuildVersion(){
+	protected String _getBuildVersion() {
 		return _getVersion() +
 				" from " + _getRevision() +
 				" by " + _getUser() +
@@ -123,11 +123,11 @@ public class VersionInfo {
 		return COMMON_VERSION_INFO._getSrcChecksum();
 	}
 
-	public static String getBuildVersion(){
+	public static String getBuildVersion() {
 		return COMMON_VERSION_INFO._getBuildVersion();
 	}
 
-	public static String getProtocVersion(){
+	public static String getProtocVersion() {
 		return COMMON_VERSION_INFO._getProtocVersion();
 	}
 }

@@ -318,7 +318,7 @@ public class GatherSumApplyIteration<K, VV, EV, M> implements CustomUnaryOperati
 
 	@SuppressWarnings("serial")
 	private static final class SumUdf<K, VV, EV, M> extends RichReduceFunction<Tuple2<K, M>>
-			implements ResultTypeQueryable<Tuple2<K, M>>{
+			implements ResultTypeQueryable<Tuple2<K, M>> {
 
 		private final SumFunction<VV, EV, M> sumFunction;
 		private transient TypeInformation<Tuple2<K, M>> resultType;

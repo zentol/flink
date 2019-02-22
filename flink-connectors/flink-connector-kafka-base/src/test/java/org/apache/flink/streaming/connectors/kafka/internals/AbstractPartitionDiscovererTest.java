@@ -55,7 +55,7 @@ public class AbstractPartitionDiscovererTest {
 
 	@Parameterized.Parameters(name = "KafkaTopicsDescriptor = {0}")
 	@SuppressWarnings("unchecked")
-	public static Collection<KafkaTopicsDescriptor[]> timeCharacteristic(){
+	public static Collection<KafkaTopicsDescriptor[]> timeCharacteristic() {
 		return Arrays.asList(
 			new KafkaTopicsDescriptor[]{new KafkaTopicsDescriptor(Collections.singletonList(TEST_TOPIC), null)},
 			new KafkaTopicsDescriptor[]{new KafkaTopicsDescriptor(null, Pattern.compile(TEST_TOPIC_PATTERN))});

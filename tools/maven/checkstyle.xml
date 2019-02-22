@@ -98,6 +98,13 @@ This file is based on the checkstyle file of Apache Beam.
     -->
 
     <module name="RegexpSinglelineJava">
+      <property name="format" value="\)\{" />
+      <property name="message"
+                value="Left curly braces must be preceded by a space." />
+      <property name="ignoreComments" value="true" />
+    </module>
+
+    <module name="RegexpSinglelineJava">
       <property name="format" value="^\t* +\t*\S" />
       <property name="message"
                 value="Line has leading space characters; indentation should be performed with tabs only." />
@@ -517,6 +524,19 @@ This file is based on the checkstyle file of Apache Beam.
         SL, SL_ASSIGN, SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND"/>
       <property name="severity" value="error"/>
     </module>
+
+	  <module name="WhitespaceAround">
+		  <!-- Checks that curly braces have whitespace around them, except when the enclosed body is empty.
+		  	   Kept as a separate module to avoid side-effects on other tokens. -->
+		  <property name="tokens" value="LCURLY, RCURLY, SLIST"/>
+		  <property name="severity" value="error"/>
+		  <property name="allowEmptyConstructors" value="true"/>
+		  <property name="allowEmptyMethods" value="true"/>
+		  <property name="allowEmptyTypes" value="true"/>
+		  <property name="allowEmptyLoops" value="true"/>
+		  <property name="allowEmptyLambdas" value="true"/>
+		  <property name="allowEmptyCatches" value="true"/>
+	  </module>
 
     <module name="WhitespaceAfter">
       <!-- Checks that commas, semicolons and typecasts are followed by

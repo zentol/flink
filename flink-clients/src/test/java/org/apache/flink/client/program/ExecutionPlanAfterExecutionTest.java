@@ -50,7 +50,8 @@ public class ExecutionPlanAfterExecutionTest extends TestLogger implements Seria
 		DataSet<Integer> result = baseSet.map(new MapFunction<Integer, Integer>() {
 			@Override public Integer map(Integer value) throws Exception {
 				return value * 2;
-			}});
+			}
+		});
 		result.output(new DiscardingOutputFormat<Integer>());
 
 		try {
@@ -72,7 +73,8 @@ public class ExecutionPlanAfterExecutionTest extends TestLogger implements Seria
 		DataSet<Integer> result = baseSet.map(new MapFunction<Integer, Integer>() {
 			@Override public Integer map(Integer value) throws Exception {
 				return value * 2;
-			}});
+			}
+		});
 		result.output(new DiscardingOutputFormat<Integer>());
 
 		try {

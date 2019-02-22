@@ -100,7 +100,7 @@ public class StreamCheckpointingITCase extends StreamFaultToleranceTestBase {
 		}
 
 		long reduceInputCount = 0;
-		for (long l: OnceFailingPrefixCounter.counts){
+		for (long l: OnceFailingPrefixCounter.counts) {
 			reduceInputCount += l;
 		}
 

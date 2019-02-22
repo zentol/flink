@@ -110,7 +110,7 @@ public class FoldApplyProcessWindowFunction<K, W extends Window, T, ACC, R>
 	}
 
 	@Override
-	public void clear(final Context context) throws Exception{
+	public void clear(final Context context) throws Exception {
 		this.ctx.window = context.window();
 		this.ctx.context = context;
 		windowFunction.clear(ctx);

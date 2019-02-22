@@ -43,7 +43,7 @@ public class OperatorSnapshotFinalizerTest extends TestLogger {
 	 * Test that the runnable futures are executed and the result is correctly extracted.
 	 */
 	@Test
-	public void testRunAndExtract() throws Exception{
+	public void testRunAndExtract() throws Exception {
 
 		Random random = new Random(0x42);
 

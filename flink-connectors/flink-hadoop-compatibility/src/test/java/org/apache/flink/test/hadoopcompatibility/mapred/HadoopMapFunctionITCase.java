@@ -45,7 +45,7 @@ import java.io.IOException;
 @RunWith(Parameterized.class)
 public class HadoopMapFunctionITCase extends MultipleProgramsTestBase {
 
-	public HadoopMapFunctionITCase(TestExecutionMode mode){
+	public HadoopMapFunctionITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -53,7 +53,7 @@ public class HadoopMapFunctionITCase extends MultipleProgramsTestBase {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
-	public void testNonPassingMapper() throws Exception{
+	public void testNonPassingMapper() throws Exception {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 		DataSet<Tuple2<IntWritable, Text>> ds = HadoopTestData.getKVPairDataSet(env);

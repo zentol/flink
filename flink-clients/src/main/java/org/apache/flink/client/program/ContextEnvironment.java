@@ -88,11 +88,11 @@ public class ContextEnvironment extends ExecutionEnvironment {
 		return this.client;
 	}
 
-	public List<URL> getJars(){
+	public List<URL> getJars() {
 		return jarFilesToAttach;
 	}
 
-	public List<URL> getClasspaths(){
+	public List<URL> getClasspaths() {
 		return classpathsToAttach;
 	}
 

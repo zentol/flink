@@ -42,7 +42,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class MapITCase extends MultipleProgramsTestBase {
 
-	public MapITCase(TestExecutionMode mode){
+	public MapITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

@@ -2435,7 +2435,7 @@ public abstract class MemorySegmentTestBase {
 	// ------------------------------------------------------------------------
 
 	@Parameterized.Parameters(name = "segment-size = {0}")
-	public static Collection<Object[]> executionModes(){
+	public static Collection<Object[]> executionModes() {
 		return Arrays.asList(
 				new Object[] { 32 * 1024 },
 				new Object[] { 4 * 1024 },

@@ -2013,7 +2013,7 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
 
 		// we need to validate the sequence, because kafka's producers are not exactly once
 		LOG.info("Validating sequence");
-		while (!getRunningJobs(client).isEmpty()){
+		while (!getRunningJobs(client).isEmpty()) {
 			Thread.sleep(50);
 		}
 

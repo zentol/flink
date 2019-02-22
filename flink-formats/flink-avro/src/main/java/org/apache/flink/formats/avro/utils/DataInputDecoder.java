@@ -201,7 +201,7 @@ public class DataInputDecoder extends Decoder {
 			long curr;
 			int shift = 7;
 			value = value & 0x7f;
-			while (((curr = in.readUnsignedByte()) & 0x80) != 0){
+			while (((curr = in.readUnsignedByte()) & 0x80) != 0) {
 				value |= (curr & 0x7f) << shift;
 				shift += 7;
 			}

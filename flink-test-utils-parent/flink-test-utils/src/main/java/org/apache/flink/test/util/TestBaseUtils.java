@@ -91,7 +91,7 @@ public class TestBaseUtils extends TestLogger {
 
 	protected static File logDir;
 
-	protected TestBaseUtils(){
+	protected TestBaseUtils() {
 		verifyJvmOptions();
 	}
 
@@ -238,7 +238,7 @@ public class TestBaseUtils extends TestLogger {
 		Assert.assertArrayEquals(expected, result);
 	}
 
-	public static void checkLinesAgainstRegexp(String resultPath, String regexp){
+	public static void checkLinesAgainstRegexp(String resultPath, String regexp) {
 		Pattern pattern = Pattern.compile(regexp);
 		Matcher matcher = pattern.matcher("");
 
@@ -249,9 +249,9 @@ public class TestBaseUtils extends TestLogger {
 			Assert.fail("Error reading the result");
 		}
 
-		for (String line : list){
+		for (String line : list) {
 			matcher.reset(line);
-			if (!matcher.find()){
+			if (!matcher.find()) {
 				String msg = "Line is not well-formed: " + line;
 				Assert.fail(msg);
 			}

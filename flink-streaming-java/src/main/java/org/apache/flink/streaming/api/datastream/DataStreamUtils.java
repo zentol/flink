@@ -153,7 +153,7 @@ public final class DataStreamUtils {
 		}
 
 		@Override
-		public void run(){
+		public void run() {
 			try {
 				toTrigger.execute();
 			}

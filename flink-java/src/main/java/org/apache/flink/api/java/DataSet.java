@@ -1238,7 +1238,7 @@ public abstract class DataSet<T> {
 	 * @param other The other DataSet which is unioned with the current DataSet.
 	 * @return The resulting DataSet.
 	 */
-	public UnionOperator<T> union(DataSet<T> other){
+	public UnionOperator<T> union(DataSet<T> other) {
 		return new UnionOperator<>(this, other, Utils.getCallLocationName());
 	}
 

@@ -48,7 +48,7 @@ import java.util.Iterator;
 @RunWith(Parameterized.class)
 public class HadoopReduceCombineFunctionITCase extends MultipleProgramsTestBase {
 
-	public HadoopReduceCombineFunctionITCase(TestExecutionMode mode){
+	public HadoopReduceCombineFunctionITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -56,7 +56,7 @@ public class HadoopReduceCombineFunctionITCase extends MultipleProgramsTestBase 
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
-	public void testStandardCountingWithCombiner() throws Exception{
+	public void testStandardCountingWithCombiner() throws Exception {
 		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
 		DataSet<Tuple2<IntWritable, IntWritable>> ds = HadoopTestData.getKVPairDataSet(env).

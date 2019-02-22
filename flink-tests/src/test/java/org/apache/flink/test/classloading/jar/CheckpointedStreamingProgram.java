@@ -134,7 +134,7 @@ public class CheckpointedStreamingProgram {
 
 	}
 
-	private static class NoOpSink implements SinkFunction<String>{
+	private static class NoOpSink implements SinkFunction<String> {
 		@Override
 		public void invoke(String value) throws Exception {
 		}

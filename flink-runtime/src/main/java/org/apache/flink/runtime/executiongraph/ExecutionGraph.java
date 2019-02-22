@@ -1283,7 +1283,7 @@ public class ExecutionGraph implements AccessExecutionGraph {
 				for (ExecutionJobVertex jv : this.verticesInCreationOrder) {
 
 					CoLocationGroup cgroup = jv.getCoLocationGroup();
-					if (cgroup != null && !colGroups.contains(cgroup)){
+					if (cgroup != null && !colGroups.contains(cgroup)) {
 						cgroup.resetConstraints();
 						colGroups.add(cgroup);
 					}
@@ -1690,7 +1690,7 @@ public class ExecutionGraph implements AccessExecutionGraph {
 			throw new ExecutionGraphException("Cannot find execution for execution Id " +
 				partitionId.getPartitionId() + '.');
 		}
-		else if (execution.getVertex() == null){
+		else if (execution.getVertex() == null) {
 			throw new ExecutionGraphException("Execution with execution Id " +
 				partitionId.getPartitionId() + " has no vertex assigned.");
 		} else {

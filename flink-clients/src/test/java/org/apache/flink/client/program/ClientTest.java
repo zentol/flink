@@ -98,7 +98,7 @@ public class ClientTest extends TestLogger {
 	 * Tests that invalid detached mode programs fail.
 	 */
 	@Test
-	public void testDetachedMode() throws Exception{
+	public void testDetachedMode() throws Exception {
 		final ClusterClient<?> clusterClient = new MiniClusterClient(new Configuration(), MINI_CLUSTER_RESOURCE.getMiniCluster());
 		clusterClient.setDetached(true);
 
@@ -245,7 +245,7 @@ public class ClientTest extends TestLogger {
 
 			DataSet<Tuple2<Long, Long>> result = input.map(
 					new MapFunction<Tuple2<Long, Long>, Tuple2<Long, Long>>() {
-						public Tuple2<Long, Long> map(Tuple2<Long, Long> value){
+						public Tuple2<Long, Long> map(Tuple2<Long, Long> value) {
 							return new Tuple2<Long, Long>(value.f0, value.f1 + 1);
 						}
 					});

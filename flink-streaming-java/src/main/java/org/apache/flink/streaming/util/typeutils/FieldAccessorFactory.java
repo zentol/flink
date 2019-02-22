@@ -51,7 +51,7 @@ public class FieldAccessorFactory implements Serializable {
 	 * @return The created FieldAccessor
 	 */
 	@Internal
-	public static <T, F> FieldAccessor<T, F> getAccessor(TypeInformation<T> typeInfo, int pos, ExecutionConfig config){
+	public static <T, F> FieldAccessor<T, F> getAccessor(TypeInformation<T> typeInfo, int pos, ExecutionConfig config) {
 
 		// In case of arrays
 		if (typeInfo instanceof BasicArrayTypeInfo || typeInfo instanceof PrimitiveArrayTypeInfo) {
@@ -155,7 +155,7 @@ public class FieldAccessorFactory implements Serializable {
 				throw new CompositeType.InvalidFieldReferenceException("Invalid field selected: " + field);
 			}
 
-			if (decomp.tail == null){
+			if (decomp.tail == null) {
 				return new FieldAccessor.SimpleProductFieldAccessor<>(fieldPos, typeInfo, config);
 			} else {
 				@SuppressWarnings("unchecked")

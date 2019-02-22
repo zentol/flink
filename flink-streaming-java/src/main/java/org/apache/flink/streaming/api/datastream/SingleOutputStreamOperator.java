@@ -78,7 +78,7 @@ public class SingleOutputStreamOperator<T> extends DataStream<T> {
 	 *
 	 * @return The named operator.
 	 */
-	public SingleOutputStreamOperator<T> name(String name){
+	public SingleOutputStreamOperator<T> name(String name) {
 		transformation.setName(name);
 		return this;
 	}

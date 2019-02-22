@@ -39,7 +39,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class GraphMutationsITCase extends MultipleProgramsTestBase {
 
-	public GraphMutationsITCase(TestExecutionMode mode){
+	public GraphMutationsITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

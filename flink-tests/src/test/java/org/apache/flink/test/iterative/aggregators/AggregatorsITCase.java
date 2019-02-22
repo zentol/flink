@@ -64,7 +64,7 @@ public class AggregatorsITCase extends MultipleProgramsTestBase {
 	private static final int parallelism = 2;
 	private static final String NEGATIVE_ELEMENTS_AGGR = "count.negative.elements";
 
-	public AggregatorsITCase(TestExecutionMode mode){
+	public AggregatorsITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -72,7 +72,7 @@ public class AggregatorsITCase extends MultipleProgramsTestBase {
 	public static TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
-	public void testDistributedCacheWithIterations() throws Exception{
+	public void testDistributedCacheWithIterations() throws Exception {
 		final String testString = "Et tu, Brute?";
 		final String testName = "testing_caesar";
 
@@ -93,7 +93,7 @@ public class AggregatorsITCase extends MultipleProgramsTestBase {
 		IterativeDataSet<Long> solution = env.fromElements(1L).iterate(2);
 		solution.closeWith(env.generateSequence(1, 2).filter(new RichFilterFunction<Long>() {
 			@Override
-			public void open(Configuration parameters) throws Exception{
+			public void open(Configuration parameters) throws Exception {
 				File file = getRuntimeContext().getDistributedCache().getFile(testName);
 				BufferedReader reader = new BufferedReader(new FileReader(file));
 				String output = reader.readLine();
@@ -387,7 +387,7 @@ public class AggregatorsITCase extends MultipleProgramsTestBase {
 		private Random rnd;
 
 		@Override
-		public void open(Configuration parameters){
+		public void open(Configuration parameters) {
 			rnd = new Random(0xC0FFEBADBEEFDEADL + getRuntimeContext().getIndexOfThisSubtask());
 		}
 

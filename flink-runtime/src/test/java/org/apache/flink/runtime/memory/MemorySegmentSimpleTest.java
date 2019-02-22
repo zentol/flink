@@ -54,7 +54,7 @@ public class MemorySegmentSimpleTest {
 	private Random random;
 
 	@Before
-	public void setUp() throws Exception{
+	public void setUp() throws Exception {
 		try {
 			this.manager = new MemoryManager(MANAGED_MEMORY_SIZE, 1, PAGE_SIZE, MemoryType.HEAP, true);
 			this.segment = manager.allocatePages(new DummyInvokable(), 1).get(0);

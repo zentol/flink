@@ -115,7 +115,7 @@ public class TypeExtractionTest {
 	/**
 	 * A {@link Vertex} with {@link Long} as key and {@link Double} as value.
 	 */
-	public static class VertexTyped extends Vertex<Long, Double>{
+	public static class VertexTyped extends Vertex<Long, Double> {
 		public VertexTyped(Long l, Double d) {
 			super(l, d);
 		}

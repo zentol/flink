@@ -86,7 +86,7 @@ public class CollectionInputFormat<T> extends GenericInputFormat<T> implements N
 
 		if (size > 0) {
 			DataOutputViewStreamWrapper wrapper = new DataOutputViewStreamWrapper(out);
-			for (T element : dataSet){
+			for (T element : dataSet) {
 				serializer.serialize(element, wrapper);
 			}
 		}
@@ -101,7 +101,7 @@ public class CollectionInputFormat<T> extends GenericInputFormat<T> implements N
 		if (collectionLength > 0) {
 			try {
 				DataInputViewStreamWrapper wrapper = new DataInputViewStreamWrapper(in);
-				for (int i = 0; i < collectionLength; i++){
+				for (int i = 0; i < collectionLength; i++) {
 					T element = serializer.deserialize(wrapper);
 					list.add(element);
 				}

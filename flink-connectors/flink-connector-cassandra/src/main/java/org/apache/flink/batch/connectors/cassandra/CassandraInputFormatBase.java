@@ -50,7 +50,7 @@ public abstract class CassandraInputFormatBase<OUT> extends RichInputFormat<OUT,
 	protected transient Cluster cluster;
 	protected transient Session session;
 
-	public CassandraInputFormatBase(String query, ClusterBuilder builder){
+	public CassandraInputFormatBase(String query, ClusterBuilder builder) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(query), "Query cannot be null or empty");
 		Preconditions.checkNotNull(builder, "Builder cannot be null");
 

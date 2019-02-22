@@ -734,7 +734,7 @@ public class CoGroupedStreams<T1, T2> {
 		}
 
 		@Override
-		public KEY getKey(TaggedUnion<T1, T2> value) throws Exception{
+		public KEY getKey(TaggedUnion<T1, T2> value) throws Exception {
 			if (value.isOne()) {
 				return keySelector1.getKey(value.getOne());
 			} else {

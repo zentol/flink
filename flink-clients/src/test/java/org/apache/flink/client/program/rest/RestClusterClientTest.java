@@ -527,7 +527,7 @@ public class RestClusterClientTest extends TestLogger {
 	public void testGetAccumulators() throws Exception {
 		TestAccumulatorHandler accumulatorHandler = new TestAccumulatorHandler();
 
-		try (TestRestServerEndpoint restServerEndpoint = createRestServerEndpoint(accumulatorHandler)){
+		try (TestRestServerEndpoint restServerEndpoint = createRestServerEndpoint(accumulatorHandler)) {
 			RestClusterClient<?> restClusterClient = createRestClusterClient(restServerEndpoint.getServerAddress().getPort());
 
 			try {

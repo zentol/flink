@@ -312,7 +312,7 @@ public class ContinuousFileMonitoringFunction<OUT>
 					if (!shouldIgnore(filePath, modificationTime)) {
 						files.put(filePath, status);
 					}
-				} else if (format.getNestedFileEnumeration() && format.acceptFile(status)){
+				} else if (format.getNestedFileEnumeration() && format.acceptFile(status)) {
 					files.putAll(listEligibleFiles(fileSystem, status.getPath()));
 				}
 			}

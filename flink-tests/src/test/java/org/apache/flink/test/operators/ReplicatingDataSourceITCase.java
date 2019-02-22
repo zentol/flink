@@ -44,7 +44,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class ReplicatingDataSourceITCase extends MultipleProgramsTestBase {
 
-	public ReplicatingDataSourceITCase(TestExecutionMode mode){
+	public ReplicatingDataSourceITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

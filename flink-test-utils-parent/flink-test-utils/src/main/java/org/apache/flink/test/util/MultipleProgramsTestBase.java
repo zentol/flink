@@ -80,7 +80,7 @@ public class MultipleProgramsTestBase extends AbstractTestBase {
 	@Before
 	public void setupEnvironment() {
 		TestEnvironment testEnvironment;
-		switch(mode){
+		switch(mode) {
 			case CLUSTER:
 				// This only works because of the quirks we built in the TestEnvironment.
 				// We should refactor this in the future!!!

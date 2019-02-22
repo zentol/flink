@@ -281,7 +281,7 @@ public abstract class HCatInputFormatBase<T> extends RichInputFormat<T, HadoopIn
 		}
 		HadoopInputSplit[] hadoopInputSplits = new HadoopInputSplit[splits.size()];
 
-		for (int i = 0; i < hadoopInputSplits.length; i++){
+		for (int i = 0; i < hadoopInputSplits.length; i++) {
 			hadoopInputSplits[i] = new HadoopInputSplit(i, splits.get(i), jobContext);
 		}
 		return hadoopInputSplits;

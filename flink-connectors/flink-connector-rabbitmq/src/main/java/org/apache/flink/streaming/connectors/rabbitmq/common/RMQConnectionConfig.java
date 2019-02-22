@@ -78,7 +78,7 @@ public class RMQConnectionConfig implements Serializable {
 	private RMQConnectionConfig(String host, Integer port, String virtualHost, String username, String password,
 								Integer networkRecoveryInterval, Boolean automaticRecovery,
 								Boolean topologyRecovery, Integer connectionTimeout, Integer requestedChannelMax,
-								Integer requestedFrameMax, Integer requestedHeartbeat){
+								Integer requestedFrameMax, Integer requestedHeartbeat) {
 		Preconditions.checkNotNull(host, "host can not be null");
 		Preconditions.checkNotNull(port, "port can not be null");
 		Preconditions.checkNotNull(virtualHost, "virtualHost can not be null");
@@ -113,7 +113,7 @@ public class RMQConnectionConfig implements Serializable {
 	*/
 	private RMQConnectionConfig(String uri, Integer networkRecoveryInterval, Boolean automaticRecovery,
 								Boolean topologyRecovery, Integer connectionTimeout, Integer requestedChannelMax,
-								Integer requestedFrameMax, Integer requestedHeartbeat){
+								Integer requestedFrameMax, Integer requestedHeartbeat) {
 		Preconditions.checkNotNull(uri, "Uri can not be null");
 		this.uri = uri;
 
@@ -234,7 +234,7 @@ public class RMQConnectionConfig implements Serializable {
 	public ConnectionFactory getConnectionFactory() throws URISyntaxException,
 		NoSuchAlgorithmException, KeyManagementException {
 		ConnectionFactory factory = new ConnectionFactory();
-		if (this.uri != null && !this.uri.isEmpty()){
+		if (this.uri != null && !this.uri.isEmpty()) {
 			try {
 				factory.setUri(this.uri);
 			} catch (URISyntaxException e) {
@@ -445,7 +445,7 @@ public class RMQConnectionConfig implements Serializable {
 		 * {@link RMQConnectionConfig#RMQConnectionConfig(String, Integer, Boolean, Boolean, Integer, Integer, Integer, Integer)}
 		 * @return RMQConnectionConfig
 		 */
-		public RMQConnectionConfig build(){
+		public RMQConnectionConfig build() {
 			if (this.uri != null) {
 				return new RMQConnectionConfig(this.uri, this.networkRecoveryInterval,
 					this.automaticRecovery, this.topologyRecovery, this.connectionTimeout, this.requestedChannelMax,

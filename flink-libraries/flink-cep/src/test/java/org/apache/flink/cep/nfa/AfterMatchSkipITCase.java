@@ -46,7 +46,7 @@ import static org.junit.Assert.assertThat;
 /**
  * IT tests covering {@link AfterMatchSkipStrategy}.
  */
-public class AfterMatchSkipITCase extends TestLogger{
+public class AfterMatchSkipITCase extends TestLogger {
 
 	@Test
 	public void testNoSkip() throws Exception {

@@ -42,7 +42,7 @@ public class SimplifyTest extends AsmTestBase {
 
 	@Before
 	@Override
-	public void setup() throws Exception{
+	public void setup() throws Exception {
 		super.setup();
 
 		Object[][] edges = new Object[][]{

@@ -126,7 +126,7 @@ public class OptimizerPlanEnvironment extends ExecutionEnvironment {
 
 	// ------------------------------------------------------------------------
 
-	public void setPlan(FlinkPlan plan){
+	public void setPlan(FlinkPlan plan) {
 		this.optimizerPlan = plan;
 	}
 

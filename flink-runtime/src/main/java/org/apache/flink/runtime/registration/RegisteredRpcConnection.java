@@ -201,7 +201,7 @@ public abstract class RegisteredRpcConnection<F extends Serializable, G extends 
 
 		if (isClosed()) {
 			connectionInfo += " is closed";
-		} else if (isConnected()){
+		} else if (isConnected()) {
 			connectionInfo += " is established";
 		} else {
 			connectionInfo += " is connecting";

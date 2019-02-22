@@ -77,7 +77,7 @@ public abstract class AggregateCombineHarness<T, R, A extends Aggregator<T, R>> 
 				for (int j = 0; j < i; j++) {
 					aggregator1.aggregate(list.get(j));
 				}
-				for (int j = i; j < values.length; j++){
+				for (int j = i; j < values.length; j++) {
 					aggregator2.aggregate(list.get(j));
 				}
 

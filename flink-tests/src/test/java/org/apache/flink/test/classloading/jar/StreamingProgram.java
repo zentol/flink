@@ -86,17 +86,17 @@ public class StreamingProgram {
 		}
 	}
 
-	private static class Tokenizer implements FlatMapFunction<String, Word>{
+	private static class Tokenizer implements FlatMapFunction<String, Word> {
 		@Override
 		public void flatMap(String value, Collector<Word> out) throws Exception {
 			StringTokenizer tokenizer = new StringTokenizer(value);
-			while (tokenizer.hasMoreTokens()){
+			while (tokenizer.hasMoreTokens()) {
 				out.collect(new Word(tokenizer.nextToken(), 1));
 			}
 		}
 	}
 
-	private static class NoOpSink implements SinkFunction<Word>{
+	private static class NoOpSink implements SinkFunction<Word> {
 		@Override
 		public void invoke(Word value) throws Exception {
 		}

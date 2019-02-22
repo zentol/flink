@@ -40,7 +40,7 @@ import java.util.Map;
  * A source that pulls data from Apache NiFi using the NiFi Site-to-Site client. This source
  * produces NiFiDataPackets which encapsulate the content and attributes of a NiFi FlowFile.
  */
-public class NiFiSource extends RichParallelSourceFunction<NiFiDataPacket> implements StoppableFunction{
+public class NiFiSource extends RichParallelSourceFunction<NiFiDataPacket> implements StoppableFunction {
 
 	private static final long serialVersionUID = 1L;
 

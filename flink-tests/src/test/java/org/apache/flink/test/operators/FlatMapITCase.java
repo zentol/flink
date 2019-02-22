@@ -41,7 +41,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class FlatMapITCase extends MultipleProgramsTestBase {
-	public FlatMapITCase(TestExecutionMode mode){
+	public FlatMapITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

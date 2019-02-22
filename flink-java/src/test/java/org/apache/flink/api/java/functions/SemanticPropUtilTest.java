@@ -1464,7 +1464,7 @@ public class SemanticPropUtilTest {
 	/**
 	 * Sample test pojo with nested type.
 	 */
-	public static class NestedTestPojo{
+	public static class NestedTestPojo {
 
 		public int int1;
 		public TestPojo pojo1;

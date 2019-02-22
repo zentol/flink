@@ -71,7 +71,7 @@ public class DeltaEvictor<T, W extends Window> implements Evictor<T, W> {
 
 	private void evict(Iterable<TimestampedValue<T>> elements, int size, EvictorContext ctx) {
 		TimestampedValue<T> lastElement = Iterables.getLast(elements);
-		for (Iterator<TimestampedValue<T>> iterator = elements.iterator(); iterator.hasNext();){
+		for (Iterator<TimestampedValue<T>> iterator = elements.iterator(); iterator.hasNext();) {
 			TimestampedValue<T> element = iterator.next();
 			if (deltaFunction.getDelta(element.getValue(), lastElement.getValue()) >= this.threshold) {
 				iterator.remove();

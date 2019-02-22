@@ -395,22 +395,22 @@ public class SpillingAdaptiveSpanningRecordDeserializer<T extends IOReadableWrit
 		public void skipBytesToRead(int numBytes) throws IOException {
 			int skippedBytes = skipBytes(numBytes);
 
-			if (skippedBytes < numBytes){
+			if (skippedBytes < numBytes) {
 				throw new EOFException("Could not skip " + numBytes + " bytes.");
 			}
 		}
 
 		@Override
 		public int read(byte[] b, int off, int len) throws IOException {
-			if (b == null){
+			if (b == null) {
 				throw new NullPointerException("Byte array b cannot be null.");
 			}
 
-			if (off < 0){
+			if (off < 0) {
 				throw new IllegalArgumentException("The offset off cannot be negative.");
 			}
 
-			if (len < 0){
+			if (len < 0) {
 				throw new IllegalArgumentException("The length len cannot be negative.");
 			}
 

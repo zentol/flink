@@ -39,7 +39,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class SumMinMaxITCase extends MultipleProgramsTestBase {
 
-	public SumMinMaxITCase(TestExecutionMode mode){
+	public SumMinMaxITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

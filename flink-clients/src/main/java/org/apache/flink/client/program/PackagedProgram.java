@@ -416,7 +416,7 @@ public class PackagedProgram {
 	 * This method assumes that the context environment is prepared, or the execution
 	 * will be a local execution by default.
 	 */
-	public void invokeInteractiveModeForExecution() throws ProgramInvocationException{
+	public void invokeInteractiveModeForExecution() throws ProgramInvocationException {
 		if (isUsingInteractiveMode()) {
 			callMainMethod(mainClass, args);
 		} else {

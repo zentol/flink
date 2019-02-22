@@ -75,7 +75,7 @@ public class DistributedCache {
 		}
 
 		/** Server-side constructor used during job-submission for files. */
-		public DistributedCacheEntry(String filePath, Boolean isExecutable, byte[] blobKey){
+		public DistributedCacheEntry(String filePath, Boolean isExecutable, byte[] blobKey) {
 			this(filePath, isExecutable, blobKey, false);
 		}
 

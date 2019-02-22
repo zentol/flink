@@ -56,11 +56,11 @@ public class CollectionInputFormatTest {
 	private static class ElementType {
 		private final int id;
 
-		public ElementType(){
+		public ElementType() {
 			this(-1);
 		}
 
-		public ElementType(int id){
+		public ElementType(int id) {
 			this.id = id;
 		}
 
@@ -126,7 +126,7 @@ public class CollectionInputFormatTest {
 			inputFormat.open(inputSplit);
 			result.open(inputSplit);
 
-			while (!inputFormat.reachedEnd() && !result.reachedEnd()){
+			while (!inputFormat.reachedEnd() && !result.reachedEnd()) {
 				ElementType expectedElement = inputFormat.nextRecord(null);
 				ElementType actualElement = result.nextRecord(null);
 
@@ -298,7 +298,7 @@ public class CollectionInputFormatTest {
 			inputFormat.toString());
 	}
 
-	private static class TestException extends IOException{
+	private static class TestException extends IOException {
 		private static final long serialVersionUID = 1L;
 	}
 

@@ -175,7 +175,7 @@ public class FailoverRegion {
 
 			for (ExecutionVertex ev : connectedExecutionVertexes) {
 				CoLocationGroup cgroup = ev.getJobVertex().getCoLocationGroup();
-				if (cgroup != null && !colGroups.contains(cgroup)){
+				if (cgroup != null && !colGroups.contains(cgroup)) {
 					cgroup.resetConstraints();
 					colGroups.add(cgroup);
 				}

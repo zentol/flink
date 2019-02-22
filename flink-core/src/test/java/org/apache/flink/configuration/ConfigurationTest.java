@@ -377,7 +377,7 @@ public class ConfigurationTest extends TestLogger {
 	}
 
 	@Test
-	public void testRemove(){
+	public void testRemove() {
 		Configuration cfg = new Configuration();
 		cfg.setInteger("a", 1);
 		cfg.setInteger("b", 2);

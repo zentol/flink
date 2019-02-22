@@ -254,7 +254,7 @@ public class PrometheusReporterTest extends TestLogger {
 	}
 
 	@Test
-	public void addingUnknownMetricTypeDoesNotThrowException(){
+	public void addingUnknownMetricTypeDoesNotThrowException() {
 		class SomeMetricType implements Metric{}
 
 		reporter.notifyOfAddedMetric(new SomeMetricType(), "name", metricGroup);

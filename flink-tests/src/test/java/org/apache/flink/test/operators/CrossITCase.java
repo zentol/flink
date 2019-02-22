@@ -44,7 +44,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class CrossITCase extends MultipleProgramsTestBase {
 
-	public CrossITCase(TestExecutionMode mode){
+	public CrossITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -214,7 +214,7 @@ public class CrossITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testProjectCrossOnATupleInput1() throws Exception{
+	public void testProjectCrossOnATupleInput1() throws Exception {
 		/*
 		 * project cross on a tuple input 1
 		 */

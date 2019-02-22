@@ -527,7 +527,7 @@ public class RocksDBStateBackendTest extends StateBackendTestBase<RocksDBStateBa
 		}
 	}
 
-	private void runStateUpdates() throws Exception{
+	private void runStateUpdates() throws Exception {
 		for (int i = 50; i < 150; ++i) {
 			if (i % 10 == 0) {
 				Thread.sleep(1);

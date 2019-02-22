@@ -352,7 +352,7 @@ public abstract class BarrierBufferTestBase {
 	 * before the pending checkpoint is complete.
 	 */
 	@Test
-	public void testMultiChannelWithQueuedFutureBarriers() throws Exception{
+	public void testMultiChannelWithQueuedFutureBarriers() throws Exception {
 		BufferOrEvent[] sequence = {
 			// checkpoint 1 - with blocked data
 			createBuffer(0, PAGE_SIZE), createBuffer(2, PAGE_SIZE), createBuffer(0, PAGE_SIZE),

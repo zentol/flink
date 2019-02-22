@@ -60,7 +60,7 @@ public class TypeSerializerFormatTest extends SequentialFormatTestBase<Tuple2<In
 	}
 
 	@Before
-	public void setup(){
+	public void setup() {
 		block = createInputFormat().createBlockInfo();
 	}
 

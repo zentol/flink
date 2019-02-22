@@ -30,7 +30,7 @@ import java.io.IOException;
  * @param <IN>
  * @param <OUT>
  */
-public class PythonMapPartition<IN, OUT> extends RichMapPartitionFunction<IN, OUT> implements ResultTypeQueryable<OUT>{
+public class PythonMapPartition<IN, OUT> extends RichMapPartitionFunction<IN, OUT> implements ResultTypeQueryable<OUT> {
 
 	private static final long serialVersionUID = 3866306483023916413L;
 

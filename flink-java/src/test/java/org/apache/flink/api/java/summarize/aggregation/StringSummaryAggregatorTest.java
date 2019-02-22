@@ -72,7 +72,7 @@ public class StringSummaryAggregatorTest {
 	 */
 	protected StringColumnSummary summarize(String... values) {
 
-		return new AggregateCombineHarness<String, StringColumnSummary, StringSummaryAggregator>(){
+		return new AggregateCombineHarness<String, StringColumnSummary, StringSummaryAggregator>() {
 
 			@Override
 			protected void compareResults(StringColumnSummary result1, StringColumnSummary result2) {

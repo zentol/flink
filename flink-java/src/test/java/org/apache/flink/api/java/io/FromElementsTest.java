@@ -47,7 +47,7 @@ public class FromElementsTest {
 		}
 	}
 
-	private static class SubType extends ParentType{
+	private static class SubType extends ParentType {
 		public SubType(int num, String string) {
 			super(num, string);
 		}

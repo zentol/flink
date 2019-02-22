@@ -41,7 +41,7 @@ public class TypeSerializerOutputFormat<T> extends BinaryOutputFormat<T> impleme
 
 	@Override
 	protected void serialize(T record, DataOutputView dataOutput) throws IOException {
-		if (serializer == null){
+		if (serializer == null) {
 			throw new RuntimeException("TypeSerializerOutputFormat requires a type serializer to " +
 					"be defined.");
 		}
@@ -49,7 +49,7 @@ public class TypeSerializerOutputFormat<T> extends BinaryOutputFormat<T> impleme
 		serializer.serialize(record, dataOutput);
 	}
 
-	public void setSerializer(TypeSerializer<T> serializer){
+	public void setSerializer(TypeSerializer<T> serializer) {
 		this.serializer = serializer;
 	}
 

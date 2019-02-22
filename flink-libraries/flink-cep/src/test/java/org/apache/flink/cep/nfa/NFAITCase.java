@@ -74,7 +74,7 @@ public class NFAITCase extends TestLogger {
 	}
 
 	@After
-	public void clear() throws Exception{
+	public void clear() throws Exception {
 		sharedBufferAccessor.close();
 	}
 

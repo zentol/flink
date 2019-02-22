@@ -343,7 +343,7 @@ public class DeltaIteration<ST, WT> {
 	 * @param <ST> The type of the elements in the solution set.
 	 */
 	@Public
-	public static class SolutionSetPlaceHolder<ST> extends DataSet<ST>{
+	public static class SolutionSetPlaceHolder<ST> extends DataSet<ST> {
 
 		private final DeltaIteration<ST, ?> deltaIteration;
 
@@ -366,7 +366,7 @@ public class DeltaIteration<ST, WT> {
 	 * @param <WT> The data type of the elements in the workset.
 	 */
 	@Public
-	public static class WorksetPlaceHolder<WT> extends DataSet<WT>{
+	public static class WorksetPlaceHolder<WT> extends DataSet<WT> {
 		private WorksetPlaceHolder(ExecutionEnvironment context, TypeInformation<WT> type) {
 			super(context, type);
 		}

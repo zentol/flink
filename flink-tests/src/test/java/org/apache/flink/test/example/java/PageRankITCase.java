@@ -41,7 +41,7 @@ import java.util.UUID;
 @RunWith(Parameterized.class)
 public class PageRankITCase extends MultipleProgramsTestBase {
 
-	public PageRankITCase(TestExecutionMode mode){
+	public PageRankITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -54,7 +54,7 @@ public class PageRankITCase extends MultipleProgramsTestBase {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Before
-	public void before() throws Exception{
+	public void before() throws Exception {
 		final File folder = tempFolder.newFolder();
 		final File resultFile = new File(folder, UUID.randomUUID().toString());
 		resultPath = resultFile.toURI().toString();
@@ -70,7 +70,7 @@ public class PageRankITCase extends MultipleProgramsTestBase {
 	}
 
 	@After
-	public void after() throws Exception{
+	public void after() throws Exception {
 		compareKeyValuePairsWithDelta(expected, resultPath, " ", 0.01);
 	}
 

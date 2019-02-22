@@ -41,7 +41,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class FirstNITCase extends MultipleProgramsTestBase {
-	public FirstNITCase(TestExecutionMode mode){
+	public FirstNITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

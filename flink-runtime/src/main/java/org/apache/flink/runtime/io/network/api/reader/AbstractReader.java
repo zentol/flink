@@ -111,7 +111,7 @@ public abstract class AbstractReader implements ReaderBase {
 		}
 	}
 
-	public void publish(TaskEvent event){
+	public void publish(TaskEvent event) {
 		taskEventHandler.publish(event);
 	}
 

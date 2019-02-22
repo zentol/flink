@@ -415,7 +415,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 		// late arriving tag has been set
 		// windowAssigner is event time and current timestamp + allowed lateness no less than element timestamp
 		if (isSkippedElement && isElementLate(element)) {
-			if (lateDataOutputTag != null){
+			if (lateDataOutputTag != null) {
 				sideOutput(element);
 			} else {
 				this.numLateRecordsDropped.inc();
@@ -551,7 +551,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 	 *
 	 * @param element skipped late arriving element to side output
 	 */
-	protected void sideOutput(StreamRecord<IN> element){
+	protected void sideOutput(StreamRecord<IN> element) {
 		output.collect(lateDataOutputTag, element);
 	}
 
@@ -582,7 +582,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 	 * @param element The element to check
 	 * @return The element for which should be considered when sideoutputs
 	 */
-	protected boolean isElementLate(StreamRecord<IN> element){
+	protected boolean isElementLate(StreamRecord<IN> element) {
 		return (windowAssigner.isEventTime()) &&
 			(element.getTimestamp() + allowedLateness <= internalTimerService.currentWatermark());
 	}
@@ -945,7 +945,7 @@ public class WindowOperator<K, IN, ACC, OUT, W extends Window>
 			if (this == o) {
 				return true;
 			}
-			if (o == null || getClass() != o.getClass()){
+			if (o == null || getClass() != o.getClass()) {
 				return false;
 			}
 

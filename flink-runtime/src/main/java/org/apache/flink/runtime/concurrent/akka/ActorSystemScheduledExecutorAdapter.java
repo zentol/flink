@@ -152,7 +152,7 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
 		public void run() {
 			if (!isPeriodic()) {
 				super.run();
-			} else if (runAndReset()){
+			} else if (runAndReset()) {
 				if (period > 0L) {
 					time += period;
 				} else {

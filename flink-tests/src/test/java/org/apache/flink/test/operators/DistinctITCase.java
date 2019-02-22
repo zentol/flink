@@ -45,7 +45,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class DistinctITCase extends MultipleProgramsTestBase {
 
-	public DistinctITCase(TestExecutionMode mode){
+	public DistinctITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -70,7 +70,7 @@ public class DistinctITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testCorrectnessOfDistinctOnTuplesWithKeyFieldSelectorWithNotAllFieldsSelected() throws Exception{
+	public void testCorrectnessOfDistinctOnTuplesWithKeyFieldSelectorWithNotAllFieldsSelected() throws Exception {
 		/*
 		 * check correctness of distinct on tuples with key field selector with not all fields selected
 		 */
@@ -155,7 +155,7 @@ public class DistinctITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testCorrectnessOfDistinctOnTuples() throws Exception{
+	public void testCorrectnessOfDistinctOnTuples() throws Exception {
 		/*
 		 * check correctness of distinct on tuples
 		 */
@@ -175,7 +175,7 @@ public class DistinctITCase extends MultipleProgramsTestBase {
 	}
 
 	@Test
-	public void testCorrectnessOfDistinctOnCustomTypeWithTupleReturningTypeExtractor() throws Exception{
+	public void testCorrectnessOfDistinctOnCustomTypeWithTupleReturningTypeExtractor() throws Exception {
 		/*
 		 * check correctness of distinct on custom type with tuple-returning type extractor
 		 */

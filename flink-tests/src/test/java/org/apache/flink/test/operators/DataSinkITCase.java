@@ -58,7 +58,7 @@ public class DataSinkITCase extends MultipleProgramsTestBase {
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Before
-	public void before() throws Exception{
+	public void before() throws Exception {
 		final File folder = tempFolder.newFolder();
 		final File resultFile = new File(folder, UUID.randomUUID().toString());
 		resultPath = resultFile.toURI().toString();

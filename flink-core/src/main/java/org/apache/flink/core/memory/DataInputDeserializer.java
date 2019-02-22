@@ -347,7 +347,7 @@ public class DataInputDeserializer implements DataInputView, java.io.Serializabl
 	public void skipBytesToRead(int numBytes) throws IOException {
 		int skippedBytes = skipBytes(numBytes);
 
-		if (skippedBytes < numBytes){
+		if (skippedBytes < numBytes) {
 			throw new EOFException("Could not skip " + numBytes + " bytes.");
 		}
 	}
@@ -355,15 +355,15 @@ public class DataInputDeserializer implements DataInputView, java.io.Serializabl
 	@Override
 	public int read(@Nonnull byte[] b, int off, int len) throws IOException {
 
-		if (off < 0){
+		if (off < 0) {
 			throw new IndexOutOfBoundsException("Offset cannot be negative.");
 		}
 
-		if (len < 0){
+		if (len < 0) {
 			throw new IndexOutOfBoundsException("Length cannot be negative.");
 		}
 
-		if (b.length - off < len){
+		if (b.length - off < len) {
 			throw new IndexOutOfBoundsException("Byte array does not provide enough space to store requested data" +
 					".");
 		}

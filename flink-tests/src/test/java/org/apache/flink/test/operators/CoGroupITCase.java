@@ -58,7 +58,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class CoGroupITCase extends MultipleProgramsTestBase {
 
-	public CoGroupITCase(TestExecutionMode mode){
+	public CoGroupITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 

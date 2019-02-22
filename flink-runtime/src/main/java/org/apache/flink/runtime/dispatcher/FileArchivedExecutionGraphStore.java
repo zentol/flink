@@ -114,7 +114,8 @@ public class FileArchivedExecutionGraphStore implements ArchivedExecutionGraphSt
 				@Override
 				public ArchivedExecutionGraph load(JobID jobId) throws Exception {
 					return loadExecutionGraph(jobId);
-				}});
+				}
+			});
 
 		this.cleanupFuture = scheduledExecutor.scheduleWithFixedDelay(
 			jobDetailsCache::cleanUp,

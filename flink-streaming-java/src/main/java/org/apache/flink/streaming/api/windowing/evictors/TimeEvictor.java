@@ -97,7 +97,7 @@ public class TimeEvictor<W extends Window> implements Evictor<Object, W> {
      */
 	private long getMaxTimestamp(Iterable<TimestampedValue<Object>> elements) {
 		long currentTime = Long.MIN_VALUE;
-		for (Iterator<TimestampedValue<Object>> iterator = elements.iterator(); iterator.hasNext();){
+		for (Iterator<TimestampedValue<Object>> iterator = elements.iterator(); iterator.hasNext();) {
 			TimestampedValue<Object> record = iterator.next();
 			currentTime = Math.max(currentTime, record.getTimestamp());
 		}

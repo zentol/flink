@@ -491,7 +491,7 @@ public class FlinkYarnSessionCli extends AbstractCustomCommandLine<ApplicationId
 
 		if (applicationId != null) {
 			final String zooKeeperNamespace;
-			if (commandLine.hasOption(zookeeperNamespace.getOpt())){
+			if (commandLine.hasOption(zookeeperNamespace.getOpt())) {
 				zooKeeperNamespace = commandLine.getOptionValue(zookeeperNamespace.getOpt());
 			} else {
 				zooKeeperNamespace = effectiveConfiguration.getString(HA_CLUSTER_ID, applicationId.toString());

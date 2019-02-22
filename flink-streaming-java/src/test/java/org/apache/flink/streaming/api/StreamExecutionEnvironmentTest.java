@@ -283,7 +283,7 @@ public class StreamExecutionEnvironmentTest {
 		}
 	}
 
-	private static class SubClass extends ParentClass{
+	private static class SubClass extends ParentClass {
 		public SubClass(int num, String string) {
 			super(num, string);
 		}

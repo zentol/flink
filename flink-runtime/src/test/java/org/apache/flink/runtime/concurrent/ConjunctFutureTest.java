@@ -46,7 +46,7 @@ import static org.junit.Assert.fail;
 public class ConjunctFutureTest extends TestLogger {
 
 	@Parameterized.Parameters
-	public static Collection<FutureFactory> parameters (){
+	public static Collection<FutureFactory> parameters () {
 		return Arrays.asList(new ConjunctFutureFactory(), new WaitingFutureFactory());
 	}
 

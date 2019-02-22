@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("serial")
 public class PartitionITCase extends MultipleProgramsTestBase {
 
-	public PartitionITCase(TestExecutionMode mode){
+	public PartitionITCase(TestExecutionMode mode) {
 		super(mode);
 	}
 
@@ -340,7 +340,7 @@ public class PartitionITCase extends MultipleProgramsTestBase {
 	}
 
 	private static class Mapper1 implements MapFunction<Tuple2<Integer, Integer>, Tuple2<Integer,
-	Integer>>{
+	Integer>> {
 		private static final long serialVersionUID = 1L;
 
 		@Override

@@ -48,7 +48,7 @@ import static org.junit.Assert.fail;
 /**
  * Test compilation of PageRank implementation.
  */
-public class PageRankCompilerTest extends CompilerTestBase{
+public class PageRankCompilerTest extends CompilerTestBase {
 
 	@Test
 	public void testPageRank() {

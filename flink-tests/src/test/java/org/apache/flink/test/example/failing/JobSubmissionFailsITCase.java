@@ -83,7 +83,7 @@ public class JobSubmissionFailsITCase extends TestLogger {
 	}
 
 	@Parameterized.Parameters(name = "Detached mode = {0}")
-	public static Collection<Boolean[]> executionModes(){
+	public static Collection<Boolean[]> executionModes() {
 		return Arrays.asList(new Boolean[]{false},
 				new Boolean[]{true});
 	}

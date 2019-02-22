@@ -50,7 +50,7 @@ import java.util.concurrent.Executor;
  * @param <R> the response type
  * @param <M> the message parameters type
  */
-public abstract class AbstractSubtaskAttemptHandler<R extends ResponseBody, M extends SubtaskAttemptMessageParameters> extends AbstractSubtaskHandler<R, M>{
+public abstract class AbstractSubtaskAttemptHandler<R extends ResponseBody, M extends SubtaskAttemptMessageParameters> extends AbstractSubtaskHandler<R, M> {
 	/**
 	 * Instantiates a new Abstract job vertex handler.
 	 *

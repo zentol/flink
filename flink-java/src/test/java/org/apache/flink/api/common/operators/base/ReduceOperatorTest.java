@@ -52,7 +52,7 @@ import static org.junit.Assert.fail;
  * Tests for {@link ReduceOperator}.
  */
 @SuppressWarnings({"serial", "unchecked"})
-public class ReduceOperatorTest extends TestLogger implements Serializable{
+public class ReduceOperatorTest extends TestLogger implements Serializable {
 
 	private static final TypeInformation<Tuple2<String, Integer>> STRING_INT_TUPLE =
 			TypeInformation.of(new TypeHint<Tuple2<String, Integer>>(){});

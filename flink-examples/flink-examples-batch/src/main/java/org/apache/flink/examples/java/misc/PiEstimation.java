@@ -88,7 +88,7 @@ public class PiEstimation implements java.io.Serializable {
 	/**
 	 * Simply sums up all long values.
 	 */
-	public static final class SumReducer implements ReduceFunction<Long>{
+	public static final class SumReducer implements ReduceFunction<Long> {
 
 		@Override
 		public Long reduce(Long value1, Long value2) {

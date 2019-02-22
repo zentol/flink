@@ -152,7 +152,7 @@ public class TaskCheckpointingBehaviourTest extends TestLogger {
 		assertNull(task.getFailureCause());
 	}
 
-	private void runTestDeclineOnCheckpointError(AbstractStateBackend backend) throws Exception{
+	private void runTestDeclineOnCheckpointError(AbstractStateBackend backend) throws Exception {
 
 		TestDeclinedCheckpointResponder checkpointResponder = new TestDeclinedCheckpointResponder();
 

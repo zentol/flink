@@ -55,7 +55,7 @@ public class ElasticsearchSinkITCase extends ElasticsearchSinkTestBase<RestHighL
 	}
 
 	@Test
-	public void testInvalidElasticsearchCluster() throws Exception{
+	public void testInvalidElasticsearchCluster() throws Exception {
 		runInvalidElasticsearchClusterTest();
 	}
 

@@ -680,8 +680,8 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
 	 * @param key key of entry
 	 * @return true if the key is stored, false otherwise
 	 */
-	public boolean containsKey(String key){
-		synchronized (this.confData){
+	public boolean containsKey(String key) {
+		synchronized (this.confData) {
 			return this.confData.containsKey(key);
 		}
 	}
@@ -696,7 +696,7 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
 	 */
 	@PublicEvolving
 	public boolean contains(ConfigOption<?> configOption) {
-		synchronized (this.confData){
+		synchronized (this.confData) {
 			// first try the current key
 			if (this.confData.containsKey(configOption.key())) {
 				return true;
@@ -719,7 +719,7 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
 
 	@Override
 	public Map<String, String> toMap() {
-		synchronized (this.confData){
+		synchronized (this.confData) {
 			Map<String, String> ret = new HashMap<>(this.confData.size());
 			for (Map.Entry<String, Object> entry : confData.entrySet()) {
 				ret.put(entry.getKey(), entry.getValue().toString());
@@ -735,14 +735,14 @@ public class Configuration extends ExecutionConfig.GlobalJobParameters
 	 * @param <T> Type of the config option
 	 * @return true is config has been removed, false otherwise
 	 */
-	public <T> boolean removeConfig(ConfigOption<T> configOption){
-		synchronized (this.confData){
+	public <T> boolean removeConfig(ConfigOption<T> configOption) {
+		synchronized (this.confData) {
 			// try the current key
 			Object oldValue = this.confData.remove(configOption.key());
-			if (oldValue == null){
-				for (FallbackKey fallbackKey : configOption.fallbackKeys()){
+			if (oldValue == null) {
+				for (FallbackKey fallbackKey : configOption.fallbackKeys()) {
 					oldValue = this.confData.remove(fallbackKey.getKey());
-					if (oldValue != null){
+					if (oldValue != null) {
 						loggingFallback(fallbackKey, configOption);
 						return true;
 					}

@@ -378,7 +378,7 @@ public class TestGraphUtils {
 		return env.fromCollection(getVerticesForDifference());
 	}
 
-	public static List<Vertex<Long, Long>> getVerticesForDifference(){
+	public static List<Vertex<Long, Long>> getVerticesForDifference() {
 		List<Vertex<Long, Long>> vertices = new ArrayList<>();
 		vertices.add(new Vertex<>(1L, 1L));
 		vertices.add(new Vertex<>(3L, 3L));

@@ -42,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class PrestoS3FileSystemTest {
 
 	@Test
-	public void testConfigPropagation() throws Exception{
+	public void testConfigPropagation() throws Exception {
 		final Configuration conf = new Configuration();
 		conf.setString("s3.access-key", "test_access_key_id");
 		conf.setString("s3.secret-key", "test_secret_access_key");
@@ -54,7 +54,7 @@ public class PrestoS3FileSystemTest {
 	}
 
 	@Test
-	public void testConfigPropagationWithPrestoPrefix() throws Exception{
+	public void testConfigPropagationWithPrestoPrefix() throws Exception {
 		final Configuration conf = new Configuration();
 		conf.setString("presto.s3.access-key", "test_access_key_id");
 		conf.setString("presto.s3.secret-key", "test_secret_access_key");
@@ -66,7 +66,7 @@ public class PrestoS3FileSystemTest {
 	}
 
 	@Test
-	public void testConfigPropagationAlternateStyle() throws Exception{
+	public void testConfigPropagationAlternateStyle() throws Exception {
 		final Configuration conf = new Configuration();
 		conf.setString("s3.access.key", "test_access_key_id");
 		conf.setString("s3.secret.key", "test_secret_access_key");

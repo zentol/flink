@@ -153,7 +153,7 @@ public class OrcRowInputFormatTest {
 		">";
 
 	@Test(expected = FileNotFoundException.class)
-	public void testInvalidPath() throws IOException{
+	public void testInvalidPath() throws IOException {
 		rowOrcInputFormat =
 			new OrcRowInputFormat("/does/not/exist", TEST_SCHEMA_FLAT, new Configuration());
 		rowOrcInputFormat.openInputFormat();
@@ -162,7 +162,7 @@ public class OrcRowInputFormatTest {
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidProjection1() throws IOException{
+	public void testInvalidProjection1() throws IOException {
 		rowOrcInputFormat =
 			new OrcRowInputFormat(getPath(TEST_FILE_FLAT), TEST_SCHEMA_FLAT, new Configuration());
 		int[] projectionMask = {1, 2, 3, -1};
@@ -170,7 +170,7 @@ public class OrcRowInputFormatTest {
 	}
 
 	@Test(expected = IndexOutOfBoundsException.class)
-	public void testInvalidProjection2() throws IOException{
+	public void testInvalidProjection2() throws IOException {
 		rowOrcInputFormat =
 			new OrcRowInputFormat(getPath(TEST_FILE_FLAT), TEST_SCHEMA_FLAT, new Configuration());
 		int[] projectionMask = {1, 2, 3, 9};
@@ -178,7 +178,7 @@ public class OrcRowInputFormatTest {
 	}
 
 	@Test
-	public void testProjectionMaskNested() throws IOException{
+	public void testProjectionMaskNested() throws IOException {
 		rowOrcInputFormat =
 			new OrcRowInputFormat(getPath(TEST_FILE_NESTED), TEST_SCHEMA_NESTED, new Configuration());
 

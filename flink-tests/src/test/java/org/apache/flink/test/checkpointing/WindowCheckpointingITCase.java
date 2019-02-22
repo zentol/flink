@@ -348,7 +348,7 @@ public class WindowCheckpointingITCase extends TestLogger {
 
 	@Parameterized.Parameters(name = "TimeCharacteristic = {0}")
 	@SuppressWarnings("unchecked,rawtypes")
-	public static Collection<TimeCharacteristic[]> timeCharacteristic(){
+	public static Collection<TimeCharacteristic[]> timeCharacteristic() {
 		return Arrays.asList(new TimeCharacteristic[]{TimeCharacteristic.ProcessingTime},
 				new TimeCharacteristic[]{TimeCharacteristic.IngestionTime}
 		);

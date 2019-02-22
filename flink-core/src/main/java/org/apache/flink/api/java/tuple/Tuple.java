@@ -59,7 +59,7 @@ public abstract class Tuple implements java.io.Serializable {
 	 * @throws IndexOutOfBoundsException Thrown, if the position is negative, or equal to, or larger than the number of fields.
 	 * @throws NullFieldException Thrown, if the field at pos is null.
 	 */
-	public <T> T getFieldNotNull(int pos){
+	public <T> T getFieldNotNull(int pos) {
 		T field = getField(pos);
 		if (field != null) {
 			return field;

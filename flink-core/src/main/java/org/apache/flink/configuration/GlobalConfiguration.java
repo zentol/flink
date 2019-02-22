@@ -160,7 +160,7 @@ public final class GlobalConfiguration {
 	private static Configuration loadYAMLResource(File file) {
 		final Configuration config = new Configuration();
 
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))){
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
 
 			String line;
 			int lineNo = 0;

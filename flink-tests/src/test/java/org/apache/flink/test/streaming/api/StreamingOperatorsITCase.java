@@ -87,7 +87,7 @@ public class StreamingOperatorsITCase extends AbstractTestBase {
 				int key = -1;
 				@Override
 				public Tuple2<Integer, Integer> map(Integer value) throws Exception {
-					if (key == -1){
+					if (key == -1) {
 						key = MathUtils.murmurHash(value) % numKeys;
 					}
 					return new Tuple2<>(key, value);

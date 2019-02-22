@@ -138,7 +138,7 @@ public class NetworkBuffer extends AbstractReferenceCountedByteBuf implements Bu
 	}
 
 	@Override
-	public BufferRecycler getRecycler(){
+	public BufferRecycler getRecycler() {
 		return recycler;
 	}
 
@@ -243,7 +243,7 @@ public class NetworkBuffer extends AbstractReferenceCountedByteBuf implements Bu
 	}
 
 	@Override
-	protected void _setMediumLE(int index, int value){
+	protected void _setMediumLE(int index, int value) {
 		// from UnpooledDirectByteBuf:
 		setByte(index, (byte) value);
 		setByte(index + 1, (byte) (value >>> 8));

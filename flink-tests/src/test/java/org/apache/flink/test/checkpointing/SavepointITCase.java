@@ -543,7 +543,7 @@ public class SavepointITCase extends TestLogger {
 		}
 	}
 
-	private static class StatefulCounter extends RichMapFunction<Integer, Integer> implements ListCheckpointed<byte[]>{
+	private static class StatefulCounter extends RichMapFunction<Integer, Integer> implements ListCheckpointed<byte[]> {
 
 		private static volatile CountDownLatch progressLatch = new CountDownLatch(0);
 		private static volatile CountDownLatch restoreLatch = new CountDownLatch(0);

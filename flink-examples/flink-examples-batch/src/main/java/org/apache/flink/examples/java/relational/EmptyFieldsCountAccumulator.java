@@ -170,11 +170,11 @@ public class EmptyFieldsCountAccumulator {
 		/** Stores the accumulated vector components. */
 		private final ArrayList<Integer> resultVector;
 
-		public VectorAccumulator(){
+		public VectorAccumulator() {
 			this(new ArrayList<Integer>());
 		}
 
-		public VectorAccumulator(ArrayList<Integer> resultVector){
+		public VectorAccumulator(ArrayList<Integer> resultVector) {
 			this.resultVector = resultVector;
 		}
 

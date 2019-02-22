@@ -197,7 +197,7 @@ public class PagedViewsTest {
 
 		try {
 			outputView.write(expected);
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Unexpected exception: Could not write to TestOutputView.");
 		}
@@ -223,7 +223,7 @@ public class PagedViewsTest {
 
 		try {
 			bytesRead = inputView.read(buffer);
-		} catch (IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Unexpected exception: Input view should be empty and thus return -1.");
 		}
@@ -281,7 +281,7 @@ public class PagedViewsTest {
 	}
 
 	@Test
-	public void testReadFullyWithOffset(){
+	public void testReadFullyWithOffset() {
 		int bufferSize = 100;
 		int segmentSize = 30;
 		byte[] expected = new byte[bufferSize];
@@ -315,7 +315,7 @@ public class PagedViewsTest {
 	}
 
 	@Test
-	public void testReadFullyEmptyView(){
+	public void testReadFullyEmptyView() {
 		int segmentSize = 30;
 		TestOutputView outputView = new TestOutputView(segmentSize);
 		outputView.close();

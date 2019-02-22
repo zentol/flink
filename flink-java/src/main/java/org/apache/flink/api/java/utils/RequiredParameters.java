@@ -163,7 +163,7 @@ public class RequiredParameters {
 
 	// given that the map contains a value for the name of the option passed
 	// check if it also contains a value for the shortName in option (if any is defined)
-	private void checkAmbiguousValues(Option o, Map<String, String> data) throws RequiredParametersException{
+	private void checkAmbiguousValues(Option o, Map<String, String> data) throws RequiredParametersException {
 		if (data.containsKey(o.getAlt()) && !Objects.equals(data.get(o.getAlt()), ParameterTool.NO_VALUE_KEY)) {
 			throw new RequiredParametersException("Value passed for parameter " + o.getName() +
 					" is ambiguous. Value passed for short and long name.");

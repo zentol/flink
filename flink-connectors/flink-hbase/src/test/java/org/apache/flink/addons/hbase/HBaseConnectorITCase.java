@@ -338,7 +338,7 @@ public class HBaseConnectorITCase extends HBaseTestingClusterAutostarter {
 
 		DataSet<Tuple1<Integer>> result = env
 			.createInput(new InputFormatForTestTable())
-			.reduce(new ReduceFunction<Tuple1<Integer>>(){
+			.reduce(new ReduceFunction<Tuple1<Integer>>() {
 
 				@Override
 				public Tuple1<Integer> reduce(Tuple1<Integer> v1, Tuple1<Integer> v2) throws Exception {

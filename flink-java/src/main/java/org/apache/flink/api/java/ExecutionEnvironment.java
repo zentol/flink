@@ -239,7 +239,7 @@ public abstract class ExecutionEnvironment {
 	 *
 	 * @return The execution result from the latest job execution.
 	 */
-	public JobExecutionResult getLastJobExecutionResult(){
+	public JobExecutionResult getLastJobExecutionResult() {
 		return this.lastJobExecutionResult;
 	}
 
@@ -856,7 +856,7 @@ public abstract class ExecutionEnvironment {
 	 * @param filePath The path of the file, as a URI (e.g. "file:///some/path" or "hdfs://host:port/and/path")
 	 * @param name The name under which the file is registered.
 	 */
-	public void registerCachedFile(String filePath, String name){
+	public void registerCachedFile(String filePath, String name) {
 		registerCachedFile(filePath, name, false);
 	}
 
@@ -875,7 +875,7 @@ public abstract class ExecutionEnvironment {
 	 * @param name The name under which the file is registered.
 	 * @param executable flag indicating whether the file should be executable
 	 */
-	public void registerCachedFile(String filePath, String name, boolean executable){
+	public void registerCachedFile(String filePath, String name, boolean executable) {
 		this.cacheFile.add(new Tuple2<>(name, new DistributedCacheEntry(filePath, executable)));
 	}
 
@@ -1072,7 +1072,7 @@ public abstract class ExecutionEnvironment {
 	 * @return A Collection Environment
 	 */
 	@PublicEvolving
-	public static CollectionEnvironment createCollectionsEnvironment(){
+	public static CollectionEnvironment createCollectionsEnvironment() {
 		CollectionEnvironment ce = new CollectionEnvironment();
 		ce.setParallelism(1);
 		return ce;

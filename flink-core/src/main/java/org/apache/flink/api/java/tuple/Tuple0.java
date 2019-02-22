@@ -60,7 +60,7 @@ public class Tuple0 extends Tuple {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Tuple0 copy(){
+	public Tuple0 copy() {
 		return new Tuple0();
 	}
 

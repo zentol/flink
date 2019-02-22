@@ -875,7 +875,7 @@ public class InternalTimerServiceImplTest {
 
 	@Parameterized.Parameters(name = "start = {0}, end = {1}, max = {2}")
 	@SuppressWarnings("unchecked,rawtypes")
-	public static Collection<Object[]> keyRanges(){
+	public static Collection<Object[]> keyRanges() {
 		return Arrays.asList(new Object[][] {
 						{0, Short.MAX_VALUE - 1, Short.MAX_VALUE},
 						{0, 10, Short.MAX_VALUE},

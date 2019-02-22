@@ -145,7 +145,7 @@ public class SharedSlot extends Slot implements LogicalSlot {
 		while (true) {
 			try {
 				int result = 0;
-				for (Slot slot: subSlots){
+				for (Slot slot: subSlots) {
 					result += slot.getNumberLeaves();
 				}
 				return result;
@@ -271,7 +271,7 @@ public class SharedSlot extends Slot implements LogicalSlot {
 	 * @param groupId The ID to identify tasks which can be deployed in this sub slot.
 	 * @return The new sub slot if the shared slot is still alive, otherwise null.
 	 */
-	SharedSlot allocateSharedSlot(AbstractID groupId){
+	SharedSlot allocateSharedSlot(AbstractID groupId) {
 		if (isAlive()) {
 			SharedSlot slot = new SharedSlot(
 				getOwner(),

@@ -84,7 +84,7 @@ public class SingleSourceShortestPaths implements ProgramDescription {
 	// --------------------------------------------------------------------------------------------
 
 	@SuppressWarnings("serial")
-	private static final class InitVertices implements MapFunction<Long, Double>{
+	private static final class InitVertices implements MapFunction<Long, Double> {
 
 		private long srcId;
 

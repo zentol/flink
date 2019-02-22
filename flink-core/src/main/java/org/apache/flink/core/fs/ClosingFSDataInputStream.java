@@ -85,12 +85,12 @@ public class ClosingFSDataInputStream
 	}
 
 	public static ClosingFSDataInputStream wrapSafe(
-			FSDataInputStream delegate, SafetyNetCloseableRegistry registry) throws IOException{
+			FSDataInputStream delegate, SafetyNetCloseableRegistry registry) throws IOException {
 		return wrapSafe(delegate, registry, "");
 	}
 
 	public static ClosingFSDataInputStream wrapSafe(
-			FSDataInputStream delegate, SafetyNetCloseableRegistry registry, String debugInfo) throws IOException{
+			FSDataInputStream delegate, SafetyNetCloseableRegistry registry, String debugInfo) throws IOException {
 
 		ClosingFSDataInputStream inputStream = new ClosingFSDataInputStream(delegate, registry, debugInfo);
 		registry.registerCloseable(inputStream);

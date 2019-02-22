@@ -300,7 +300,7 @@ public class CsvReader {
 	 *
 	 * @return The CSV reader instance itself, to allow for fluent function chaining.
 	 */
-	public CsvReader ignoreInvalidLines(){
+	public CsvReader ignoreInvalidLines() {
 		ignoreInvalidLines = true;
 		return this;
 	}

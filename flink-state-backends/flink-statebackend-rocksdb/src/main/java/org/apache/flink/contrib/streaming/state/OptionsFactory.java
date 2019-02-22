@@ -29,7 +29,7 @@ import org.rocksdb.DBOptions;
  * <p>A typical pattern to use this OptionsFactory is as follows:
  *
  * <pre>{@code
- * rocksDbBackend.setOptions(new OptionsFactory(){
+ * rocksDbBackend.setOptions(new OptionsFactory() {
  *
  *		public DBOptions createDBOptions(DBOptions currentOptions) {
  *			return  currentOptions.setMaxOpenFiles(1024);

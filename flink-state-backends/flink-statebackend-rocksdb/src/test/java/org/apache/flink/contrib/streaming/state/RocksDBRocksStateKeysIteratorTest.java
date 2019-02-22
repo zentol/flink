@@ -53,7 +53,7 @@ public class RocksDBRocksStateKeysIteratorTest {
 	public final TemporaryFolder tmp = new TemporaryFolder();
 
 	@Test
-	public void testIterator() throws Exception{
+	public void testIterator() throws Exception {
 
 		// test for keyGroupPrefixBytes == 1 && ambiguousKeyPossible == false
 		testIteratorHelper(IntSerializer.INSTANCE, StringSerializer.INSTANCE, 128, i -> i);

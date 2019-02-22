@@ -448,7 +448,7 @@ class TupleGenerator {
 		}
 	}
 
-	private static void printGenericsString(PrintWriter w, int numFields){
+	private static void printGenericsString(PrintWriter w, int numFields) {
 		w.print("<");
 		for (int i = 0; i < numFields; i++) {
 			if (i > 0) {
@@ -507,7 +507,7 @@ class TupleGenerator {
 			}
 			w.print(GEN_TYPE_PREFIX + i + " value" + i);
 		}
-		w.println("){");
+		w.println(") {");
 		w.print("\t\ttuples.add(new Tuple" + numFields + "<>(");
 		for (int i = 0; i < numFields; i++) {
 			if (i > 0) {
@@ -524,7 +524,7 @@ class TupleGenerator {
 		w.println("\t@SuppressWarnings(\"unchecked\")");
 		w.print("\tpublic Tuple" + numFields);
 		printGenericsString(w, numFields);
-		w.println("[] build(){");
+		w.println("[] build() {");
 		w.println("\t\treturn tuples.toArray(new Tuple" + numFields + "[tuples.size()]);");
 		w.println("\t}");
 

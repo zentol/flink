@@ -64,13 +64,13 @@ public class EuclideanDistanceTest {
 
 	}
 
-	private String arrayToString(double[] in){
+	private String arrayToString(double[] in) {
 		if (in.length == 0) {
 			return "{}";
 		}
 
 		String result = "{";
-		for (double d:in){
+		for (double d:in) {
 			result += d + ",";
 		}
 		return result.substring(0, result.length() - 1) + "}";

@@ -127,14 +127,14 @@ public class DistinctOperatorTest {
 	}
 
 	@Test
-	public void testDistinctByKeyFields7(){
+	public void testDistinctByKeyFields7() {
 		final ExecutionEnvironment env  = ExecutionEnvironment.getExecutionEnvironment();
 		DataSet<Long> longDs = env.fromCollection(emptyLongData, BasicTypeInfo.LONG_TYPE_INFO);
 
 		// should work
 		try {
 			longDs.distinct("*");
-		} catch (Exception e){
+		} catch (Exception e) {
 			Assert.fail();
 		}
 	}

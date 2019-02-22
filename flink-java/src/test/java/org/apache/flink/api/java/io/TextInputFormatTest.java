@@ -188,7 +188,7 @@ public class TextInputFormatTest {
 
 			String result = "";
 			if ((delimiter.equals("\n") && (lineBreaker.equals("\n") || lineBreaker.equals("\r\n")))
-					|| (lineBreaker.equals(delimiter))){
+					|| (lineBreaker.equals(delimiter))) {
 
 				result = inputFormat.nextRecord("");
 				assertNotNull("Expecting first record here", result);

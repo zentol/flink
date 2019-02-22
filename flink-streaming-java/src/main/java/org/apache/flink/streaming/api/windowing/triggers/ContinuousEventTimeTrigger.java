@@ -73,7 +73,7 @@ public class ContinuousEventTimeTrigger<W extends Window> extends Trigger<Object
 	@Override
 	public TriggerResult onEventTime(long time, W window, TriggerContext ctx) throws Exception {
 
-		if (time == window.maxTimestamp()){
+		if (time == window.maxTimestamp()) {
 			return TriggerResult.FIRE;
 		}
 

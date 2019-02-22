@@ -153,8 +153,8 @@ public class UdfStreamOperatorCheckpointingITCase extends StreamFaultToleranceTe
 		public void run(SourceContext<Tuple2<Integer, Long>> ctx) throws Exception {
 			Object lock = ctx.getCheckpointLock();
 
-			while (count < NUM_INPUT){
-				synchronized (lock){
+			while (count < NUM_INPUT) {
+				synchronized (lock) {
 					for (int i = 0; i < PARALLELISM; i++) {
 						ctx.collect(Tuple2.of(i, count + 1));
 					}

@@ -188,7 +188,7 @@ public class UtilsTest extends TestLogger {
 
 		@Override
 		protected void append(LoggingEvent event) {
-			synchronized (events){
+			synchronized (events) {
 				events.add(event);
 			}
 		}

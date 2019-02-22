@@ -164,7 +164,7 @@ public class Configuration implements Iterable<Map.Entry<String,String>>,
 			this.restrictParser = restrictParser;
 		}
 
-		public String getName(){
+		public String getName() {
 			return name;
 		}
 
@@ -1310,7 +1310,7 @@ public class Configuration implements Iterable<Map.Entry<String,String>>,
 	}
 
 	private synchronized Properties getOverlay() {
-		if (overlay==null){
+		if (overlay==null) {
 			overlay=new Properties();
 		}
 		return overlay;
@@ -1895,7 +1895,7 @@ public class Configuration implements Iterable<Map.Entry<String,String>>,
 			public boolean hasNext() {
 				if (at <= end) {
 					return true;
-				} else if (internal != null){
+				} else if (internal != null) {
 					return internal.hasNext();
 				}
 				return false;
@@ -1906,7 +1906,7 @@ public class Configuration implements Iterable<Map.Entry<String,String>>,
 				if (at <= end) {
 					at++;
 					return at - 1;
-				} else if (internal != null){
+				} else if (internal != null) {
 					Range found = internal.next();
 					if (found != null) {
 						at = found.start;

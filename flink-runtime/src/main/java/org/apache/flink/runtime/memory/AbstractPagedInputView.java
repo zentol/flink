@@ -190,12 +190,12 @@ public abstract class AbstractPagedInputView implements DataInputView {
 	// --------------------------------------------------------------------------------------------
 
 	@Override
-	public int read(byte[] b) throws IOException{
+	public int read(byte[] b) throws IOException {
 		return read(b, 0, b.length);
 	}
 
 	@Override
-	public int read(byte[] b, int off, int len) throws IOException{
+	public int read(byte[] b, int off, int len) throws IOException {
 		if (off < 0 || len < 0 || off + len > b.length) {
 			throw new IndexOutOfBoundsException();
 		}
@@ -252,7 +252,7 @@ public abstract class AbstractPagedInputView implements DataInputView {
 	public void readFully(byte[] b, int off, int len) throws IOException {
 		int bytesRead = read(b, off, len);
 
-		if (bytesRead < len){
+		if (bytesRead < len) {
 			throw new EOFException("There is no enough data left in the DataInputView.");
 		}
 	}

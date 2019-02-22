@@ -302,7 +302,7 @@ public class StreamSourceContextIdleDetectionTests {
 
 	@Parameterized.Parameters(name = "TestMethod = {0}")
 	@SuppressWarnings("unchecked")
-	public static Collection<TestMethod[]> timeCharacteristic(){
+	public static Collection<TestMethod[]> timeCharacteristic() {
 		return Arrays.asList(
 			new TestMethod[]{TestMethod.COLLECT},
 			new TestMethod[]{TestMethod.COLLECT_WITH_TIMESTAMP},

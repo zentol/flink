@@ -65,7 +65,7 @@ public class CountEvictor<W extends Window> implements Evictor<Object, W> {
 			return;
 		} else {
 			int evictedCount = 0;
-			for (Iterator<TimestampedValue<Object>> iterator = elements.iterator(); iterator.hasNext();){
+			for (Iterator<TimestampedValue<Object>> iterator = elements.iterator(); iterator.hasNext();) {
 				iterator.next();
 				evictedCount++;
 				if (evictedCount > size - maxCount) {

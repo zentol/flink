@@ -53,7 +53,7 @@ public class StreamingNoop {
 		final JobGraph jobGraph = env.getStreamGraph().getJobGraph();
 		File jobGraphFile = new File(params.get("output", "job.graph"));
 		try (FileOutputStream output = new FileOutputStream(jobGraphFile);
-			ObjectOutputStream obOutput = new ObjectOutputStream(output)){
+			ObjectOutputStream obOutput = new ObjectOutputStream(output)) {
 			obOutput.writeObject(jobGraph);
 		}
 	}
