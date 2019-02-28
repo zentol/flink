@@ -170,6 +170,11 @@ if [ $STAGE == "$STAGE_COMPILE" ]; then
         minimizeCachedFiles
         travis_time_finish
         end_fold "minimize_cache"
+
+        # delete all flink artifacts from the maven repository
+        # subsequent stages re-install artifacts
+        # storing Flink artifacts can lead to corrupted caches if multiple builds (for the same branch) are running concurrently
+        rm -rf ${HOME}/.m2/repository\org\apache\flink
     else
         echo "=============================================================================="
         echo "Previous build failure detected, skipping cache setup."
