@@ -38,6 +38,14 @@ flink-scala,\
 flink-streaming-java,\
 flink-streaming-scala"
 
+MODULES_CORE_JDK9_EXCLUSIONS="\
+!flink-state-backends/flink-statebackend-rocksdb,\
+!flink-clients,\
+!flink-java,\
+!flink-runtime,\
+!flink-scala
+"
+
 MODULES_LIBRARIES="\
 flink-libraries/flink-cep,\
 flink-libraries/flink-cep-scala,\
@@ -89,8 +97,35 @@ flink-connectors/flink-connector-nifi,\
 flink-connectors/flink-connector-rabbitmq,\
 flink-connectors/flink-connector-twitter"
 
+MODULES_CONNECTORS_JDK9_EXCLUSIONS="\
+!flink-filesystems/flink-hadoop-fs,\
+!flink-filesystems/flink-mapr-fs,\
+!flink-filesystems/flink-s3-fs-hadoop,\
+!flink-filesystems/flink-s3-fs-presto,\
+!flink-formats/flink-avro,\
+!flink-connectors/flink-hbase,\
+!flink-connectors/flink-connector-cassandra,\
+!flink-connectors/flink-connector-elasticsearch,\
+!flink-connectors/flink-connector-kafka-0.9,\
+!flink-connectors/flink-connector-kafka-0.10,\
+!flink-connectors/flink-connector-kafka-0.11
+"
+
 MODULES_TESTS="\
 flink-tests"
+
+MODULES_TESTS_JDK9_EXCLUSIONS="\
+!flink-tests"
+
+MODULES_MISC_JDK9_EXCLUSIONS="\
+1flink-metrics/flink-metrics-jmx,\
+!flink-metrics/flink-metrics-dropwizard,\
+!flink-metrics/flink-metrics-prometheus,\
+!flink-metrics/flink-metrics-statsd,\
+!flink-metrics/flink-metrics-slf4j,\
+!flink-scala-shell,\
+!flink-yarn-tests
+"
 
 if [[ ${PROFILE} == *"include-kinesis"* ]]; then
     MODULES_CONNECTORS="$MODULES_CONNECTORS,flink-connectors/flink-connector-kinesis"
@@ -99,6 +134,7 @@ fi
 # we can only build the Kafka 0.8 connector when building for Scala 2.11
 if [[ $PROFILE == *"scala-2.11"* ]]; then
     MODULES_CONNECTORS="$MODULES_CONNECTORS,flink-connectors/flink-connector-kafka-0.8"
+    MODULES_CONNECTORS_JDK9_EXCLUSIONS="${MODULES_CONNECTORS_JDK9_EXCLUSIONS},!flink-connector-kafka-0.8"
 fi
 
 # we can only build the Scala Shell when building for Scala 2.11
@@ -132,25 +168,38 @@ function get_compile_modules_for_stage() {
 function get_test_modules_for_stage() {
     local stage=$1
 
+    local modules_core=$MODULES_CORE
+    local modules_libraries=$MODULES_LIBRARIES
+    local modules_connectors=$MODULES_CONNECTORS
+    local modules_tests=$MODULES_TESTS
+    NEGATED_CORE=\!${MODULES_CORE//,/,\!}
+    NEGATED_LIBRARIES=\!${MODULES_LIBRARIES//,/,\!}
+    NEGATED_CONNECTORS=\!${MODULES_CONNECTORS//,/,\!}
+    NEGATED_TESTS=\!${MODULES_TESTS//,/,\!}
+    local modules_misc="$NEGATED_CORE,$NEGATED_LIBRARIES,$NEGATED_CONNECTORS,$NEGATED_TESTS"
+
+    if [[ ${PROFILE} == *"jdk9"* ]]; then
+        modules_core="$modules_core,$MODULES_CORE_JDK9_EXCLUSIONS"
+        modules_connectors="$modules_connectors,$MODULES_CONNECTORS_JDK9_EXCLUSIONS"
+        modules_tests="$modules_tests,$MODULES_TESTS_JDK9_EXCLUSIONS"
+        modules_misc="$modules_misc,$MODULES_MISC_JDK9_EXCLUSIONS"
+    fi
+
     case ${stage} in
         (${STAGE_CORE})
-            echo "-pl $MODULES_CORE"
+            echo "-pl $modules_core"
         ;;
         (${STAGE_LIBRARIES})
-            echo "-pl $MODULES_LIBRARIES"
+            echo "-pl $modules_libraries"
         ;;
         (${STAGE_CONNECTORS})
-            echo "-pl $MODULES_CONNECTORS"
+            echo "-pl $modules_connectors"
         ;;
         (${STAGE_TESTS})
-            echo "-pl $MODULES_TESTS"
+            echo "-pl $modules_tests"
         ;;
         (${STAGE_MISC})
-            NEGATED_CORE=\!${MODULES_CORE//,/,\!}
-            NEGATED_LIBRARIES=\!${MODULES_LIBRARIES//,/,\!}
-            NEGATED_CONNECTORS=\!${MODULES_CONNECTORS//,/,\!}
-            NEGATED_TESTS=\!${MODULES_TESTS//,/,\!}
-            echo "-pl $NEGATED_CORE,$NEGATED_LIBRARIES,$NEGATED_CONNECTORS,$NEGATED_TESTS"
+            echo "-pl $modules_misc"
         ;;
     esac
 }

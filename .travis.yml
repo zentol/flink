@@ -167,6 +167,45 @@ jobs:
       script: ./tools/travis_controller.sh cleanup
       env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.112"
       name: cleanup - scala 2.12
+    # JDK9 profile
+    - if: type = cron
+      jdk: "openjdk9"
+      stage: compile
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: compile - jdk 9
+    - if: type = cron
+      jdk: "openjdk9"
+      stage: test
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: core - jdk 9
+    - if: type = cron
+      jdk: "openjdk9"
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: libraries - jdk 9
+    - if: type = cron
+      jdk: "openjdk9"
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: connectors - jdk 9
+    - if: type = cron
+      jdk: "openjdk9"
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: tests - jdk 9
+    - if: type = cron
+      jdk: "openjdk9"
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: misc
+    - if: type = cron
+      jdk: "openjdk9"
+      stage: cleanup
+      script: ./tools/travis_controller.sh
+      env: PROFILE="-Dhadoop.version=2.8.3 -Pinclude-kinesis -Dinclude_hadoop_aws -Dscala-2.11 -Djdk9"
+      name: cleanup - jdk 9
     # Documentation 404 check
     - if: type = cron
       stage: compile
