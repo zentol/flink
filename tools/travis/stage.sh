@@ -43,7 +43,8 @@ MODULES_CORE_JDK9_EXCLUSIONS="\
 !flink-clients,\
 !flink-java,\
 !flink-runtime,\
-!flink-scala
+!flink-scala,\
+!flink-scala-shell,\
 "
 
 MODULES_LIBRARIES="\
@@ -108,8 +109,7 @@ MODULES_CONNECTORS_JDK9_EXCLUSIONS="\
 !flink-connectors/flink-connector-elasticsearch,\
 !flink-connectors/flink-connector-kafka-0.9,\
 !flink-connectors/flink-connector-kafka-0.10,\
-!flink-connectors/flink-connector-kafka-0.11
-"
+!flink-connectors/flink-connector-kafka-0.11"
 
 MODULES_TESTS="\
 flink-tests"
@@ -123,7 +123,6 @@ MODULES_MISC_JDK9_EXCLUSIONS="\
 !flink-metrics/flink-metrics-prometheus,\
 !flink-metrics/flink-metrics-statsd,\
 !flink-metrics/flink-metrics-slf4j,\
-!flink-scala-shell,\
 !flink-yarn-tests
 "
 
@@ -178,10 +177,12 @@ function get_test_modules_for_stage() {
     NEGATED_TESTS=\!${MODULES_TESTS//,/,\!}
     local modules_misc="$NEGATED_CORE,$NEGATED_LIBRARIES,$NEGATED_CONNECTORS,$NEGATED_TESTS"
 
+    # various modules fail testing on JDK 9; exclude them
     if [[ ${PROFILE} == *"jdk9"* ]]; then
         modules_core="$modules_core,$MODULES_CORE_JDK9_EXCLUSIONS"
         modules_connectors="$modules_connectors,$MODULES_CONNECTORS_JDK9_EXCLUSIONS"
-        modules_tests="$modules_tests,$MODULES_TESTS_JDK9_EXCLUSIONS"
+        # add flink-annotations so that at least one module is tested, otherwise maven fails
+        modules_tests="$modules_tests,$MODULES_TESTS_JDK9_EXCLUSIONS,flink-annotations"
         modules_misc="$modules_misc,$MODULES_MISC_JDK9_EXCLUSIONS"
     fi
 
