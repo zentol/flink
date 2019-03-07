@@ -203,11 +203,35 @@ public interface MetricGroup {
 	 */
 	String getMetricIdentifier(String metricName, CharacterFilter filter);
 
+	/**
+	 * Returns the fully qualified logical metric scope, for example
+	 * {@code "taskmanager.job.task.operator"}.
+	 * @return fully qualified logical metric name
+	 */
 	String getLogicalScope();
 
+	/**
+	 * Returns the fully qualified logical metric scope, for example
+	 * {@code "taskmanager.job.task.operator"}.
+	 * @param filter character filter which is applied to the scope components if not null.
+	 * @return fully qualified logical metric name
+	 */
 	String getLogicalScope(CharacterFilter filter);
 
+	/**
+	 * Returns the fully qualified logical metric name, for example
+	 * {@code "taskmanager.job.task.operator.metricName"}.
+	 * @param metricName metric name
+	 * @return fully qualified logical metric name
+	 */
 	String getLogicalMetricIdentifier(String metricName);
 
+	/**
+	 * Returns the fully qualified logical metric name, for example
+	 * {@code "taskmanager.job.task.operator.metricName"}.
+	 * @param metricName metric name
+	 * @param filter character filter which is applied to the scope components if not null.
+	 * @return fully qualified logical metric name
+	 */
 	String getLogicalMetricIdentifier(String metricName, CharacterFilter filter);
 }
