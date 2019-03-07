@@ -76,13 +76,13 @@ public class PrometheusReporterTest extends TestLogger {
 	public ExpectedException thrown = ExpectedException.none();
 
 	private MetricRegistryImpl registry;
-	private FrontMetricGroup<TaskManagerMetricGroup> metricGroup;
+	private FrontMetricGroup metricGroup;
 	private PrometheusReporter reporter;
 
 	@Before
 	public void setupReporter() {
 		registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(createConfigWithOneReporter("test1", portRangeProvider.next())));
-		metricGroup = new FrontMetricGroup<>(0, new TaskManagerMetricGroup(registry, HOST_NAME, TASK_MANAGER));
+		metricGroup = new FrontMetricGroup(0, new TaskManagerMetricGroup(registry, HOST_NAME, TASK_MANAGER));
 		reporter = (PrometheusReporter) registry.getReporters().get(0);
 	}
 
@@ -169,11 +169,11 @@ public class PrometheusReporterTest extends TestLogger {
 		String metricName = "metric";
 
 		Counter metric1 = new SimpleCounter();
-		FrontMetricGroup<TaskManagerJobMetricGroup> metricGroup1 = new FrontMetricGroup<>(0, new TaskManagerJobMetricGroup(registry, tmMetricGroup, JobID.generate(), "job_1"));
+		FrontMetricGroup metricGroup1 = new FrontMetricGroup(0, new TaskManagerJobMetricGroup(registry, tmMetricGroup, JobID.generate(), "job_1"));
 		reporter.notifyOfAddedMetric(metric1, metricName, metricGroup1);
 
 		Counter metric2 = new SimpleCounter();
-		FrontMetricGroup<TaskManagerJobMetricGroup> metricGroup2 = new FrontMetricGroup<>(0, new TaskManagerJobMetricGroup(registry, tmMetricGroup, JobID.generate(), "job_2"));
+		FrontMetricGroup metricGroup2 = new FrontMetricGroup(0, new TaskManagerJobMetricGroup(registry, tmMetricGroup, JobID.generate(), "job_2"));
 		reporter.notifyOfAddedMetric(metric2, metricName, metricGroup2);
 
 		reporter.notifyOfRemovedMetric(metric1, metricName, metricGroup1);

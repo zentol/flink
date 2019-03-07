@@ -61,7 +61,7 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
  * @param <A> The type of the parent MetricGroup
  */
 @Internal
-public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> implements MetricGroup {
+public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> extends ReporterAwareMetricGroup {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(MetricGroup.class);
 
@@ -140,6 +140,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 		return getLogicalMetricIdentifier(metricName, filter, registry.getDelimiter());
 	}
 
+	@Override
 	String getLogicalMetricIdentifier(final String metricName, final CharacterFilter filter, final int reporterIndex) {
 		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
 			? registry.getDelimiter()
@@ -158,6 +159,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 		return createAndCacheLogicalScope(filter, registry.getDelimiter(), -1);
 	}
 
+	@Override
 	String getLogicalScope(CharacterFilter filter, int reporterIndex) {
 		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
 			? registry.getDelimiter()
@@ -278,7 +280,8 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> impl
 	 * @param reporterIndex index of the reporter whose delimiter should be used
 	 * @return fully qualified metric name
 	 */
-	public String getMetricIdentifier(String metricName, CharacterFilter filter, int reporterIndex) {
+	@Override
+	String getMetricIdentifier(String metricName, CharacterFilter filter, int reporterIndex) {
 		if (scopeStrings.length == 0 || (reporterIndex < 0 || reporterIndex >= scopeStrings.length)) {
 			char delimiter = registry.getDelimiter();
 			String newScopeString;

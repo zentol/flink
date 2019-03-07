@@ -25,14 +25,12 @@ import org.apache.flink.metrics.CharacterFilter;
  * index into calls to {@link org.apache.flink.metrics.MetricGroup#getMetricIdentifier(String)}
  * or {@link org.apache.flink.metrics.MetricGroup#getMetricIdentifier(String, CharacterFilter)}.
  * This allows us to use reporter-specific delimiters, without requiring any action by the reporter.
- *
- * @param <P> parentMetricGroup to {@link AbstractMetricGroup AbstractMetricGroup}
  */
-public class FrontMetricGroup<P extends AbstractMetricGroup<?>> extends ProxyMetricGroup<P> {
+public class FrontMetricGroup extends ProxyMetricGroup<ReporterAwareMetricGroup> {
 
 	private final int reporterIndex;
 
-	public FrontMetricGroup(int reporterIndex, P reference) {
+	public FrontMetricGroup(int reporterIndex, ReporterAwareMetricGroup reference) {
 		super(reference);
 		this.reporterIndex = reporterIndex;
 	}

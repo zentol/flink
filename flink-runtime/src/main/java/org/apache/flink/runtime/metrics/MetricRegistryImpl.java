@@ -342,7 +342,7 @@ public class MetricRegistryImpl implements MetricRegistry {
 						MetricReporter reporter = reporters.get(i);
 						try {
 							if (reporter != null) {
-								FrontMetricGroup front = new FrontMetricGroup<AbstractMetricGroup<?>>(i, group);
+								FrontMetricGroup front = new FrontMetricGroup(i, group);
 								reporter.notifyOfAddedMetric(metric, metricName, front);
 							}
 						} catch (Exception e) {
@@ -382,7 +382,7 @@ public class MetricRegistryImpl implements MetricRegistry {
 						try {
 						MetricReporter reporter = reporters.get(i);
 							if (reporter != null) {
-								FrontMetricGroup front = new FrontMetricGroup<AbstractMetricGroup<?>>(i, group);
+								FrontMetricGroup front = new FrontMetricGroup(i, group);
 								reporter.notifyOfRemovedMetric(metric, metricName, front);
 							}
 						} catch (Exception e) {

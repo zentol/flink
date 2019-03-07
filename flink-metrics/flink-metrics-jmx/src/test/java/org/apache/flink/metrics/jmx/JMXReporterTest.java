@@ -130,8 +130,8 @@ public class JMXReporterTest extends TestLogger {
 			}
 		};
 
-		rep1.notifyOfAddedMetric(g1, "rep1", new FrontMetricGroup<>(0, new TaskManagerMetricGroup(reg, "host", "tm")));
-		rep2.notifyOfAddedMetric(g2, "rep2", new FrontMetricGroup<>(0, new TaskManagerMetricGroup(reg, "host", "tm")));
+		rep1.notifyOfAddedMetric(g1, "rep1", new FrontMetricGroup(0, new TaskManagerMetricGroup(reg, "host", "tm")));
+		rep2.notifyOfAddedMetric(g2, "rep2", new FrontMetricGroup(0, new TaskManagerMetricGroup(reg, "host", "tm")));
 
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 
@@ -188,9 +188,9 @@ public class JMXReporterTest extends TestLogger {
 			}
 		};
 
-		rep1.notifyOfAddedMetric(g1, "rep1", new FrontMetricGroup<>(0, new TaskManagerMetricGroup(reg, "host", "tm")));
+		rep1.notifyOfAddedMetric(g1, "rep1", new FrontMetricGroup(0, new TaskManagerMetricGroup(reg, "host", "tm")));
 
-		rep2.notifyOfAddedMetric(g2, "rep2", new FrontMetricGroup<>(1, new TaskManagerMetricGroup(reg, "host", "tm")));
+		rep2.notifyOfAddedMetric(g2, "rep2", new FrontMetricGroup(1, new TaskManagerMetricGroup(reg, "host", "tm")));
 
 		ObjectName objectName1 = new ObjectName(JMX_DOMAIN_PREFIX + "taskmanager.rep1", JMXReporter.generateJmxTable(mg.getAllVariables()));
 		ObjectName objectName2 = new ObjectName(JMX_DOMAIN_PREFIX + "taskmanager.rep2", JMXReporter.generateJmxTable(mg.getAllVariables()));
