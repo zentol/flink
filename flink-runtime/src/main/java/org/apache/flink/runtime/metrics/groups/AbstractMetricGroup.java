@@ -29,6 +29,7 @@ import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.SimpleCounter;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
+import org.apache.flink.runtime.metrics.scope.MetricScope;
 import org.apache.flink.runtime.metrics.scope.ScopeFormat;
 
 import org.slf4j.Logger;
@@ -100,6 +101,8 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	/** Flag indicating whether this group has been closed. */
 	private volatile boolean closed;
 
+	private final MetricScope metricScope = null;
+
 	// ------------------------------------------------------------------------
 
 	public AbstractMetricGroup(MetricRegistry registry, String[] scope, A parent) {
@@ -111,15 +114,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	}
 
 	public Map<String, String> getAllVariables() {
-		if (variables == null) {
-			Map<String, String> tmpVariables = new HashMap<>();
-			putVariables(tmpVariables);
-			if (parent != null) { // not true for Job-/TaskManagerMetricGroup
-				tmpVariables.putAll(parent.getAllVariables());
-			}
-			variables = tmpVariables;
-		}
-		return variables;
+		return metricScope.getAllVariables();
 	}
 
 	/**
@@ -127,6 +122,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	 *
 	 * @param variables map to enter variables and their values into
 	 */
+	@Deprecated
 	protected void putVariables(Map<String, String> variables) {
 	}
 
@@ -142,11 +138,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 
 	@Override
 	String getLogicalMetricIdentifier(final String metricName, final CharacterFilter filter, final int reporterIndex) {
-		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
-			? registry.getDelimiter()
-			: registry.getDelimiter(reporterIndex);
-
-		return createAndCacheLogicalScope(filter, delimiter, reporterIndex) + delimiter + metricName;
+		return metricScope.getLogicalMetricIdentifier(metricName, filter, reporterIndex);
 	}
 
 	@Override
@@ -156,57 +148,12 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 
 	@Override
 	public String getLogicalScope(CharacterFilter filter) {
-		return createAndCacheLogicalScope(filter, registry.getDelimiter(), -1);
+		return getLogicalScope(filter, -1);
 	}
 
 	@Override
 	String getLogicalScope(CharacterFilter filter, int reporterIndex) {
-		final char delimiter = reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length
-			? registry.getDelimiter()
-			: registry.getDelimiter(reporterIndex);
-
-		return createAndCacheLogicalScope(filter, delimiter, reporterIndex);
-	}
-
-	/**
-	 * Returns the logical scope of this group, for example
-	 * {@code "taskmanager.job.task"}.
-	 *
-	 * <p>This method is package-private for backwards-compatibility, see {@link FrontMetricGroup#getLogicalScope(CharacterFilter, char)}.
-	 *
-	 * @param filter character filter which is applied to the scope components
-	 * @param delimiter delimiter to use for concatenating scope components
-	 * @param reporterIndex index of the reporter
-	 * @return logical scope
-	 */
-	String createAndCacheLogicalScope(final CharacterFilter filter, final char delimiter, final int reporterIndex) {
-		final String logicalScope = createLogicalScope(filter, delimiter, reporterIndex);
-		if (reporterIndex < 0 || reporterIndex >= logicalScopeStrings.length) {
-			if (logicalScopeStrings[reporterIndex] == null) {
-				logicalScopeStrings[reporterIndex] = logicalScope;
-			}
-		}
-		return logicalScope;
-	}
-
-	private String createLogicalScope(final CharacterFilter filter, final char delimiter, final int reportedIndex) {
-		if (!includeInLogicalScope()) {
-			return parent.createAndCacheLogicalScope(filter, delimiter, reportedIndex);
-		}
-
-		final String groupName = getGroupName(filter);
-		return parent == null
-			? groupName
-			: parent.createAndCacheLogicalScope(filter, delimiter, reportedIndex) + delimiter + groupName;
-	}
-
-	/**
-	 * Controls whether this group should be included in the logical scope.
-	 *
-	 * @return whether this group should be included in the logical scope
-	 */
-	protected boolean includeInLogicalScope() {
-		return true;
+		return metricScope.getLogicalScope(filter, reporterIndex);
 	}
 
 	/**
@@ -224,7 +171,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	 * @see #getMetricIdentifier(String)
 	 */
 	public String[] getScopeComponents() {
-		return scopeComponents;
+		return metricScope.getScopeComponents();
 	}
 
 	/**
@@ -234,10 +181,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	 * @return query service scope
      */
 	public QueryScopeInfo getQueryServiceMetricInfo(CharacterFilter filter) {
-		if (queryServiceScopeInfo == null) {
-			queryServiceScopeInfo = createQueryServiceMetricInfo(filter);
-		}
-		return queryServiceScopeInfo;
+		return metricScope.getQueryServiceMetricInfo(filter);
 	}
 
 	/**
@@ -246,6 +190,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	 * @param filter character filter
 	 * @return query service scope
      */
+	@Deprecated
 	protected abstract QueryScopeInfo createQueryServiceMetricInfo(CharacterFilter filter);
 
 	/**
@@ -282,30 +227,7 @@ public abstract class AbstractMetricGroup<A extends AbstractMetricGroup<?>> exte
 	 */
 	@Override
 	String getMetricIdentifier(String metricName, CharacterFilter filter, int reporterIndex) {
-		if (scopeStrings.length == 0 || (reporterIndex < 0 || reporterIndex >= scopeStrings.length)) {
-			char delimiter = registry.getDelimiter();
-			String newScopeString;
-			if (filter != null) {
-				newScopeString = ScopeFormat.concat(filter, delimiter, scopeComponents);
-				metricName = filter.filterCharacters(metricName);
-			} else {
-				newScopeString = ScopeFormat.concat(delimiter, scopeComponents);
-			}
-			return newScopeString + delimiter + metricName;
-		} else {
-			char delimiter = registry.getDelimiter(reporterIndex);
-			if (scopeStrings[reporterIndex] == null) {
-				if (filter != null) {
-					scopeStrings[reporterIndex] = ScopeFormat.concat(filter, delimiter, scopeComponents);
-				} else {
-					scopeStrings[reporterIndex] = ScopeFormat.concat(delimiter, scopeComponents);
-				}
-			}
-			if (filter != null) {
-				metricName = filter.filterCharacters(metricName);
-			}
-			return scopeStrings[reporterIndex] + delimiter + metricName;
-		}
+		return metricScope.getMetricIdentifier(metricName, filter, reporterIndex);
 	}
 
 	// ------------------------------------------------------------------------
