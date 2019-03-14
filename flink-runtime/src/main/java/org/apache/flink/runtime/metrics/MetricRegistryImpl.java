@@ -20,9 +20,7 @@ package org.apache.flink.runtime.metrics;
 
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.time.Time;
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.ConfigConstants;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.metrics.Metric;
 import org.apache.flink.metrics.MetricConfig;
 import org.apache.flink.metrics.MetricGroup;
@@ -103,7 +101,7 @@ public class MetricRegistryImpl implements MetricRegistry {
 		// second, instantiate any custom configured reporters
 		this.reporters = new ArrayList<>(4);
 
-		List<Tuple2<String, Configuration>> reporterConfigurations = config.getReporterConfigurations();
+		List<MetricRegistryConfiguration.ReporterSetup> reporterConfigurations = config.getReporterSetups();
 
 		this.executor = Executors.newSingleThreadScheduledExecutor(new ExecutorThreadFactory("Flink-MetricRegistry"));
 
@@ -115,16 +113,9 @@ public class MetricRegistryImpl implements MetricRegistry {
 			// by default, don't report anything
 			LOG.info("No metrics reporter configured, no metrics will be exposed/reported.");
 		} else {
-			// we have some reporters so
-			for (Tuple2<String, Configuration> reporterConfiguration: reporterConfigurations) {
-				String namedReporter = reporterConfiguration.f0;
-				Configuration reporterConfig = reporterConfiguration.f1;
-
-				final String className = reporterConfig.getString(ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, null);
-				if (className == null) {
-					LOG.error("No reporter class set for reporter " + namedReporter + ". Metrics might not be exposed/reported.");
-					continue;
-				}
+			for (MetricRegistryConfiguration.ReporterSetup reporterSetup : reporterConfigurations) {
+				final String namedReporter = reporterSetup.getName();
+				final MetricConfig reporterConfig = reporterSetup.getConfiguration();
 
 				try {
 					String configuredPeriod = reporterConfig.getString(ConfigConstants.METRICS_REPORTER_INTERVAL_SUFFIX, null);
@@ -144,13 +135,11 @@ public class MetricRegistryImpl implements MetricRegistry {
 						}
 					}
 
-					Class<?> reporterClass = Class.forName(className);
-					MetricReporter reporterInstance = (MetricReporter) reporterClass.newInstance();
+					final MetricReporter reporterInstance = reporterSetup.getSupplier().get();
+					final String className = reporterInstance.getClass().getName();
 
-					MetricConfig metricConfig = new MetricConfig();
-					reporterConfig.addAllToProperties(metricConfig);
-					LOG.info("Configuring {} with {}.", namedReporter, metricConfig);
-					reporterInstance.open(metricConfig);
+					LOG.info("Configuring {} with {}.", namedReporter, reporterConfig);
+					reporterInstance.open(reporterConfig);
 
 					if (reporterInstance instanceof Scheduled) {
 						LOG.info("Periodically reporting metrics in intervals of {} {} for reporter {} of type {}.", period, timeunit.name(), namedReporter, className);
