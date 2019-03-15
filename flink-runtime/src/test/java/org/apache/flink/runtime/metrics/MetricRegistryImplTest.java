@@ -18,36 +18,38 @@
 
 package org.apache.flink.runtime.metrics;
 
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.MetricOptions;
-import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.Metric;
 import org.apache.flink.metrics.MetricConfig;
-import org.apache.flink.metrics.MetricGroup;
 import org.apache.flink.metrics.SimpleCounter;
 import org.apache.flink.metrics.reporter.MetricReporter;
-import org.apache.flink.metrics.reporter.Scheduled;
 import org.apache.flink.runtime.akka.AkkaUtils;
-import org.apache.flink.runtime.metrics.groups.MetricGroupTest;
 import org.apache.flink.runtime.metrics.groups.TaskManagerMetricGroup;
 import org.apache.flink.runtime.metrics.scope.ScopeFormats;
+import org.apache.flink.runtime.metrics.util.MetricRegistryTestUtils;
 import org.apache.flink.runtime.metrics.util.TestReporter;
 import org.apache.flink.util.TestLogger;
 
 import akka.actor.ActorNotFound;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import scala.concurrent.Await;
 import scala.concurrent.duration.FiniteDuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -56,28 +58,17 @@ import static org.junit.Assert.fail;
  */
 public class MetricRegistryImplTest extends TestLogger {
 
-	private static final char GLOBAL_DEFAULT_DELIMITER = '.';
-
 	@Test
 	public void testIsShutdown() throws Exception {
-		MetricRegistryImpl metricRegistry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
+		final MetricRegistryImpl metricRegistry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
+		try {
+			assertFalse(metricRegistry.isShutdown());
 
-		Assert.assertFalse(metricRegistry.isShutdown());
+			metricRegistry.shutdown().get();
 
-		metricRegistry.shutdown().get();
-
-		Assert.assertTrue(metricRegistry.isShutdown());
-	}
-
-	/**
-	 * Reporter that exposes whether open() was called.
-	 */
-	protected static class TestReporter1 extends TestReporter {
-		public static boolean wasOpened = false;
-
-		@Override
-		public void open(MetricConfig config) {
-			wasOpened = true;
+			assertTrue(metricRegistry.isShutdown());
+		} finally {
+			metricRegistry.shutdown().get();
 		}
 	}
 
@@ -86,67 +77,27 @@ public class MetricRegistryImplTest extends TestLogger {
 	 */
 	@Test
 	public void testMultipleReporterInstantiation() throws Exception {
-		Configuration config = new Configuration();
+		final AtomicBoolean rep1Opened = new AtomicBoolean();
+		final AtomicBoolean rep2Opened = new AtomicBoolean();
+		final AtomicBoolean rep3Opened = new AtomicBoolean();
 
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter11.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter12.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test3." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter13.class.getName());
+		final MetricReporter rep1 = TestReporter.builder().setOnOpen(config -> rep1Opened.set(true)).build();
+		final MetricReporter rep2 = TestReporter.builder().setOnOpen(config -> rep2Opened.set(true)).build();
+		final MetricReporter rep3 = TestReporter.builder().setOnOpen(config -> rep3Opened.set(true)).build();
 
-		MetricRegistryImpl metricRegistry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+		final MetricRegistryImpl metricRegistry = MetricRegistryTestUtils.createRegistry(
+			new MetricRegistryConfiguration.ReporterSetup("test1", new MetricConfig(), () -> rep1),
+			new MetricRegistryConfiguration.ReporterSetup("test2", new MetricConfig(), () -> rep2),
+			new MetricRegistryConfiguration.ReporterSetup("test3", new MetricConfig(), () -> rep3));
 
-		assertTrue(metricRegistry.getReporters().size() == 3);
+		try {
+			assertEquals(3, metricRegistry.getReporters().size());
 
-		Assert.assertTrue(TestReporter11.wasOpened);
-		Assert.assertTrue(TestReporter12.wasOpened);
-		Assert.assertTrue(TestReporter13.wasOpened);
-
-		metricRegistry.shutdown().get();
-	}
-
-	/**
-	 * Reporter that exposes whether open() was called.
-	 */
-	protected static class TestReporter11 extends TestReporter {
-		public static boolean wasOpened = false;
-
-		@Override
-		public void open(MetricConfig config) {
-			wasOpened = true;
-		}
-	}
-
-	/**
-	 * Reporter that exposes whether open() was called.
-	 */
-	protected static class TestReporter12 extends TestReporter {
-		public static boolean wasOpened = false;
-
-		@Override
-		public void open(MetricConfig config) {
-			wasOpened = true;
-		}
-	}
-
-	/**
-	 * Reporter that exposes whether open() was called.
-	 */
-	protected static class TestReporter13 extends TestReporter {
-		public static boolean wasOpened = false;
-
-		@Override
-		public void open(MetricConfig config) {
-			wasOpened = true;
-		}
-	}
-
-	/**
-	 * Reporter that exposes the {@link MetricConfig} it was given.
-	 */
-	protected static class TestReporter2 extends TestReporter {
-		static MetricConfig mc;
-		@Override
-		public void open(MetricConfig config) {
-			mc = config;
+			assertTrue(rep1Opened.get());
+			assertTrue(rep2Opened.get());
+			assertTrue(rep3Opened.get());
+		} finally {
+			metricRegistry.shutdown().get();
 		}
 	}
 
@@ -155,48 +106,36 @@ public class MetricRegistryImplTest extends TestLogger {
 	 */
 	@Test
 	public void testReporterScheduling() throws Exception {
-		Configuration config = new Configuration();
+		final AtomicInteger reportCounter = new AtomicInteger();
+		final MetricReporter rep = TestReporter.builder().setOnReport(reportCounter::incrementAndGet).build();
+		final MetricConfig config = new MetricConfig();
+		config.setProperty(ConfigConstants.METRICS_REPORTER_INTERVAL_SUFFIX, "50 MILLISECONDS");
 
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter3.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test.arg1", "hello");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test." + ConfigConstants.METRICS_REPORTER_INTERVAL_SUFFIX, "50 MILLISECONDS");
+		final MetricRegistryImpl registry = MetricRegistryTestUtils.createRegistry(new MetricRegistryConfiguration.ReporterSetup("test", config, () -> rep));
+		try {
+			long start = System.currentTimeMillis();
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+			// only start counting from now on
+			reportCounter.set(0);
 
-		long start = System.currentTimeMillis();
-
-		// only start counting from now on
-		TestReporter3.reportCount = 0;
-
-		for (int x = 0; x < 10; x++) {
-			Thread.sleep(100);
-			int reportCount = TestReporter3.reportCount;
-			long curT = System.currentTimeMillis();
-			/**
-			 * Within a given time-frame T only T/500 reports may be triggered due to the interval between reports.
-			 * This value however does not not take the first triggered report into account (=> +1).
-			 * Furthermore we have to account for the mis-alignment between reports being triggered and our time
-			 * measurement (=> +1); for T=200 a total of 4-6 reports may have been
-			 * triggered depending on whether the end of the interval for the first reports ends before
-			 * or after T=50.
-			 */
-			long maxAllowedReports = (curT - start) / 50 + 2;
-			Assert.assertTrue("Too many reports were triggered.", maxAllowedReports >= reportCount);
-		}
-		Assert.assertTrue("No report was triggered.", TestReporter3.reportCount > 0);
-
-		registry.shutdown().get();
-	}
-
-	/**
-	 * Reporter that exposes how often report() was called.
-	 */
-	protected static class TestReporter3 extends TestReporter implements Scheduled {
-		public static int reportCount = 0;
-
-		@Override
-		public void report() {
-			reportCount++;
+			for (int x = 0; x < 10; x++) {
+				Thread.sleep(100);
+				final int reportCount = reportCounter.get();
+				final long curT = System.currentTimeMillis();
+				/**
+				 * Within a given time-frame T only T/500 reports may be triggered due to the interval between reports.
+				 * This value however does not not take the first triggered report into account (=> +1).
+				 * Furthermore we have to account for the mis-alignment between reports being triggered and our time
+				 * measurement (=> +1); for T=200 a total of 4-6 reports may have been
+				 * triggered depending on whether the end of the interval for the first reports ends before
+				 * or after T=50.
+				 */
+				final long maxAllowedReports = (curT - start) / 50 + 2;
+				assertTrue("Too many reports were triggered.", maxAllowedReports >= reportCount);
+			}
+			assertTrue("No report was triggered.", reportCounter.get() > 0);
+		} finally {
+			registry.shutdown().get();
 		}
 	}
 
@@ -205,159 +144,140 @@ public class MetricRegistryImplTest extends TestLogger {
 	 */
 	@Test
 	public void testReporterNotifications() throws Exception {
-		Configuration config = new Configuration();
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter6.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter7.class.getName());
+		final AtomicReference<Tuple2<Metric, String>> lastAddedMetric1 = new AtomicReference<>();
+		final AtomicReference<Tuple2<Metric, String>> lastAddedMetric2 = new AtomicReference<>();
+		final AtomicReference<Tuple2<Metric, String>> lastRemovedMetric1 = new AtomicReference<>();
+		final AtomicReference<Tuple2<Metric, String>> lastRemovedMetric2 = new AtomicReference<>();
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+		final MetricReporter rep1 = TestReporter.builder()
+			.setOnAddedMetric((metric, name, group) -> lastAddedMetric1.set(Tuple2.of(metric, name)))
+			.setOnRemovedMetric((metric, name, group) -> lastRemovedMetric1.set(Tuple2.of(metric, name)))
+			.build();
+		final MetricReporter rep2 = TestReporter.builder()
+			.setOnAddedMetric((metric, name, group) -> lastAddedMetric2.set(Tuple2.of(metric, name)))
+			.setOnRemovedMetric((metric, name, group) -> lastRemovedMetric2.set(Tuple2.of(metric, name)))
+			.build();
 
-		TaskManagerMetricGroup root = new TaskManagerMetricGroup(registry, "host", "id");
-		root.counter("rootCounter");
+		final MetricRegistryImpl metricRegistry = MetricRegistryTestUtils.createRegistry(
+			new MetricRegistryConfiguration.ReporterSetup("test1", new MetricConfig(), () -> rep1),
+			new MetricRegistryConfiguration.ReporterSetup("test2", new MetricConfig(), () -> rep2));
 
-		assertTrue(TestReporter6.addedMetric instanceof Counter);
-		assertEquals("rootCounter", TestReporter6.addedMetricName);
+		final String metricName = "counter";
+		final Metric metric = new SimpleCounter();
+		final TaskManagerMetricGroup group = new TaskManagerMetricGroup(metricRegistry, "host", "id");
 
-		assertTrue(TestReporter7.addedMetric instanceof Counter);
-		assertEquals("rootCounter", TestReporter7.addedMetricName);
+		try {
+			metricRegistry.register(metric, metricName, group);
 
-		root.close();
+			assertEquals(metric, lastAddedMetric1.get().f0);
+			assertEquals(metricName, lastAddedMetric1.get().f1);
 
-		assertTrue(TestReporter6.removedMetric instanceof Counter);
-		assertEquals("rootCounter", TestReporter6.removedMetricName);
+			assertEquals(metric, lastAddedMetric2.get().f0);
+			assertEquals(metricName, lastAddedMetric2.get().f1);
 
-		assertTrue(TestReporter7.removedMetric instanceof Counter);
-		assertEquals("rootCounter", TestReporter7.removedMetricName);
+			metricRegistry.unregister(metric, metricName, group);
 
-		registry.shutdown().get();
-	}
+			assertEquals(metric, lastRemovedMetric1.get().f0);
+			assertEquals(metricName, lastRemovedMetric1.get().f1);
 
-	/**
-	 * Reporter that exposes the name and metric instance of the last metric that was added or removed.
-	 */
-	protected static class TestReporter6 extends TestReporter {
-		static Metric addedMetric;
-		static String addedMetricName;
-
-		static Metric removedMetric;
-		static String removedMetricName;
-
-		@Override
-		public void notifyOfAddedMetric(Metric metric, String metricName, MetricGroup group) {
-			addedMetric = metric;
-			addedMetricName = metricName;
+			assertEquals(metric, lastRemovedMetric2.get().f0);
+			assertEquals(metricName, lastRemovedMetric2.get().f1);
+		} finally {
+			metricRegistry.shutdown().get();
 		}
-
-		@Override
-		public void notifyOfRemovedMetric(Metric metric, String metricName, MetricGroup group) {
-			removedMetric = metric;
-			removedMetricName = metricName;
-		}
-	}
-
-	/**
-	 * Reporter that exposes the name and metric instance of the last metric that was added or removed.
-	 */
-	protected static class TestReporter7 extends TestReporter {
-		static Metric addedMetric;
-		static String addedMetricName;
-
-		static Metric removedMetric;
-		static String removedMetricName;
-
-		@Override
-		public void notifyOfAddedMetric(Metric metric, String metricName, MetricGroup group) {
-			addedMetric = metric;
-			addedMetricName = metricName;
-		}
-
-		@Override
-		public void notifyOfRemovedMetric(Metric metric, String metricName, MetricGroup group) {
-			removedMetric = metric;
-			removedMetricName = metricName;
-		}
-	}
-
-	/**
-	 * Verifies that the scope configuration is properly extracted.
-	 */
-	@Test
-	public void testScopeConfig() {
-		Configuration config = new Configuration();
-
-		config.setString(MetricOptions.SCOPE_NAMING_TM, "A");
-		config.setString(MetricOptions.SCOPE_NAMING_TM_JOB, "B");
-		config.setString(MetricOptions.SCOPE_NAMING_TASK, "C");
-		config.setString(MetricOptions.SCOPE_NAMING_OPERATOR, "D");
-
-		ScopeFormats scopeConfig = ScopeFormats.fromConfig(config);
-
-		assertEquals("A", scopeConfig.getTaskManagerFormat().format());
-		assertEquals("B", scopeConfig.getTaskManagerJobFormat().format());
-		assertEquals("C", scopeConfig.getTaskFormat().format());
-		assertEquals("D", scopeConfig.getOperatorFormat().format());
 	}
 
 	@Test
 	public void testConfigurableDelimiter() throws Exception {
-		Configuration config = new Configuration();
+		final Configuration config = new Configuration();
 		config.setString(MetricOptions.SCOPE_DELIMITER, "_");
 		config.setString(MetricOptions.SCOPE_NAMING_TM, "A.B.C.D.E");
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+		final MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
 
-		TaskManagerMetricGroup tmGroup = new TaskManagerMetricGroup(registry, "host", "id");
-		assertEquals("A_B_C_D_E_name", tmGroup.getMetricIdentifier("name"));
-
-		registry.shutdown().get();
+		try {
+			final TaskManagerMetricGroup tmGroup = new TaskManagerMetricGroup(registry, "host", "id");
+			assertEquals("A_B_C_D_E_name", tmGroup.getMetricIdentifier("name"));
+		} finally {
+			registry.shutdown().get();
+		}
 	}
 
 	@Test
 	public void testConfigurableDelimiterForReporters() throws Exception {
-		Configuration config = new Configuration();
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "_");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "-");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test3." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "AA");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test3." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter.class.getName());
+		final MetricConfig config1 = new MetricConfig();
+		config1.setProperty(ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "_");
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+		final MetricConfig config2 = new MetricConfig();
+		config1.setProperty(ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "AA");
 
-		assertEquals(GLOBAL_DEFAULT_DELIMITER, registry.getDelimiter());
-		assertEquals('_', registry.getDelimiter(0));
-		assertEquals('-', registry.getDelimiter(1));
-		assertEquals(GLOBAL_DEFAULT_DELIMITER, registry.getDelimiter(2));
-		assertEquals(GLOBAL_DEFAULT_DELIMITER, registry.getDelimiter(3));
-		assertEquals(GLOBAL_DEFAULT_DELIMITER, registry.getDelimiter(-1));
+		final MetricRegistryImpl metricRegistry = MetricRegistryTestUtils.createRegistry(
+			new MetricRegistryConfiguration.ReporterSetup("test1", config1, () -> TestReporter.builder().build()),
+			new MetricRegistryConfiguration.ReporterSetup("test2", config2, () -> TestReporter.builder().build()));
 
-		registry.shutdown().get();
+		try {
+			assertEquals(MetricOptions.SCOPE_DELIMITER.defaultValue(), metricRegistry.getDelimiter());
+			assertEquals('_', metricRegistry.getDelimiter(0));
+			// invalid delimiter, revert to global
+			assertEquals(MetricOptions.SCOPE_DELIMITER.defaultValue(), metricRegistry.getDelimiter(1));
+			// out-of bounds, revert
+			assertEquals(MetricOptions.SCOPE_DELIMITER.defaultValue(), metricRegistry.getDelimiter(2));
+			assertEquals(MetricOptions.SCOPE_DELIMITER.defaultValue(), metricRegistry.getDelimiter(-1));
+		} finally {
+			metricRegistry.shutdown().get();
+		}
 	}
 
 	@Test
 	public void testConfigurableDelimiterForReportersInGroup() throws Exception {
-		Configuration config = new Configuration();
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "_");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter8.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "-");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter8.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test3." + ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "AA");
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test3." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter8.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test4." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter8.class.getName());
+		// valid configured delimiter
+		final Tuple3<MetricReporter, AtomicReference<String>, MetricConfig> rep1 = setupMetricIdentifierExposingReporter(Optional.of("_"));
+
+		// invalid configured delimiter
+		final Tuple3<MetricReporter, AtomicReference<String>, MetricConfig> rep2 = setupMetricIdentifierExposingReporter(Optional.of("AA"));
+
+		// use default delimiter
+		final Tuple3<MetricReporter, AtomicReference<String>, MetricConfig> rep3 = setupMetricIdentifierExposingReporter(Optional.empty());
+
+		final Configuration config = new Configuration();
 		config.setString(MetricOptions.SCOPE_NAMING_TM, "A.B");
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
-		List<MetricReporter> reporters = registry.getReporters();
-		((TestReporter8) reporters.get(0)).expectedDelimiter = '_'; //test1  reporter
-		((TestReporter8) reporters.get(1)).expectedDelimiter = '-'; //test2 reporter
-		((TestReporter8) reporters.get(2)).expectedDelimiter = GLOBAL_DEFAULT_DELIMITER; //test3 reporter, because 'AA' - not correct delimiter
-		((TestReporter8) reporters.get(3)).expectedDelimiter = GLOBAL_DEFAULT_DELIMITER; //for test4 reporter use global delimiter
+		final MetricRegistryImpl metricRegistry = MetricRegistryTestUtils.createRegistry(
+			ScopeFormats.fromConfig(config),
+			new MetricRegistryConfiguration.ReporterSetup("test1", rep1.f2, () -> rep1.f0),
+			new MetricRegistryConfiguration.ReporterSetup("test2", rep2.f2, () -> rep2.f0),
+			new MetricRegistryConfiguration.ReporterSetup("test3", rep2.f2, () -> rep3.f0));
 
-		TaskManagerMetricGroup group = new TaskManagerMetricGroup(registry, "host", "id");
-		group.counter("C");
-		group.close();
-		registry.shutdown().get();
-		assertEquals(4, TestReporter8.numCorrectDelimitersForRegister);
-		assertEquals(4, TestReporter8.numCorrectDelimitersForUnregister);
+		final String metricName = "counter";
+		final Metric metric = new SimpleCounter();
+		final TaskManagerMetricGroup group = new TaskManagerMetricGroup(metricRegistry, "host", "id");
+
+		try {
+			metricRegistry.register(metric, metricName, group);
+
+			assertEquals("A_B_counter", rep1.f1.get());
+			assertEquals("A.B.counter", rep2.f1.get());
+			assertEquals("A.B.counter", rep3.f1.get());
+
+			metricRegistry.unregister(metric, metricName, group);
+			assertEquals("A_B_counter", rep1.f1.get());
+			assertEquals("A.B.counter", rep2.f1.get());
+			assertEquals("A.B.counter", rep3.f1.get());
+		} finally {
+			metricRegistry.shutdown().get();
+		}
+	}
+
+	private static Tuple3<MetricReporter, AtomicReference<String>, MetricConfig> setupMetricIdentifierExposingReporter(final Optional<String> delimiter) {
+		final MetricConfig config = new MetricConfig();
+		if (delimiter.isPresent()) {
+			config.setProperty(ConfigConstants.METRICS_REPORTER_SCOPE_DELIMITER, "_");
+		}
+
+		final AtomicReference<String> lastMetricIdentifier = new AtomicReference<>();
+		final MetricReporter rep = TestReporter.builder().setOnAddedMetric((metric, name, group) -> lastMetricIdentifier.set(group.getMetricIdentifier(name))).build();
+
+		return Tuple3.of(rep, lastMetricIdentifier, config);
 	}
 
 	/**
@@ -367,85 +287,70 @@ public class MetricRegistryImplTest extends TestLogger {
 	public void testQueryActorShutdown() throws Exception {
 		final FiniteDuration timeout = new FiniteDuration(10L, TimeUnit.SECONDS);
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
-
-		final ActorSystem actorSystem = AkkaUtils.createDefaultActorSystem();
-
-		registry.startQueryService(actorSystem, null);
-
-		ActorRef queryServiceActor = registry.getQueryService();
-
-		registry.shutdown().get();
-
+		final MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
 		try {
-			Await.result(actorSystem.actorSelection(queryServiceActor.path()).resolveOne(timeout), timeout);
+			final ActorSystem actorSystem = AkkaUtils.createDefaultActorSystem();
+			try {
+				registry.startQueryService(actorSystem, null);
 
-			fail("The query actor should be terminated resulting in a ActorNotFound exception.");
-		} catch (ActorNotFound e) {
-			// we expect the query actor to be shut down
-		}
-	}
+				final ActorRef queryServiceActor = registry.getQueryService();
 
-	/**
-	 * Reporter that verifies that the configured delimiter is applied correctly when generating the metric identifier.
-	 */
-	public static class TestReporter8 extends TestReporter {
-		char expectedDelimiter;
-		public static int numCorrectDelimitersForRegister = 0;
-		public static int numCorrectDelimitersForUnregister = 0;
+				registry.shutdown().get();
 
-		@Override
-		public void notifyOfAddedMetric(Metric metric, String metricName, MetricGroup group) {
-			String expectedMetric = "A" + expectedDelimiter + "B" + expectedDelimiter + "C";
-			assertEquals(expectedMetric, group.getMetricIdentifier(metricName, this));
-			assertEquals(expectedMetric, group.getMetricIdentifier(metricName));
-			numCorrectDelimitersForRegister++;
-		}
+				try {
+					Await.result(actorSystem.actorSelection(queryServiceActor.path()).resolveOne(timeout), timeout);
 
-		@Override
-		public void notifyOfRemovedMetric(Metric metric, String metricName, MetricGroup group) {
-			String expectedMetric = "A" + expectedDelimiter + "B" + expectedDelimiter + "C";
-			assertEquals(expectedMetric, group.getMetricIdentifier(metricName, this));
-			assertEquals(expectedMetric, group.getMetricIdentifier(metricName));
-			numCorrectDelimitersForUnregister++;
+					fail("The query actor should be terminated resulting in a ActorNotFound exception.");
+				} catch (ActorNotFound e) {
+					// we expect the query actor to be shut down
+				}
+			} finally {
+				actorSystem.shutdown();
+			}
+		} finally {
+			registry.shutdown().get();
 		}
 	}
 
 	@Test
 	public void testExceptionIsolation() throws Exception {
+		final AtomicReference<Tuple2<Metric, String>> lastAddedMetric1 = new AtomicReference<>();
+		final AtomicReference<Tuple2<Metric, String>> lastRemovedMetric1 = new AtomicReference<>();
 
-		Configuration config = new Configuration();
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test1." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, FailingReporter.class.getName());
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test2." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter7.class.getName());
+		final MetricReporter rep1 = TestReporter.builder()
+			.setOnAddedMetric((metric, name, group) -> lastAddedMetric1.set(Tuple2.of(metric, name)))
+			.setOnRemovedMetric((metric, name, group) -> lastRemovedMetric1.set(Tuple2.of(metric, name)))
+			.build();
 
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
+		final MetricReporter rep2 = TestReporter.builder()
+			.setOnAddedMetric((metric, name, group) -> {
+				throw new RuntimeException();
+			})
+			.setOnRemovedMetric((metric, name, group) -> {
+				throw new RuntimeException();
+			})
+			.build();
 
-		Counter metric = new SimpleCounter();
-		registry.register(metric, "counter", new MetricGroupTest.DummyAbstractMetricGroup(registry));
+		final MetricRegistryImpl metricRegistry = MetricRegistryTestUtils.createRegistry(
+			new MetricRegistryConfiguration.ReporterSetup("test1", new MetricConfig(), () -> rep1),
+			new MetricRegistryConfiguration.ReporterSetup("test2", new MetricConfig(), () -> rep2));
 
-		assertEquals(metric, TestReporter7.addedMetric);
-		assertEquals("counter", TestReporter7.addedMetricName);
+		final String metricName = "rootCounter";
+		final Metric metric = new SimpleCounter();
+		final TaskManagerMetricGroup group = new TaskManagerMetricGroup(metricRegistry, "host", "id");
 
-		registry.unregister(metric, "counter", new MetricGroupTest.DummyAbstractMetricGroup(registry));
+		try {
+			metricRegistry.register(metric, metricName, group);
 
-		assertEquals(metric, TestReporter7.removedMetric);
-		assertEquals("counter", TestReporter7.removedMetricName);
+			assertEquals(metric, lastAddedMetric1.get().f0);
+			assertEquals(metricName, lastAddedMetric1.get().f1);
 
-		registry.shutdown().get();
-	}
+			metricRegistry.unregister(metric, metricName, group);
 
-	/**
-	 * Reporter that throws an exception when it is notified of an added or removed metric.
-	 */
-	protected static class FailingReporter extends TestReporter {
-		@Override
-		public void notifyOfAddedMetric(Metric metric, String metricName, MetricGroup group) {
-			throw new RuntimeException();
-		}
-
-		@Override
-		public void notifyOfRemovedMetric(Metric metric, String metricName, MetricGroup group) {
-			throw new RuntimeException();
+			assertEquals(metric, lastRemovedMetric1.get().f0);
+			assertEquals(metricName, lastRemovedMetric1.get().f1);
+		} finally {
+			metricRegistry.shutdown().get();
 		}
 	}
 }

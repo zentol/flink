@@ -21,8 +21,9 @@ package org.apache.flink.runtime.metrics;
 import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.MetricOptions;
+import org.apache.flink.metrics.MetricConfig;
+import org.apache.flink.metrics.reporter.AbstractReporter;
 import org.apache.flink.metrics.reporter.MetricReporter;
-import org.apache.flink.runtime.metrics.util.TestReporter;
 import org.apache.flink.util.TestLogger;
 
 import org.junit.Assert;
@@ -40,13 +41,41 @@ public class MetricRegistryConfigurationTest extends TestLogger {
 	/**
 	 * TestReporter1 class only for type differentiation.
 	 */
-	private static class TestReporter1 extends TestReporter {
+	private static class TestReporter1 extends AbstractReporter {
+		@Override
+		public String filterCharacters(String input) {
+			return null;
+		}
+
+		@Override
+		public void open(MetricConfig config) {
+
+		}
+
+		@Override
+		public void close() {
+
+		}
 	}
 
 	/**
 	 * TestReporter2 class only for type differentiation.
 	 */
-	private static class TestReporter2 extends TestReporter {
+	private static class TestReporter2 extends AbstractReporter {
+		@Override
+		public String filterCharacters(String input) {
+			return null;
+		}
+
+		@Override
+		public void open(MetricConfig config) {
+
+		}
+
+		@Override
+		public void close() {
+
+		}
 	}
 
 	/**

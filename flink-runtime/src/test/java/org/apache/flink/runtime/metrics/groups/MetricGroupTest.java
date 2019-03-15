@@ -75,12 +75,11 @@ public class MetricGroupTest extends TestLogger {
 
 	@Test
 	public void sameGroupOnNameCollision() {
-		GenericMetricGroup group = new GenericMetricGroup(
-		registry, new DummyAbstractMetricGroup(registry), "somegroup");
+		final GenericMetricGroup group = new GenericMetricGroup(NoOpMetricRegistry.INSTANCE, new DummyAbstractMetricGroup(registry), "somegroup");
 
-		String groupName = "sometestname";
-		MetricGroup subgroup1 = group.addGroup(groupName);
-		MetricGroup subgroup2 = group.addGroup(groupName);
+		final String groupName = "sometestname";
+		final MetricGroup subgroup1 = group.addGroup(groupName);
+		final MetricGroup subgroup2 = group.addGroup(groupName);
 
 		assertNotNull(subgroup1);
 		assertNotNull(subgroup2);

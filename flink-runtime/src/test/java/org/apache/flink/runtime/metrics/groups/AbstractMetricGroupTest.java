@@ -29,6 +29,7 @@ import org.apache.flink.metrics.reporter.MetricReporter;
 import org.apache.flink.runtime.metrics.MetricRegistry;
 import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
 import org.apache.flink.runtime.metrics.MetricRegistryImpl;
+import org.apache.flink.runtime.metrics.NoOpMetricRegistry;
 import org.apache.flink.runtime.metrics.dump.QueryScopeInfo;
 import org.apache.flink.runtime.metrics.scope.ScopeFormats;
 import org.apache.flink.runtime.metrics.util.TestReporter;
@@ -38,6 +39,7 @@ import org.junit.Test;
 import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -50,9 +52,7 @@ public class AbstractMetricGroupTest {
 	 */
 	@Test
 	public void testGetAllVariables() throws Exception {
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.defaultMetricRegistryConfiguration());
-
-		AbstractMetricGroup group = new AbstractMetricGroup<AbstractMetricGroup<?>>(registry, new String[0], null) {
+		AbstractMetricGroup group = new AbstractMetricGroup<>(NoOpMetricRegistry.INSTANCE, new String[0], null) {
 			@Override
 			protected QueryScopeInfo createQueryServiceMetricInfo(CharacterFilter filter) {
 				return null;
@@ -64,26 +64,30 @@ public class AbstractMetricGroupTest {
 			}
 		};
 		assertTrue(group.getAllVariables().isEmpty());
+	}
 
-		registry.shutdown().get();
+
+
+	@Test
+	public void sameGroupOnNameCollision() {
+		GenericMetricGroup group = new GenericMetricGroup(
+			registry, new MetricGroupTest.DummyAbstractMetricGroup(registry), "somegroup");
+
+		String groupName = "sometestname";
+		MetricGroup subgroup1 = group.addGroup(groupName);
+		MetricGroup subgroup2 = group.addGroup(groupName);
+
+		assertNotNull(subgroup1);
+		assertNotNull(subgroup2);
+		assertTrue(subgroup1 == subgroup2);
 	}
 
 	// ========================================================================
 	// Scope Caching
 	// ========================================================================
 
-	private static final CharacterFilter FILTER_C = new CharacterFilter() {
-		@Override
-		public String filterCharacters(String input) {
-			return input.replace("C", "X");
-		}
-	};
-	private static final CharacterFilter FILTER_B = new CharacterFilter() {
-		@Override
-		public String filterCharacters(String input) {
-			return input.replace("B", "X");
-		}
-	};
+	private static final CharacterFilter FILTER_C = input -> input.replace("C", "X");
+	private static final CharacterFilter FILTER_B = input -> input.replace("B", "X");
 
 	@Test
 	public void testScopeCachingForMultipleReporters() throws Exception {

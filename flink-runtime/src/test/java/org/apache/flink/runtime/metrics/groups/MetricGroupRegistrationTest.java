@@ -18,21 +18,26 @@
 
 package org.apache.flink.runtime.metrics.groups;
 
-import org.apache.flink.configuration.ConfigConstants;
-import org.apache.flink.configuration.Configuration;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.metrics.Counter;
 import org.apache.flink.metrics.Gauge;
 import org.apache.flink.metrics.Histogram;
-import org.apache.flink.metrics.HistogramStatistics;
+import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.Metric;
 import org.apache.flink.metrics.MetricGroup;
-import org.apache.flink.runtime.metrics.MetricRegistryConfiguration;
-import org.apache.flink.runtime.metrics.MetricRegistryImpl;
-import org.apache.flink.runtime.metrics.util.TestReporter;
+import org.apache.flink.metrics.util.TestHistogram;
+import org.apache.flink.metrics.util.TestMeter;
+import org.apache.flink.runtime.metrics.MetricRegistry;
+import org.apache.flink.runtime.metrics.NoOpMetricRegistry;
+import org.apache.flink.runtime.metrics.scope.ScopeFormats;
 import org.apache.flink.util.TestLogger;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.annotation.Nullable;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,85 +45,80 @@ import static org.junit.Assert.assertEquals;
  * Tests for the registration of groups and metrics on a {@link MetricGroup}.
  */
 public class MetricGroupRegistrationTest extends TestLogger {
+
 	/**
 	 * Verifies that group methods instantiate the correct metric with the given name.
 	 */
 	@Test
-	public void testMetricInstantiation() throws Exception {
-		Configuration config = new Configuration();
-		config.setString(ConfigConstants.METRICS_REPORTER_PREFIX + "test." + ConfigConstants.METRICS_REPORTER_CLASS_SUFFIX, TestReporter1.class.getName());
-
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
-
-		MetricGroup root = new TaskManagerMetricGroup(registry, "host", "id");
-
-		Counter counter = root.counter("counter");
-		assertEquals(counter, TestReporter1.lastPassedMetric);
-		assertEquals("counter", TestReporter1.lastPassedName);
-
-		Gauge<Object> gauge = root.gauge("gauge", new Gauge<Object>() {
+	public void testMetricInstantiation() {
+		final AtomicReference<Tuple2<Metric, String>> lastAddedMetric = new AtomicReference<>();
+		final MetricRegistry metricRegistry = new MetricRegistry() {
 			@Override
-			public Object getValue() {
-				return null;
-			}
-		});
-
-		Assert.assertEquals(gauge, TestReporter1.lastPassedMetric);
-		assertEquals("gauge", TestReporter1.lastPassedName);
-
-		Histogram histogram = root.histogram("histogram", new Histogram() {
-			@Override
-			public void update(long value) {
-
-			}
-
-			@Override
-			public long getCount() {
+			public char getDelimiter() {
 				return 0;
 			}
 
 			@Override
-			public HistogramStatistics getStatistics() {
+			public char getDelimiter(int index) {
+				return 0;
+			}
+
+			@Override
+			public int getNumberReporters() {
+				return 0;
+			}
+
+			@Override
+			public void register(Metric metric, String metricName, AbstractMetricGroup group) {
+				lastAddedMetric.set(Tuple2.of(metric, metricName));
+			}
+
+			@Override
+			public void unregister(Metric metric, String metricName, AbstractMetricGroup group) {
+
+			}
+
+			@Override
+			public ScopeFormats getScopeFormats() {
 				return null;
 			}
-		});
 
-		Assert.assertEquals(histogram, TestReporter1.lastPassedMetric);
-		assertEquals("histogram", TestReporter1.lastPassedName);
-		registry.shutdown().get();
-	}
+			@Nullable
+			@Override
+			public String getMetricQueryServicePath() {
+				return null;
+			}
+		};
 
-	/**
-	 * Reporter that exposes the last name and metric instance it was notified of.
-	 */
-	public static class TestReporter1 extends TestReporter {
+		final MetricGroup group = new TaskManagerMetricGroup(metricRegistry, "host", "id");
 
-		public static Metric lastPassedMetric;
-		public static String lastPassedName;
+		final Counter counter = group.counter("counter");
+		assertEquals(counter, lastAddedMetric.get().f0);
+		assertEquals("counter", lastAddedMetric.get().f1);
 
-		@Override
-		public void notifyOfAddedMetric(Metric metric, String metricName, MetricGroup group) {
-			lastPassedMetric = metric;
-			lastPassedName = metricName;
-		}
+		final Meter meter = group.meter("meter", new TestMeter());
+		assertEquals(meter, lastAddedMetric.get().f0);
+		assertEquals("meter", lastAddedMetric.get().f1);
+
+		final Gauge<Object> gauge = group.gauge("gauge", () -> null);
+		assertEquals(gauge, lastAddedMetric.get().f0);
+		assertEquals("gauge", lastAddedMetric.get().f1);
+
+		final Histogram histogram = group.histogram("histogram", new TestHistogram());
+		assertEquals(histogram, lastAddedMetric.get().f0);
+		assertEquals("histogram", lastAddedMetric.get().f1);
 	}
 
 	/**
 	 * Verifies that when attempting to create a group with the name of an existing one the existing one will be returned instead.
 	 */
 	@Test
-	public void testDuplicateGroupName() throws Exception {
-		Configuration config = new Configuration();
-
-		MetricRegistryImpl registry = new MetricRegistryImpl(MetricRegistryConfiguration.fromConfiguration(config));
-
-		MetricGroup root = new TaskManagerMetricGroup(registry, "host", "id");
+	public void testDuplicateGroupName() {
+		MetricGroup root = new TaskManagerMetricGroup(NoOpMetricRegistry.INSTANCE, "host", "id");
 
 		MetricGroup group1 = root.addGroup("group");
 		MetricGroup group2 = root.addGroup("group");
 		MetricGroup group3 = root.addGroup("group");
 		Assert.assertTrue(group1 == group2 && group2 == group3);
-
-		registry.shutdown().get();
 	}
 }
