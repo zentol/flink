@@ -185,8 +185,10 @@ public class MetricRegistryConfiguration {
 					continue;
 				}
 
-				Class<?> reporterClass = Class.forName(reporterClassName);
-				SupplierWithException<MetricReporter, Exception> supplier = () -> (MetricReporter) reporterClass.newInstance();
+				final SupplierWithException<MetricReporter, Exception> supplier = () -> {
+					Class<?> reporterClass = Class.forName(reporterClassName);
+					return (MetricReporter) reporterClass.newInstance();
+				};
 
 				MetricConfig metricConfig = new MetricConfig();
 				reporterConfig.addAllToProperties(metricConfig);
@@ -219,7 +221,7 @@ public class MetricRegistryConfiguration {
 		return defaultConfiguration;
 	}
 
-	static class ReporterSetup {
+	public static class ReporterSetup {
 
 		private final String name;
 		private final MetricConfig configuration;
