@@ -85,11 +85,6 @@ MODULES_EXCLUDE_FAILING="\
 !flink-filesystems/flink-mapr-fs,\
 !flink-connectors/flink-connector-elasticsearch,\
 !flink-tests,\
-!flink-metrics/flink-metrics-jmx,\
-!flink-metrics/flink-metrics-dropwizard,\
-!flink-metrics/flink-metrics-prometheus,\
-!flink-metrics/flink-metrics-statsd,\
-!flink-metrics/flink-metrics-slf4j,\
 !flink-yarn-tests,\
 !flink-connectors/flink-connector-kafka-0.8,\
 !flink-connectors/flink-connector-kafka-0.9,\
