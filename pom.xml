@@ -129,6 +129,10 @@ under the License.
 		<hamcrest.version>1.3</hamcrest.version>
 		<japicmp.skip>false</japicmp.skip>
 		<flink.convergence.phase>validate</flink.convergence.phase>
+		<!-- controls whether travis test profiles activate or disable tests
+			 these are passed as the <skip> parameter => false == enabled -->
+		<flink.travis.test.enable>false</flink.travis.test.enable>
+		<flink.travis.test.disable>true</flink.travis.test.disable>
 		<!--
 			Keeping the MiniKDC version fixed instead of taking hadoop version dependency
 			to support testing Kafka, ZK etc., modules that does not have Hadoop dependency
@@ -1040,6 +1044,82 @@ under the License.
 					</exclusions>
 				</dependency>
 			</dependencies>
+		</profile>
+
+		<profile>
+			<id>travis-core</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>travis-libraries</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>travis-connectors</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>travis-tests</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>travis-switch-activation</id>
+			<properties>
+				<flink.travis.test.enable>true</flink.travis.test.enable>
+				<flink.travis.test.disable>false</flink.travis.test.disable>
+			</properties>
 		</profile>
 
 		<profile>

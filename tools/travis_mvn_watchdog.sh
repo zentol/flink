@@ -45,8 +45,7 @@ SLEEP_TIME=20
 
 LOG4J_PROPERTIES=${HERE}/log4j-travis.properties
 
-MVN_COMPILE_MODULES=$(get_compile_modules_for_stage ${TEST})
-MVN_TEST_MODULES=$(get_test_modules_for_stage ${TEST})
+MVN_TEST_MODULES=$(get_modules_for_stage ${TEST})
 
 # Maven command to run. We set the forkCount manually, because otherwise Maven sees too many cores
 # on the Travis VMs. Set forkCountTestPackage to 1 for container-based environment (4 GiB memory)
@@ -56,10 +55,8 @@ MVN_TEST_MODULES=$(get_test_modules_for_stage ${TEST})
 # Flink, which however should all be built locally. see FLINK-7230
 MVN_LOGGING_OPTIONS="-Dlog.dir=${ARTIFACTS_DIR} -Dlog4j.configuration=file://$LOG4J_PROPERTIES -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 MVN_COMMON_OPTIONS="-nsu -Dflink.forkCount=2 -Dflink.forkCountTestPackage=2 -Dfast -B -Pskip-webui-build $MVN_LOGGING_OPTIONS"
-MVN_COMPILE_OPTIONS="-DskipTests"
 MVN_TEST_OPTIONS="$MVN_LOGGING_OPTIONS"
 
-MVN_COMPILE="mvn $MVN_COMMON_OPTIONS $MVN_COMPILE_OPTIONS $PROFILE $MVN_COMPILE_MODULES install"
 MVN_TEST="mvn $MVN_COMMON_OPTIONS $MVN_TEST_OPTIONS $PROFILE $MVN_TEST_MODULES verify"
 
 MVN_PID="${ARTIFACTS_DIR}/watchdog.mvn.pid"
@@ -192,57 +189,31 @@ echo "STARTED watchdog (${WD_PID})."
 # Make sure to be in project root
 cd $HERE/../
 
-# Compile modules
+# Test modules
 
-echo "RUNNING '${MVN_COMPILE}'."
+echo "RUNNING '${MVN_TEST}'."
 
-# Run $MVN_COMPILE and pipe output to $MVN_OUT for the watchdog. The PID is written to $MVN_PID to
+# Start watching $MVN_OUT
+watchdog &
+echo "STARTED watchdog (${WD_PID})."
+
+WD_PID=$!
+
+# Run $MVN_TEST and pipe output to $MVN_OUT for the watchdog. The PID is written to $MVN_PID to
 # allow the watchdog to kill $MVN if it is not producing any output anymore. $MVN_EXIT contains
 # the exit code. This is important for Travis' build life-cycle (success/failure).
-( $MVN_COMPILE & PID=$! ; echo $PID >&3 ; wait $PID ; echo $? >&4 ) 3>$MVN_PID 4>$MVN_EXIT | tee $MVN_OUT
+( $MVN_TEST & PID=$! ; echo $PID >&3 ; wait $PID ; echo $? >&4 ) 3>$MVN_PID 4>$MVN_EXIT | tee $MVN_OUT
 
 EXIT_CODE=$(<$MVN_EXIT)
 
 echo "MVN exited with EXIT CODE: ${EXIT_CODE}."
 
-# Make sure to kill the watchdog in any case after $MVN_COMPILE has completed
+# Make sure to kill the watchdog in any case after $MVN_TEST has completed
 echo "Trying to KILL watchdog (${WD_PID})."
 ( kill $WD_PID 2>&1 ) > /dev/null
 
 rm $MVN_PID
 rm $MVN_EXIT
-
-# Run tests if compilation was successful
-if [ $EXIT_CODE == 0 ]; then
-
-	# Start watching $MVN_OUT
-	watchdog &
-	echo "STARTED watchdog (${WD_PID})."
-
-	WD_PID=$!
-
-	echo "RUNNING '${MVN_TEST}'."
-
-	# Run $MVN_TEST and pipe output to $MVN_OUT for the watchdog. The PID is written to $MVN_PID to
-	# allow the watchdog to kill $MVN if it is not producing any output anymore. $MVN_EXIT contains
-	# the exit code. This is important for Travis' build life-cycle (success/failure).
-	( $MVN_TEST & PID=$! ; echo $PID >&3 ; wait $PID ; echo $? >&4 ) 3>$MVN_PID 4>$MVN_EXIT | tee $MVN_OUT
-
-	EXIT_CODE=$(<$MVN_EXIT)
-
-	echo "MVN exited with EXIT CODE: ${EXIT_CODE}."
-
-	# Make sure to kill the watchdog in any case after $MVN_TEST has completed
-	echo "Trying to KILL watchdog (${WD_PID})."
-	( kill $WD_PID 2>&1 ) > /dev/null
-
-	rm $MVN_PID
-	rm $MVN_EXIT
-else
-	echo "=============================================================================="
-	echo "Compilation failure detected, skipping test execution."
-	echo "=============================================================================="
-fi
 
 # Post
 

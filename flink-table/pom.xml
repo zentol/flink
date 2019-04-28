@@ -49,4 +49,23 @@ under the License.
 		<!-- When updating Janino, make sure that Calcite supports it as well. -->
 		<janino.version>3.0.9</janino.version>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>travis-libraries</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.enable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>
