@@ -57,4 +57,22 @@ under the License.
 			<artifactId>flink-test-utils-junit</artifactId>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>travis-connectors</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skip>${flink.travis.test.enable}</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>
