@@ -121,6 +121,25 @@ MODULES_CONNECTORS_JDK9_EXCLUSIONS="\
 MODULES_TESTS="\
 flink-tests"
 
+# modules that do not contain any tests, but have an expensive jar building process (due to shading)
+MODOULES_MISC_TEST_EXCLUSIONS="\
+!flink-shaded-hadoop,\
+!flink-shaded-hadoop2,\
+!flink-shaded-hadoop2-uber,\
+!flink-shaded-yarn-tests,\
+!flink-examples/flink-examples-streaming,\
+!flink-end-to-end-tests/flink-high-parallellism-iterations-test,\
+!flink-end-to-end-tests/flink-elasticsearch2-test,\
+!flink-end-to-end-tests/flink-elasticsearch5-test,\
+!flink-end-to-end-tests/flink-elasticsearch6-test,\
+!flink-end-to-end-tests/flink-stream-state-ttl-test,\
+!flink-end-to-end-tests/flink-streaming-kinesis-tests,\
+!flink-end-to-end-tests/flink-streaming-kafka-test,\
+!flink-end-to-end-tests/flink-streaming-kafka011-test,\
+!flink-end-to-end-tests/flink-streaming-kafka010-test,\
+!flink-libraries/flink-ml-uber,\
+!flink-dist,"
+
 if [[ ${PROFILE} == *"include-kinesis"* ]]; then
     MODULES_CONNECTORS="$MODULES_CONNECTORS,flink-connectors/flink-connector-kinesis"
 fi
@@ -192,7 +211,7 @@ function get_test_modules_for_stage() {
             echo "-pl $modules_tests"
         ;;
         (${STAGE_MISC})
-            echo "-pl $modules_misc"
+            echo "-pl $modules_misc,${MODOULES_MISC_TEST_EXCLUSIONS}"
         ;;
     esac
 }
