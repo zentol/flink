@@ -124,8 +124,8 @@ flink-tests"
 # modules that do not contain any tests, but have an expensive jar building process (due to shading)
 MODOULES_MISC_TEST_EXCLUSIONS="\
 !flink-shaded-hadoop,\
-!flink-shaded-hadoop2,\
-!flink-shaded-hadoop2-uber,\
+!flink-shaded-hadoop/flink-shaded-hadoop2,\
+!flink-shaded-hadoop/flink-shaded-hadoop2-uber,\
 !flink-shaded-yarn-tests,\
 !flink-examples/flink-examples-streaming,\
 !flink-end-to-end-tests/flink-high-parallellism-iterations-test,\
