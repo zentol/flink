@@ -1058,6 +1058,13 @@ under the License.
 								<skip>${flink.travis.test.disable}</skip>
 							</configuration>
 						</plugin>
+						<plugin>
+							<groupId>org.scalatest</groupId>
+							<artifactId>scalatest-maven-plugin</artifactId>
+							<configuration>
+								<skipTests>${flink.travis.test.disable}</skipTests>
+							</configuration>
+						</plugin>
 					</plugins>
 				</pluginManagement>
 			</build>
@@ -1073,6 +1080,13 @@ under the License.
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.scalatest</groupId>
+							<artifactId>scalatest-maven-plugin</artifactId>
+							<configuration>
+								<skipTests>${flink.travis.test.disable}</skipTests>
 							</configuration>
 						</plugin>
 					</plugins>
@@ -1092,6 +1106,13 @@ under the License.
 								<skip>${flink.travis.test.disable}</skip>
 							</configuration>
 						</plugin>
+						<plugin>
+							<groupId>org.scalatest</groupId>
+							<artifactId>scalatest-maven-plugin</artifactId>
+							<configuration>
+								<skipTests>${flink.travis.test.disable}</skipTests>
+							</configuration>
+						</plugin>
 					</plugins>
 				</pluginManagement>
 			</build>
@@ -1107,6 +1128,13 @@ under the License.
 							<artifactId>maven-surefire-plugin</artifactId>
 							<configuration>
 								<skip>${flink.travis.test.disable}</skip>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.scalatest</groupId>
+							<artifactId>scalatest-maven-plugin</artifactId>
+							<configuration>
+								<skipTests>${flink.travis.test.disable}</skipTests>
 							</configuration>
 						</plugin>
 					</plugins>
