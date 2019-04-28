@@ -199,6 +199,10 @@ under the License.
 				<artifactId>maven-shade-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>shade-flink</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
 						<id>shade-hadoop</id>
 						<phase>package</phase>
 						<goals>
