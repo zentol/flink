@@ -126,14 +126,14 @@ MODOULES_MISC_TEST_EXCLUSIONS="\
 !flink-shaded-hadoop,\
 !flink-shaded-hadoop/flink-shaded-hadoop2,\
 !flink-shaded-hadoop/flink-shaded-hadoop2-uber,\
-!flink-shaded-yarn-tests,\
+!flink-shaded-hadoop/flink-shaded-yarn-tests,\
 !flink-examples/flink-examples-streaming,\
 !flink-end-to-end-tests/flink-high-parallellism-iterations-test,\
 !flink-end-to-end-tests/flink-elasticsearch2-test,\
 !flink-end-to-end-tests/flink-elasticsearch5-test,\
 !flink-end-to-end-tests/flink-elasticsearch6-test,\
 !flink-end-to-end-tests/flink-stream-state-ttl-test,\
-!flink-end-to-end-tests/flink-streaming-kinesis-tests,\
+!flink-end-to-end-tests/flink-streaming-kinesis-test,\
 !flink-end-to-end-tests/flink-streaming-kafka-test,\
 !flink-end-to-end-tests/flink-streaming-kafka011-test,\
 !flink-end-to-end-tests/flink-streaming-kafka010-test,\
