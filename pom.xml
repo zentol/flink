@@ -1475,7 +1475,7 @@ under the License.
 							<includes>
 								<include>**/*ITCase.*</include>
 							</includes>
-							<reuseForks>false</reuseForks>
+							<reuseForks>true</reuseForks>
 						</configuration>
 					</execution>
 				</executions>
