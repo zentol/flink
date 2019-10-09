@@ -398,13 +398,29 @@ under the License.
 					<!-- We override the fork behaviour for those expensive tests to avoid process
 					kills due to container limits on travis -->
 					<forkCount>${flink.forkCountTestPackage}</forkCount>
-					<reuseForks>false</reuseForks>
+					<reuseForks>true</reuseForks>
 					<environmentVariables>
 						<!-- Make sure external hadoop environment will not affect maven building -->
 						<HADOOP_HOME />
 						<HADOOP_CONF_DIR />
 					</environmentVariables>
 				</configuration>
+				<executions>
+					<execution>
+						<id>integration-tests</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*ITCase.*</include>
+							</includes>
+							<!-- override reuseForks to true to reduce testing time -->
+							<reuseForks>true</reuseForks>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
