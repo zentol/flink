@@ -39,6 +39,7 @@ import org.apache.flink.test.util.MiniClusterWithClientResource;
 import org.apache.flink.util.ExceptionUtils;
 import org.apache.flink.util.TestLogger;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -102,6 +103,11 @@ public abstract class AbstractOperatorRestoreTestBase extends TestLogger {
 	@BeforeClass
 	public static void beforeClass() {
 		SavepointSerializers.setFailWhenLegacyStateDetected(false);
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		SavepointSerializers.setFailWhenLegacyStateDetected(true);
 	}
 
 	@Test

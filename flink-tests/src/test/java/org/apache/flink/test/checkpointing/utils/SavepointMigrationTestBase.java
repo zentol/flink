@@ -38,6 +38,7 @@ import org.apache.flink.test.util.TestBaseUtils;
 import org.apache.flink.util.OptionalFailure;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -67,6 +68,11 @@ public abstract class SavepointMigrationTestBase extends TestBaseUtils {
 	@BeforeClass
 	public static void before() {
 		SavepointSerializers.setFailWhenLegacyStateDetected(false);
+	}
+
+	@AfterClass
+	public static void after() {
+		SavepointSerializers.setFailWhenLegacyStateDetected(true);
 	}
 
 	@ClassRule
