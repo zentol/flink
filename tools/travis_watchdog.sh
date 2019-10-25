@@ -103,6 +103,9 @@ fi
 # =============================================================================
 
 upload_artifacts_s3() {
+
+  mv /home/travis/build/zentol/flink/flink-tests/target/surefire-reports/* ${ARTIFACTS_DIR}/surefire
+
 	echo "PRODUCED build artifacts."
 
 	ls $ARTIFACTS_DIR
