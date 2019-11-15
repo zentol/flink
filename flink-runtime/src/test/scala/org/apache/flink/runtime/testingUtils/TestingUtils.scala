@@ -68,6 +68,10 @@ object TestingUtils {
     Time.milliseconds(Integer.MAX_VALUE);
   }
 
+  def infiniteDuration: Duration = {
+    Duration.ofSeconds(Long.MaxValue)
+  }
+
   /** 
     * Gets the shared global testing execution context 
     */

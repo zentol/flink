@@ -18,7 +18,6 @@
 
 package org.apache.flink.runtime.executiongraph.restart;
 
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestartStrategyOptions;
 import org.apache.flink.runtime.concurrent.FutureUtils;
@@ -37,17 +36,17 @@ import java.util.concurrent.CompletableFuture;
  */
 public class FailureRateRestartStrategy implements RestartStrategy {
 
-	private final Time failuresInterval;
-	private final Time delayInterval;
+	private final Duration failuresInterval;
+	private final Duration delayInterval;
 	private final int maxFailuresPerInterval;
 	private final ArrayDeque<Long> restartTimestampsDeque;
 
-	public FailureRateRestartStrategy(int maxFailuresPerInterval, Time failuresInterval, Time delayInterval) {
+	public FailureRateRestartStrategy(int maxFailuresPerInterval, Duration failuresInterval, Duration delayInterval) {
 		Preconditions.checkNotNull(failuresInterval, "Failures interval cannot be null.");
 		Preconditions.checkNotNull(delayInterval, "Delay interval cannot be null.");
 		Preconditions.checkArgument(maxFailuresPerInterval > 0, "Maximum number of restart attempts per time unit must be greater than 0.");
-		Preconditions.checkArgument(failuresInterval.getSize() > 0, "Failures interval must be greater than 0 ms.");
-		Preconditions.checkArgument(delayInterval.getSize() >= 0, "Delay interval must be at least 0 ms.");
+		Preconditions.checkArgument(failuresInterval.toMillis() > 0, "Failures interval must be greater than 0 ms.");
+		Preconditions.checkArgument(delayInterval.toMillis() >= 0, "Delay interval must be at least 0 ms.");
 
 		this.failuresInterval = failuresInterval;
 		this.delayInterval = delayInterval;
@@ -61,7 +60,7 @@ public class FailureRateRestartStrategy implements RestartStrategy {
 			Long now = System.currentTimeMillis();
 			Long earliestFailure = restartTimestampsDeque.peek();
 
-			return (now - earliestFailure) > failuresInterval.toMilliseconds();
+			return (now - earliestFailure) > failuresInterval.toMillis();
 		} else {
 			return true;
 		}
@@ -97,17 +96,17 @@ public class FailureRateRestartStrategy implements RestartStrategy {
 		Duration failuresInterval = TimeUtils.parseDuration(failuresIntervalString);
 		Duration delay = TimeUtils.parseDuration(delayString);
 
-		return new FailureRateRestartStrategyFactory(maxFailuresPerInterval, Time.milliseconds(failuresInterval.toMillis()), Time.milliseconds(delay.toMillis()));
+		return new FailureRateRestartStrategyFactory(maxFailuresPerInterval, failuresInterval, delay);
 	}
 
 	public static class FailureRateRestartStrategyFactory extends RestartStrategyFactory {
 		private static final long serialVersionUID = -373724639430960480L;
 
 		private final int maxFailuresPerInterval;
-		private final Time failuresInterval;
-		private final Time delayInterval;
+		private final Duration failuresInterval;
+		private final Duration delayInterval;
 
-		public FailureRateRestartStrategyFactory(int maxFailuresPerInterval, Time failuresInterval, Time delayInterval) {
+		public FailureRateRestartStrategyFactory(int maxFailuresPerInterval, Duration failuresInterval, Duration delayInterval) {
 			this.maxFailuresPerInterval = maxFailuresPerInterval;
 			this.failuresInterval = Preconditions.checkNotNull(failuresInterval);
 			this.delayInterval = Preconditions.checkNotNull(delayInterval);

@@ -18,7 +18,6 @@
 
 package org.apache.flink.runtime.executiongraph.restart;
 
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.RestartStrategyOptions;
 import org.apache.flink.runtime.concurrent.FutureUtils;
@@ -27,6 +26,7 @@ import org.apache.flink.runtime.executiongraph.ExecutionGraph;
 import org.apache.flink.util.Preconditions;
 import org.apache.flink.util.TimeUtils;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -63,7 +63,7 @@ public class FixedDelayRestartStrategy implements RestartStrategy {
 	@Override
 	public CompletableFuture<Void> restart(final RestartCallback restarter, ScheduledExecutor executor) {
 		currentRestartAttempt++;
-		return FutureUtils.scheduleWithDelay(restarter::triggerFullRecovery, Time.milliseconds(delayBetweenRestartAttempts), executor);
+		return FutureUtils.scheduleWithDelay(restarter::triggerFullRecovery, Duration.ofMillis(delayBetweenRestartAttempts), executor);
 	}
 
 	/**

@@ -26,7 +26,6 @@ import org.apache.flink.api.common.state.ListStateDescriptor;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.common.time.Deadline;
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.api.common.typeutils.base.IntSerializer;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -471,7 +470,7 @@ public class RescalingITCase extends TestLogger {
 					}
 				},
 				(int) deadline.timeLeft().getSeconds() / 10,
-				Time.seconds(10),
+				Duration.ofSeconds(10),
 				(throwable) -> true,
 				TestingUtils.defaultScheduledExecutor()
 			);

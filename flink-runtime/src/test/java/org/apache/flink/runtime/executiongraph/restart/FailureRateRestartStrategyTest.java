@@ -18,7 +18,6 @@
 
 package org.apache.flink.runtime.executiongraph.restart;
 
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.core.testutils.OneShotLatch;
 import org.apache.flink.runtime.concurrent.ScheduledExecutor;
 import org.apache.flink.runtime.concurrent.ScheduledExecutorServiceAdapter;
@@ -26,6 +25,7 @@ import org.apache.flink.runtime.concurrent.ScheduledExecutorServiceAdapter;
 import org.junit.After;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -54,7 +54,7 @@ public class FailureRateRestartStrategyTest {
 		final int intervalMillis = 1;
 
 		final FailureRateRestartStrategy restartStrategy =
-				new FailureRateRestartStrategy(1, Time.milliseconds(intervalMillis), Time.milliseconds(0));
+				new FailureRateRestartStrategy(1, Duration.ofMillis(intervalMillis), Duration.ZERO);
 
 		for (int attempsLeft = numAttempts; attempsLeft > 0; --attempsLeft) {
 			assertTrue(restartStrategy.canRestart());
@@ -71,7 +71,7 @@ public class FailureRateRestartStrategyTest {
 		final int intervalMillis = 10_000;
 
 		final FailureRateRestartStrategy restartStrategy =
-				new FailureRateRestartStrategy(numFailures, Time.milliseconds(intervalMillis), Time.milliseconds(0));
+				new FailureRateRestartStrategy(numFailures, Duration.ofMillis(intervalMillis), Duration.ZERO);
 
 		for (int failuresLeft = numFailures; failuresLeft > 0; --failuresLeft) {
 			assertTrue(restartStrategy.canRestart());
@@ -88,7 +88,7 @@ public class FailureRateRestartStrategyTest {
 		final int numberRestarts = 10;
 
 		final FailureRateRestartStrategy strategy =
-			new FailureRateRestartStrategy(numberRestarts + 1, Time.milliseconds(1), Time.milliseconds(restartDelay));
+			new FailureRateRestartStrategy(numberRestarts + 1, Duration.ofMillis(1), Duration.ofMillis(restartDelay));
 
 		for (int restartsLeft = numberRestarts; restartsLeft > 0; --restartsLeft) {
 			assertTrue(strategy.canRestart());

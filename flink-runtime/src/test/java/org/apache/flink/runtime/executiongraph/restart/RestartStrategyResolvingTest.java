@@ -18,10 +18,11 @@
 
 package org.apache.flink.runtime.executiongraph.restart;
 
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.util.TestLogger;
 
 import org.junit.Test;
+
+import java.time.Duration;
 
 import static org.apache.flink.api.common.restartstrategy.RestartStrategies.fallBackRestart;
 import static org.apache.flink.api.common.restartstrategy.RestartStrategies.noRestart;
@@ -54,7 +55,7 @@ public class RestartStrategyResolvingTest extends TestLogger {
 	@Test
 	public void testServerStrategyIsUsedSetWhenCheckpointingEnabled() {
 		RestartStrategy resolvedStrategy = RestartStrategyResolving.resolve(fallBackRestart(),
-			new FailureRateRestartStrategy.FailureRateRestartStrategyFactory(5, Time.seconds(5), Time.seconds(2)),
+			new FailureRateRestartStrategy.FailureRateRestartStrategyFactory(5, Duration.ofSeconds(5), Duration.ofSeconds(2)),
 			true);
 
 		assertThat(resolvedStrategy, instanceOf(FailureRateRestartStrategy.class));
@@ -63,7 +64,7 @@ public class RestartStrategyResolvingTest extends TestLogger {
 	@Test
 	public void testServerStrategyIsUsedSetWhenCheckpointingDisabled() {
 		RestartStrategy resolvedStrategy = RestartStrategyResolving.resolve(fallBackRestart(),
-			new FailureRateRestartStrategy.FailureRateRestartStrategyFactory(5, Time.seconds(5), Time.seconds(2)),
+			new FailureRateRestartStrategy.FailureRateRestartStrategyFactory(5, Duration.ofSeconds(5), Duration.ofSeconds(2)),
 			false);
 
 		assertThat(resolvedStrategy, instanceOf(FailureRateRestartStrategy.class));

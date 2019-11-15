@@ -160,7 +160,7 @@ public class FutureUtils {
 	public static <T> CompletableFuture<T> retryWithDelay(
 			final Supplier<CompletableFuture<T>> operation,
 			final int retries,
-			final Time retryDelay,
+			final Duration retryDelay,
 			final Predicate<Throwable> retryPredicate,
 			final ScheduledExecutor scheduledExecutor) {
 
@@ -190,7 +190,7 @@ public class FutureUtils {
 	public static <T> CompletableFuture<T> retryWithDelay(
 			final Supplier<CompletableFuture<T>> operation,
 			final int retries,
-			final Time retryDelay,
+			final Duration retryDelay,
 			final ScheduledExecutor scheduledExecutor) {
 		return retryWithDelay(
 			operation,
@@ -210,7 +210,7 @@ public class FutureUtils {
 	 */
 	public static CompletableFuture<Void> scheduleWithDelay(
 			final Runnable operation,
-			final Time delay,
+			final Duration delay,
 			final ScheduledExecutor scheduledExecutor) {
 		Supplier<Void> operationSupplier = () -> {
 			operation.run();
@@ -230,7 +230,7 @@ public class FutureUtils {
 	 */
 	public static <T> CompletableFuture<T> scheduleWithDelay(
 			final Supplier<T> operation,
-			final Time delay,
+			final Duration delay,
 			final ScheduledExecutor scheduledExecutor) {
 		final CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
@@ -242,8 +242,8 @@ public class FutureUtils {
 					resultFuture.completeExceptionally(t);
 				}
 			},
-			delay.getSize(),
-			delay.getUnit()
+			delay.toMillis(),
+			TimeUnit.MILLISECONDS
 		);
 
 		resultFuture.whenComplete(
@@ -259,7 +259,7 @@ public class FutureUtils {
 			final CompletableFuture<T> resultFuture,
 			final Supplier<CompletableFuture<T>> operation,
 			final int retries,
-			final Time retryDelay,
+			final Duration retryDelay,
 			final Predicate<Throwable> retryPredicate,
 			final ScheduledExecutor scheduledExecutor) {
 
@@ -278,7 +278,7 @@ public class FutureUtils {
 							} else if (retries > 0) {
 								final ScheduledFuture<?> scheduledFuture = scheduledExecutor.schedule(
 									(Runnable) () -> retryOperationWithDelay(resultFuture, operation, retries - 1, retryDelay, retryPredicate, scheduledExecutor),
-									retryDelay.toMilliseconds(),
+									retryDelay.toMillis(),
 									TimeUnit.MILLISECONDS);
 
 								resultFuture.whenComplete(

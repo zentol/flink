@@ -18,7 +18,6 @@
 
 package org.apache.flink.runtime.executiongraph.restart;
 
-import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.Configuration;
@@ -28,6 +27,7 @@ import org.apache.flink.util.FlinkRuntimeException;
 
 import javax.annotation.Nonnegative;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -59,7 +59,7 @@ public class FailingRestartStrategy implements RestartStrategy {
 		if (restartedTimes <= numberOfFailures) {
 			return FutureUtils.completedExceptionally(new FlinkRuntimeException("Fail to restart for " + restartedTimes + " time(s)."));
 		} else {
-			return FutureUtils.scheduleWithDelay(restarter::triggerFullRecovery, Time.milliseconds(0L), executor);
+			return FutureUtils.scheduleWithDelay(restarter::triggerFullRecovery, Duration.ZERO, executor);
 		}
 	}
 

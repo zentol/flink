@@ -107,6 +107,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -613,7 +614,7 @@ public class RestClusterClient<T> implements ClusterClient<T> {
 		return FutureUtils.retryWithDelay(
 			CheckedSupplier.unchecked(operation),
 			restClusterClientConfiguration.getRetryMaxAttempts(),
-			Time.milliseconds(restClusterClientConfiguration.getRetryDelay()),
+			Duration.ofMillis(restClusterClientConfiguration.getRetryDelay()),
 			retryPredicate,
 			new ScheduledExecutorServiceAdapter(retryExecutorService));
 	}

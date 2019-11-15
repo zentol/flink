@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 
 /**
  * Factory for {@link RestartStrategy}.
@@ -66,8 +67,8 @@ public abstract class RestartStrategyFactory implements Serializable {
 					(RestartStrategies.FailureRateRestartStrategyConfiguration) restartStrategyConfiguration;
 			return new FailureRateRestartStrategy(
 					config.getMaxFailureRate(),
-					config.getFailureInterval(),
-					config.getDelayBetweenAttemptsInterval()
+					Duration.ofMillis(config.getFailureInterval().toMilliseconds()),
+					Duration.ofMillis(config.getDelayBetweenAttemptsInterval().toMilliseconds())
 			);
 		} else if (restartStrategyConfiguration instanceof RestartStrategies.FallbackRestartStrategyConfiguration) {
 			return null;
