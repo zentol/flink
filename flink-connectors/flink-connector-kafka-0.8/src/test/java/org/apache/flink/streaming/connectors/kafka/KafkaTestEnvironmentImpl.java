@@ -28,6 +28,7 @@ import org.apache.flink.streaming.connectors.kafka.internals.ZookeeperOffsetHand
 import org.apache.flink.streaming.connectors.kafka.partitioner.FlinkKafkaPartitioner;
 import org.apache.flink.streaming.connectors.kafka.testutils.ZooKeeperStringSerializer;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
+import org.apache.flink.util.NetUtils;
 
 import org.apache.flink.shaded.curator4.org.apache.curator.RetryPolicy;
 import org.apache.flink.shaded.curator4.org.apache.curator.framework.CuratorFramework;
