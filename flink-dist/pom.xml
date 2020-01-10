@@ -595,27 +595,46 @@ under the License.
 						<goals>
 							<goal>copy</goal>
 						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>javax.xml.bind</groupId>
+									<artifactId>jaxb-api</artifactId>
+									<version>${jaxb.api.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+								</artifactItem>
+								<artifactItem>
+									<groupId>javax.activation</groupId>
+									<artifactId>javax.activation-api</artifactId>
+									<version>${javax.activation.api.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.directory}/temporary</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-zk-${zookeeper.optional.version}-jars</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.apache.zookeeper</groupId>
+									<artifactId>zookeeper</artifactId>
+									<version>${zookeeper.optional.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.directory}/temporary</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>javax.xml.bind</groupId>
-							<artifactId>jaxb-api</artifactId>
-							<version>${jaxb.api.version}</version>
-							<type>jar</type>
-							<overWrite>true</overWrite>
-						</artifactItem>
-						<artifactItem>
-							<groupId>javax.activation</groupId>
-							<artifactId>javax.activation-api</artifactId>
-							<version>${javax.activation.api.version}</version>
-							<type>jar</type>
-							<overWrite>true</overWrite>
-						</artifactItem>
-					</artifactItems>
-					<outputDirectory>${project.build.directory}/temporary</outputDirectory>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -673,6 +692,8 @@ under the License.
 								<excludes>
 									<exclude>org.slf4j:slf4j-log4j12</exclude>
 									<exclude>log4j:log4j</exclude>
+									<!-- Bundled separately so that users can easily switch between ZK 3.4/3.5-->
+									<exclude>org.apache.zookeeper:zookeeper</exclude>
 								</excludes>
 							</artifactSet>
 							<transformers>
