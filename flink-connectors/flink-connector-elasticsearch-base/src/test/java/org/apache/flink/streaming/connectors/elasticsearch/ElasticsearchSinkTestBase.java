@@ -19,10 +19,11 @@ package org.apache.flink.streaming.connectors.elasticsearch;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.client.JobExecutionException;
+import org.apache.flink.runtime.testutils.MiniClusterResource;
+import org.apache.flink.runtime.testutils.MiniClusterResourceConfiguration;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.elasticsearch.testutils.SourceSinkDataTestKit;
-import org.apache.flink.test.util.AbstractTestBase;
 import org.apache.flink.util.InstantiationUtil;
 
 import org.elasticsearch.client.Client;
@@ -47,7 +48,7 @@ import static org.junit.Assert.fail;
  * @param <C> Elasticsearch client type
  * @param <A> The address type to use
  */
-public abstract class ElasticsearchSinkTestBase<C extends AutoCloseable, A> extends AbstractTestBase {
+public abstract class ElasticsearchSinkTestBase<C extends AutoCloseable, A> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchSinkTestBase.class);
 
@@ -57,6 +58,13 @@ public abstract class ElasticsearchSinkTestBase<C extends AutoCloseable, A> exte
 
 	@ClassRule
 	public static TemporaryFolder tempFolder = new TemporaryFolder();
+
+	@ClassRule
+	public static MiniClusterResource miniClusterResource = new MiniClusterResource(
+		new MiniClusterResourceConfiguration.Builder()
+			.setNumberTaskManagers(1)
+			.setNumberSlotsPerTaskManager(4)
+			.build());
 
 	@BeforeClass
 	public static void prepare() throws Exception {
