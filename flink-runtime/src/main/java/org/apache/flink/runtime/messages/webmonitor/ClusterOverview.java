@@ -20,6 +20,7 @@ package org.apache.flink.runtime.messages.webmonitor;
 
 import org.apache.flink.runtime.resourcemanager.ResourceOverview;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,16 +33,20 @@ public class ClusterOverview extends JobsOverview {
 	private static final long serialVersionUID = -729861859715105265L;
 
 	public static final String FIELD_NAME_TASKMANAGERS = "taskmanagers";
-	public static final String FIELD_NAME_SLOTS_TOTAL = "slots-total";
-	public static final String FIELD_NAME_SLOTS_AVAILABLE = "slots-available";
+	public static final String FIELD_NAME_SLOTS_TOTAL = "slotsTotal";
+	public static final String LEGACY_FIELD_NAME_SLOTS_TOTAL = "slots-total";
+	public static final String FIELD_NAME_SLOTS_AVAILABLE = "slotsAvailable";
+	public static final String LEGACY_FIELD_NAME_SLOTS_AVAILABLE = "slots-available";
 
 	@JsonProperty(FIELD_NAME_TASKMANAGERS)
 	private final int numTaskManagersConnected;
 
 	@JsonProperty(FIELD_NAME_SLOTS_TOTAL)
+	@JsonAlias(LEGACY_FIELD_NAME_SLOTS_TOTAL)
 	private final int numSlotsTotal;
 
 	@JsonProperty(FIELD_NAME_SLOTS_AVAILABLE)
+	@JsonAlias(LEGACY_FIELD_NAME_SLOTS_AVAILABLE)
 	private final int numSlotsAvailable;
 
 	@JsonCreator
@@ -84,10 +89,12 @@ public class ClusterOverview extends JobsOverview {
 		return numTaskManagersConnected;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_SLOTS_TOTAL)
 	public int getNumSlotsTotal() {
 		return numSlotsTotal;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_SLOTS_AVAILABLE)
 	public int getNumSlotsAvailable() {
 		return numSlotsAvailable;
 	}

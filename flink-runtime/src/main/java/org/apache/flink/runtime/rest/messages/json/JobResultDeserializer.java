@@ -88,18 +88,22 @@ public class JobResultDeserializer extends StdDeserializer<JobResult> {
 					jobId = jobIdDeserializer.deserialize(p, ctxt);
 					break;
 				case JobResultSerializer.FIELD_NAME_APPLICATION_STATUS:
+				case JobResultSerializer.LEGACY_FIELD_NAME_APPLICATION_STATUS:
 					assertNextToken(p, JsonToken.VALUE_STRING);
 					applicationStatus = ApplicationStatus.valueOf(p.getValueAsString().toUpperCase());
 					break;
 				case JobResultSerializer.FIELD_NAME_NET_RUNTIME:
+				case JobResultSerializer.LEGACY_FIELD_NAME_NET_RUNTIME:
 					assertNextToken(p, JsonToken.VALUE_NUMBER_INT);
 					netRuntime = p.getLongValue();
 					break;
 				case JobResultSerializer.FIELD_NAME_ACCUMULATOR_RESULTS:
+				case JobResultSerializer.LEGACY_FIELD_NAME_ACCUMULATOR_RESULTS:
 					assertNextToken(p, JsonToken.START_OBJECT);
 					accumulatorResults = parseAccumulatorResults(p, ctxt);
 					break;
 				case JobResultSerializer.FIELD_NAME_FAILURE_CAUSE:
+				case JobResultSerializer.LEGACY_FIELD_NAME_FAILURE_CAUSE:
 					assertNextToken(p, JsonToken.START_OBJECT);
 					serializedThrowable = serializedThrowableDeserializer.deserialize(p, ctxt);
 					break;

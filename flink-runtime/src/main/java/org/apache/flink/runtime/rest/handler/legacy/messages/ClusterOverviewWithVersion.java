@@ -23,6 +23,7 @@ import org.apache.flink.runtime.messages.webmonitor.JobsOverview;
 import org.apache.flink.runtime.rest.messages.ResponseBody;
 import org.apache.flink.util.Preconditions;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,13 +36,17 @@ public class ClusterOverviewWithVersion extends ClusterOverview implements Respo
 
 	private static final long serialVersionUID = 5000058311783413216L;
 
-	public static final String FIELD_NAME_VERSION = "flink-version";
-	public static final String FIELD_NAME_COMMIT = "flink-commit";
+	public static final String FIELD_NAME_VERSION = "flinkVersion";
+	public static final String LEGACY_FIELD_NAME_VERSION = "flinkVersion";
+	public static final String FIELD_NAME_COMMIT = "flinkCommit";
+	public static final String LEGACY_FIELD_NAME_COMMIT = "flinkCommit";
 
 	@JsonProperty(FIELD_NAME_VERSION)
+	@JsonAlias(LEGACY_FIELD_NAME_VERSION)
 	private final String version;
 
 	@JsonProperty(FIELD_NAME_COMMIT)
+	@JsonAlias(LEGACY_FIELD_NAME_COMMIT)
 	private final String commitId;
 
 	@JsonCreator
@@ -95,10 +100,12 @@ public class ClusterOverviewWithVersion extends ClusterOverview implements Respo
 			commitId);
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_VERSION)
 	public String getVersion() {
 		return version;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_COMMIT)
 	public String getCommitId() {
 		return commitId;
 	}

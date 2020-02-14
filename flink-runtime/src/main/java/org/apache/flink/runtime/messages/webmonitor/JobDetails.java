@@ -50,11 +50,14 @@ public class JobDetails implements Serializable {
 
 	private static final String FIELD_NAME_JOB_ID = "jid";
 	private static final String FIELD_NAME_JOB_NAME = "name";
-	private static final String FIELD_NAME_START_TIME = "start-time";
-	private static final String FIELD_NAME_END_TIME = "end-time";
+	private static final String FIELD_NAME_START_TIME = "startTime";
+	private static final String LEGACY_FIELD_NAME_START_TIME = "start-time";
+	private static final String FIELD_NAME_END_TIME = "endTime";
+	private static final String LEGACY_FIELD_NAME_END_TIME = "end-time";
 	private static final String FIELD_NAME_DURATION = "duration";
 	private static final String FIELD_NAME_STATUS = "state";
-	private static final String FIELD_NAME_LAST_MODIFICATION = "last-modification";
+	private static final String FIELD_NAME_LAST_MODIFICATION = "lastModification";
+	private static final String LEGACY_FIELD_NAME_LAST_MODIFICATION = "last-modification";
 	private static final String FIELD_NAME_TOTAL_NUMBER_TASKS = "total";
 
 	private final JobID jobId;
@@ -207,9 +210,12 @@ public class JobDetails implements Serializable {
 			jsonGenerator.writeStringField(FIELD_NAME_STATUS, jobDetails.getStatus().name());
 
 			jsonGenerator.writeNumberField(FIELD_NAME_START_TIME, jobDetails.getStartTime());
+			jsonGenerator.writeNumberField(LEGACY_FIELD_NAME_START_TIME, jobDetails.getStartTime());
 			jsonGenerator.writeNumberField(FIELD_NAME_END_TIME, jobDetails.getEndTime());
+			jsonGenerator.writeNumberField(LEGACY_FIELD_NAME_END_TIME, jobDetails.getEndTime());
 			jsonGenerator.writeNumberField(FIELD_NAME_DURATION, jobDetails.getDuration());
 			jsonGenerator.writeNumberField(FIELD_NAME_LAST_MODIFICATION, jobDetails.getLastUpdateTime());
+			jsonGenerator.writeNumberField(LEGACY_FIELD_NAME_LAST_MODIFICATION, jobDetails.getLastUpdateTime());
 
 			jsonGenerator.writeObjectFieldStart("tasks");
 			jsonGenerator.writeNumberField(FIELD_NAME_TOTAL_NUMBER_TASKS, jobDetails.getNumTasks());

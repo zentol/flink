@@ -21,6 +21,7 @@ package org.apache.flink.runtime.messages.webmonitor;
 import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.util.Preconditions;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,21 +34,29 @@ public class JobsOverview implements InfoMessage {
 
 	private static final long serialVersionUID = -3699051943490133183L;
 
-	public static final String FIELD_NAME_JOBS_RUNNING = "jobs-running";
-	public static final String FIELD_NAME_JOBS_FINISHED = "jobs-finished";
-	public static final String FIELD_NAME_JOBS_CANCELLED = "jobs-cancelled";
-	public static final String FIELD_NAME_JOBS_FAILED = "jobs-failed";
+	public static final String FIELD_NAME_JOBS_RUNNING = "jobsRunning";
+	public static final String LEGACY_FIELD_NAME_JOBS_RUNNING = "jobs-running";
+	public static final String FIELD_NAME_JOBS_FINISHED = "jobsFinished";
+	public static final String LEGACY_FIELD_NAME_JOBS_FINISHED = "jobs-finished";
+	public static final String FIELD_NAME_JOBS_CANCELLED = "jobsCancelled";
+	public static final String LEGACY_FIELD_NAME_JOBS_CANCELLED = "jobs-cancelled";
+	public static final String FIELD_NAME_JOBS_FAILED = "jobsFailed";
+	public static final String LEGACY_FIELD_NAME_JOBS_FAILED = "jobs-failed";
 
 	@JsonProperty(FIELD_NAME_JOBS_RUNNING)
+	@JsonAlias(LEGACY_FIELD_NAME_JOBS_RUNNING)
 	private final int numJobsRunningOrPending;
 
 	@JsonProperty(FIELD_NAME_JOBS_FINISHED)
+	@JsonAlias(LEGACY_FIELD_NAME_JOBS_FINISHED)
 	private final int numJobsFinished;
 
 	@JsonProperty(FIELD_NAME_JOBS_CANCELLED)
+	@JsonAlias(LEGACY_FIELD_NAME_JOBS_CANCELLED)
 	private final int numJobsCancelled;
 
 	@JsonProperty(FIELD_NAME_JOBS_FAILED)
+	@JsonAlias(LEGACY_FIELD_NAME_JOBS_FAILED)
 	private final int numJobsFailed;
 
 	@JsonCreator
@@ -70,18 +79,22 @@ public class JobsOverview implements InfoMessage {
 		this.numJobsFailed = first.numJobsFailed + second.numJobsFailed;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_JOBS_RUNNING)
 	public int getNumJobsRunningOrPending() {
 		return numJobsRunningOrPending;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_JOBS_FINISHED)
 	public int getNumJobsFinished() {
 		return numJobsFinished;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_JOBS_CANCELLED)
 	public int getNumJobsCancelled() {
 		return numJobsCancelled;
 	}
 
+	@JsonProperty(LEGACY_FIELD_NAME_JOBS_FAILED)
 	public int getNumJobsFailed() {
 		return numJobsFailed;
 	}

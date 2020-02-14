@@ -22,6 +22,7 @@ import org.apache.flink.runtime.rest.handler.job.checkpoints.CheckpointConfigHan
 import org.apache.flink.runtime.rest.messages.ResponseBody;
 import org.apache.flink.util.Preconditions;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonGenerator;
@@ -47,13 +48,16 @@ public class CheckpointConfigInfo implements ResponseBody {
 
 	public static final String FIELD_NAME_CHECKPOINT_TIMEOUT = "timeout";
 
-	public static final String FIELD_NAME_CHECKPOINT_MIN_PAUSE = "min_pause";
+	public static final String FIELD_NAME_CHECKPOINT_MIN_PAUSE = "minPause";
+	public static final String LEGACY_FIELD_NAME_CHECKPOINT_MIN_PAUSE = "min_pause";
 
-	public static final String FIELD_NAME_CHECKPOINT_MAX_CONCURRENT = "max_concurrent";
+	public static final String FIELD_NAME_CHECKPOINT_MAX_CONCURRENT = "maxConcurrent";
+	public static final String LEGACY_FIELD_NAME_CHECKPOINT_MAX_CONCURRENT = "max_concurrent";
 
 	public static final String FIELD_NAME_EXTERNALIZED_CHECKPOINT_CONFIG = "externalization";
 
-	public static final String FIELD_NAME_STATE_BACKEND = "state_backend";
+	public static final String FIELD_NAME_STATE_BACKEND = "stateBackend";
+	public static final String LEGACY_FIELD_NAME_STATE_BACKEND = "state_backend";
 
 	@JsonProperty(FIELD_NAME_PROCESSING_MODE)
 	private final ProcessingMode processingMode;
@@ -65,15 +69,18 @@ public class CheckpointConfigInfo implements ResponseBody {
 	private final long checkpointTimeout;
 
 	@JsonProperty(FIELD_NAME_CHECKPOINT_MIN_PAUSE)
+	@JsonAlias(LEGACY_FIELD_NAME_CHECKPOINT_MIN_PAUSE)
 	private final long minPauseBetweenCheckpoints;
 
 	@JsonProperty(FIELD_NAME_CHECKPOINT_MAX_CONCURRENT)
+	@JsonAlias(LEGACY_FIELD_NAME_CHECKPOINT_MAX_CONCURRENT)
 	private final long maxConcurrentCheckpoints;
 
 	@JsonProperty(FIELD_NAME_EXTERNALIZED_CHECKPOINT_CONFIG)
 	private final ExternalizedCheckpointInfo externalizedCheckpointInfo;
 
 	@JsonProperty(FIELD_NAME_STATE_BACKEND)
+	@JsonAlias(LEGACY_FIELD_NAME_STATE_BACKEND)
 	private final String stateBackend;
 
 	@JsonCreator
@@ -92,6 +99,24 @@ public class CheckpointConfigInfo implements ResponseBody {
 		this.maxConcurrentCheckpoints = maxConcurrentCheckpoints;
 		this.externalizedCheckpointInfo = Preconditions.checkNotNull(externalizedCheckpointInfo);
 		this.stateBackend = Preconditions.checkNotNull(stateBackend);
+	}
+
+	@Deprecated
+	@JsonProperty(LEGACY_FIELD_NAME_CHECKPOINT_MIN_PAUSE)
+	public long getMinPauseBetweenCheckpoints() {
+		return minPauseBetweenCheckpoints;
+	}
+
+	@Deprecated
+	@JsonProperty(LEGACY_FIELD_NAME_CHECKPOINT_MAX_CONCURRENT)
+	public long getMaxConcurrentCheckpoints() {
+		return maxConcurrentCheckpoints;
+	}
+
+	@Deprecated
+	@JsonProperty(LEGACY_FIELD_NAME_STATE_BACKEND)
+	public String getStateBackendName() {
+		return stateBackend;
 	}
 
 	@Override
@@ -125,12 +150,14 @@ public class CheckpointConfigInfo implements ResponseBody {
 
 		public static final String FIELD_NAME_ENABLED = "enabled";
 
-		public static final String FIELD_NAME_DELETE_ON_CANCELLATION = "delete_on_cancellation";
+		public static final String FIELD_NAME_DELETE_ON_CANCELLATION = "deleteOnCancellation";
+		public static final String LEGACY_FIELD_NAME_DELETE_ON_CANCELLATION = "delete_on_cancellation";
 
 		@JsonProperty(FIELD_NAME_ENABLED)
 		private final boolean enabled;
 
 		@JsonProperty(FIELD_NAME_DELETE_ON_CANCELLATION)
+		@JsonAlias(LEGACY_FIELD_NAME_DELETE_ON_CANCELLATION)
 		private final boolean deleteOnCancellation;
 
 		@JsonCreator
@@ -139,6 +166,12 @@ public class CheckpointConfigInfo implements ResponseBody {
 				@JsonProperty(FIELD_NAME_DELETE_ON_CANCELLATION) boolean deleteOnCancellation) {
 			this.enabled = enabled;
 			this.deleteOnCancellation = deleteOnCancellation;
+		}
+
+		@Deprecated
+		@JsonProperty(LEGACY_FIELD_NAME_DELETE_ON_CANCELLATION)
+		public boolean isDeleteOnCancellation() {
+			return deleteOnCancellation;
 		}
 
 		@Override

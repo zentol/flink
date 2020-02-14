@@ -22,6 +22,7 @@ import org.apache.flink.runtime.rest.handler.job.checkpoints.CheckpointingStatis
 import org.apache.flink.runtime.rest.messages.ResponseBody;
 import org.apache.flink.util.Preconditions;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -117,7 +118,8 @@ public class CheckpointingStatistics implements ResponseBody {
 
 		public static final String FIELD_NAME_TOTAL_CHECKPOINTS = "total";
 
-		public static final String FIELD_NAME_IN_PROGRESS_CHECKPOINTS = "in_progress";
+		public static final String FIELD_NAME_IN_PROGRESS_CHECKPOINTS = "inProgress";
+		public static final String LEGACY_FIELD_NAME_IN_PROGRESS_CHECKPOINTS = "in_progress";
 
 		public static final String FIELD_NAME_COMPLETED_CHECKPOINTS = "completed";
 
@@ -130,6 +132,7 @@ public class CheckpointingStatistics implements ResponseBody {
 		private final long totalNumberCheckpoints;
 
 		@JsonProperty(FIELD_NAME_IN_PROGRESS_CHECKPOINTS)
+		@JsonAlias(LEGACY_FIELD_NAME_IN_PROGRESS_CHECKPOINTS)
 		private final int numberInProgressCheckpoints;
 
 		@JsonProperty(FIELD_NAME_COMPLETED_CHECKPOINTS)
@@ -152,24 +155,9 @@ public class CheckpointingStatistics implements ResponseBody {
 			this.numberFailedCheckpoints = numberFailedCheckpoints;
 		}
 
-		public long getNumberRestoredCheckpoints() {
-			return numberRestoredCheckpoints;
-		}
-
-		public long getTotalNumberCheckpoints() {
-			return totalNumberCheckpoints;
-		}
-
+		@JsonProperty(LEGACY_FIELD_NAME_IN_PROGRESS_CHECKPOINTS)
 		public int getNumberInProgressCheckpoints() {
 			return numberInProgressCheckpoints;
-		}
-
-		public long getNumberCompletedCheckpoints() {
-			return numberCompletedCheckpoints;
-		}
-
-		public long getNumberFailedCheckpoints() {
-			return numberFailedCheckpoints;
 		}
 
 		@Override
@@ -199,19 +187,25 @@ public class CheckpointingStatistics implements ResponseBody {
 	 */
 	public static final class Summary {
 
-		public static final String FIELD_NAME_STATE_SIZE = "state_size";
+		public static final String FIELD_NAME_STATE_SIZE = "stateSize";
+		public static final String LEGACY_FIELD_NAME_STATE_SIZE = "state_size";
 
-		public static final String FIELD_NAME_DURATION = "end_to_end_duration";
+		public static final String FIELD_NAME_DURATION = "endToEndDuration";
+		public static final String LEGACY_FIELD_NAME_DURATION = "end_to_end_duration";
 
-		public static final String FIELD_NAME_ALIGNMENT_BUFFERED = "alignment_buffered";
+		public static final String FIELD_NAME_ALIGNMENT_BUFFERED = "alignmentBuffered";
+		public static final String LEGACY_FIELD_NAME_ALIGNMENT_BUFFERED = "alignment_buffered";
 
 		@JsonProperty(FIELD_NAME_STATE_SIZE)
+		@JsonAlias(LEGACY_FIELD_NAME_STATE_SIZE)
 		private final MinMaxAvgStatistics stateSize;
 
 		@JsonProperty(FIELD_NAME_DURATION)
+		@JsonAlias(LEGACY_FIELD_NAME_DURATION)
 		private final MinMaxAvgStatistics duration;
 
 		@JsonProperty(FIELD_NAME_ALIGNMENT_BUFFERED)
+		@JsonAlias(LEGACY_FIELD_NAME_ALIGNMENT_BUFFERED)
 		private final MinMaxAvgStatistics alignmentBuffered;
 
 		@JsonCreator
@@ -224,14 +218,17 @@ public class CheckpointingStatistics implements ResponseBody {
 			this.alignmentBuffered = alignmentBuffered;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_STATE_SIZE)
 		public MinMaxAvgStatistics getStateSize() {
 			return stateSize;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_DURATION)
 		public MinMaxAvgStatistics getDuration() {
 			return duration;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_ALIGNMENT_BUFFERED)
 		public MinMaxAvgStatistics getAlignmentBuffered() {
 			return alignmentBuffered;
 		}
@@ -345,22 +342,28 @@ public class CheckpointingStatistics implements ResponseBody {
 
 		public static final String FIELD_NAME_ID = "id";
 
-		public static final String FIELD_NAME_RESTORE_TIMESTAMP = "restore_timestamp";
+		public static final String FIELD_NAME_RESTORE_TIMESTAMP = "restoreTimestamp";
+		public static final String LEGACY_FIELD_NAME_RESTORE_TIMESTAMP = "restore_timestamp";
 
-		public static final String FIELD_NAME_IS_SAVEPOINT = "is_savepoint";
+		public static final String FIELD_NAME_IS_SAVEPOINT = "isSavepoint";
+		public static final String LEGACY_FIELD_NAME_IS_SAVEPOINT = "is_savepoint";
 
-		public static final String FIELD_NAME_EXTERNAL_PATH = "external_path";
+		public static final String FIELD_NAME_EXTERNAL_PATH = "externalPath";
+		public static final String LEGACY_FIELD_NAME_EXTERNAL_PATH = "external_path";
 
 		@JsonProperty(FIELD_NAME_ID)
 		private final long id;
 
 		@JsonProperty(FIELD_NAME_RESTORE_TIMESTAMP)
+		@JsonAlias(LEGACY_FIELD_NAME_RESTORE_TIMESTAMP)
 		private final long restoreTimestamp;
 
 		@JsonProperty(FIELD_NAME_IS_SAVEPOINT)
+		@JsonAlias(LEGACY_FIELD_NAME_IS_SAVEPOINT)
 		private final boolean savepoint;
 
 		@JsonProperty(FIELD_NAME_EXTERNAL_PATH)
+		@JsonAlias(LEGACY_FIELD_NAME_EXTERNAL_PATH)
 		@Nullable
 		private final String externalPath;
 
@@ -380,14 +383,17 @@ public class CheckpointingStatistics implements ResponseBody {
 			return id;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_RESTORE_TIMESTAMP)
 		public long getRestoreTimestamp() {
 			return restoreTimestamp;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_IS_SAVEPOINT)
 		public boolean isSavepoint() {
 			return savepoint;
 		}
 
+		@JsonProperty(LEGACY_FIELD_NAME_EXTERNAL_PATH)
 		@Nullable
 		public String getExternalPath() {
 			return externalPath;

@@ -22,6 +22,7 @@ import org.apache.flink.runtime.rest.messages.json.SerializedThrowableDeserializ
 import org.apache.flink.runtime.rest.messages.json.SerializedThrowableSerializer;
 import org.apache.flink.util.SerializedThrowable;
 
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonAlias;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -35,9 +36,11 @@ import javax.annotation.Nullable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AsynchronousOperationInfo {
 
-	private static final String FIELD_NAME_FAILURE_CAUSE = "failure-cause";
+	private static final String FIELD_NAME_FAILURE_CAUSE = "failureCause";
+	private static final String LEGACY_FIELD_NAME_FAILURE_CAUSE = "failure-cause";
 
 	@JsonProperty(FIELD_NAME_FAILURE_CAUSE)
+	@JsonAlias(LEGACY_FIELD_NAME_FAILURE_CAUSE)
 	@JsonSerialize(using = SerializedThrowableSerializer.class)
 	@Nullable
 	private final SerializedThrowable failureCause;
@@ -50,6 +53,7 @@ public class AsynchronousOperationInfo {
 	}
 
 	@Nullable
+	@JsonProperty(LEGACY_FIELD_NAME_FAILURE_CAUSE)
 	public SerializedThrowable getFailureCause() {
 		return failureCause;
 	}

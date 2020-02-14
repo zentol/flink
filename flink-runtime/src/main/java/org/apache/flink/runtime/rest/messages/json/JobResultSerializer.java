@@ -44,13 +44,17 @@ public class JobResultSerializer extends StdSerializer<JobResult> {
 
 	static final String FIELD_NAME_JOB_ID = "id";
 
-	static final String FIELD_NAME_APPLICATION_STATUS = "application-status";
+	static final String FIELD_NAME_APPLICATION_STATUS = "applicationStatus";
+	static final String LEGACY_FIELD_NAME_APPLICATION_STATUS = "application-status";
 
-	static final String FIELD_NAME_NET_RUNTIME = "net-runtime";
+	static final String FIELD_NAME_NET_RUNTIME = "netRuntime";
+	static final String LEGACY_FIELD_NAME_NET_RUNTIME = "net-runtime";
 
-	static final String FIELD_NAME_ACCUMULATOR_RESULTS = "accumulator-results";
+	static final String FIELD_NAME_ACCUMULATOR_RESULTS = "accumulatorResults";
+	static final String LEGACY_FIELD_NAME_ACCUMULATOR_RESULTS = "accumulator-results";
 
-	static final String FIELD_NAME_FAILURE_CAUSE = "failure-cause";
+	static final String FIELD_NAME_FAILURE_CAUSE = "failureCause";
+	static final String LEGACY_FIELD_NAME_FAILURE_CAUSE = "failure-cause";
 
 	private final JobIDSerializer jobIdSerializer = new JobIDSerializer();
 
@@ -81,7 +85,25 @@ public class JobResultSerializer extends StdSerializer<JobResult> {
 		gen.writeFieldName(FIELD_NAME_APPLICATION_STATUS);
 		gen.writeString(result.getApplicationStatus().name());
 
-		gen.writeFieldName(FIELD_NAME_ACCUMULATOR_RESULTS);
+		gen.writeFieldName(LEGACY_FIELD_NAME_APPLICATION_STATUS);
+		gen.writeString(result.getApplicationStatus().name());
+
+		writeFailureCause(FIELD_NAME_ACCUMULATOR_RESULTS, result, gen, provider);
+		writeFailureCause(LEGACY_FIELD_NAME_ACCUMULATOR_RESULTS, result, gen, provider);
+
+		gen.writeNumberField(FIELD_NAME_NET_RUNTIME, result.getNetRuntime());
+		gen.writeNumberField(LEGACY_FIELD_NAME_NET_RUNTIME, result.getNetRuntime());
+
+		if (result.getSerializedThrowable().isPresent()) {
+			writeFailureCause(FIELD_NAME_FAILURE_CAUSE, result, gen, provider);
+			writeFailureCause(LEGACY_FIELD_NAME_FAILURE_CAUSE, result, gen, provider);
+		}
+
+		gen.writeEndObject();
+	}
+
+	private void writeAccumulatorResultsCause(String fieldName, JobResult result, JsonGenerator gen, SerializerProvider provider) throws IOException {
+		gen.writeFieldName(fieldName);
 		gen.writeStartObject();
 		final Map<String, SerializedValue<OptionalFailure<Object>>> accumulatorResults = result.getAccumulatorResults();
 		for (final Map.Entry<String, SerializedValue<OptionalFailure<Object>>> nameValue : accumulatorResults.entrySet()) {
@@ -92,16 +114,12 @@ public class JobResultSerializer extends StdSerializer<JobResult> {
 			serializedValueSerializer.serialize(value, gen, provider);
 		}
 		gen.writeEndObject();
+	}
 
-		gen.writeNumberField(FIELD_NAME_NET_RUNTIME, result.getNetRuntime());
+	private void writeFailureCause(String fieldName, JobResult result, JsonGenerator gen, SerializerProvider provider) throws IOException {
+		gen.writeFieldName(fieldName);
 
-		if (result.getSerializedThrowable().isPresent()) {
-			gen.writeFieldName(FIELD_NAME_FAILURE_CAUSE);
-
-			final SerializedThrowable serializedThrowable = result.getSerializedThrowable().get();
-			serializedThrowableSerializer.serialize(serializedThrowable, gen, provider);
-		}
-
-		gen.writeEndObject();
+		final SerializedThrowable serializedThrowable = result.getSerializedThrowable().get();
+		serializedThrowableSerializer.serialize(serializedThrowable, gen, provider);
 	}
 }
