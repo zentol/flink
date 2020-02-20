@@ -25,6 +25,7 @@ import org.apache.flink.tests.util.categories.PreCommit;
 import org.apache.flink.tests.util.categories.TravisGroup1;
 import org.apache.flink.tests.util.flink.ClusterController;
 import org.apache.flink.tests.util.flink.FlinkResource;
+import org.apache.flink.tests.util.flink.FlinkResourceSetup;
 import org.apache.flink.tests.util.flink.JobSubmission;
 import org.apache.flink.testutils.junit.FailsOnJava11;
 import org.apache.flink.util.TestLogger;
@@ -68,20 +69,22 @@ public class StreamingKafkaITCase extends TestLogger {
 	public final KafkaResource kafka;
 
 	@Rule
-	public final FlinkResource flink = FlinkResource.get();
+	public final FlinkResource flink = FlinkResource.get(FlinkResourceSetup.builder().addConfiguration(getConfiguration()).build());
 
 	public StreamingKafkaITCase(final String kafkaExampleJarPattern, final String kafkaVersion) {
 		this.kafkaExampleJar = TestUtils.getResourceJar(kafkaExampleJarPattern);
 		this.kafka = KafkaResource.get(kafkaVersion);
 	}
 
-	@Test
-	public void testKafka() throws Exception {
+	private static Configuration getConfiguration() {
 		// modify configuration to have enough slots
 		final Configuration flinkConfig = new Configuration();
 		flinkConfig.setInteger(TaskManagerOptions.NUM_TASK_SLOTS, 3);
-		flink.addConfiguration(flinkConfig);
+		return flinkConfig;
+	}
 
+	@Test
+	public void testKafka() throws Exception {
 		try (final ClusterController clusterController = flink.startCluster(1)) {
 
 			final String inputTopic = "test-input";
