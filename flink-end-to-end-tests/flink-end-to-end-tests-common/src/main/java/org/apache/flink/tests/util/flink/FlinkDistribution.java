@@ -248,6 +248,10 @@ final class FlinkDistribution {
 		Files.write(conf.resolve("flink-conf.yaml"), configurationLines);
 	}
 
+	public void setJobMasterHosts(Collection<String> jobMasterHosts) throws IOException {
+		Files.write(conf.resolve("masters"), jobMasterHosts);
+	}
+
 	public void setTaskExecutorHosts(Collection<String> taskExecutorHosts) throws IOException {
 		Files.write(conf.resolve("slaves"), taskExecutorHosts);
 	}
