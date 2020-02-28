@@ -18,9 +18,7 @@
 
 package org.apache.flink.tests.util.flink;
 
-import org.apache.flink.api.common.JobID;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.queryablestate.FutureUtils;
 import org.apache.flink.runtime.concurrent.Executors;
 import org.apache.flink.runtime.rest.RestClient;
 import org.apache.flink.runtime.rest.RestClientConfiguration;
@@ -169,44 +167,5 @@ public class LocalStandaloneFlinkResource implements FlinkResource {
 	@Override
 	public Stream<String> searchAllLogs(Pattern pattern, Function<Matcher, String> matchProcessor) throws IOException {
 		return distribution.searchAllLogs(pattern, matchProcessor);
-	}
-
-	private static class StandaloneClusterController implements ClusterController {
-
-		private final FlinkDistribution distribution;
-
-		StandaloneClusterController(FlinkDistribution distribution) {
-			this.distribution = distribution;
-		}
-
-		@Override
-		public JobController submitJob(JobSubmission job) throws IOException {
-			final JobID run = distribution.submitJob(job);
-
-			return new StandaloneJobController(run);
-		}
-
-		@Override
-		public void submitSQLJob(SQLJobSubmission job) throws IOException {
-			distribution.submitSQLJob(job);
-		}
-
-		@Override
-		public CompletableFuture<Void> closeAsync() {
-			try {
-				distribution.stopFlinkCluster();
-				return CompletableFuture.completedFuture(null);
-			} catch (IOException e) {
-				return FutureUtils.getFailedFuture(e);
-			}
-		}
-	}
-
-	private static class StandaloneJobController implements JobController {
-		private final JobID jobId;
-
-		StandaloneJobController(JobID jobId) {
-			this.jobId = jobId;
-		}
 	}
 }
