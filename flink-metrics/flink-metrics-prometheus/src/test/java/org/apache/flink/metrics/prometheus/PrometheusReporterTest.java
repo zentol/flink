@@ -24,7 +24,6 @@ import org.apache.flink.metrics.Gauge;
 import org.apache.flink.metrics.Histogram;
 import org.apache.flink.metrics.Meter;
 import org.apache.flink.metrics.Metric;
-import org.apache.flink.metrics.MetricConfig;
 import org.apache.flink.metrics.SimpleCounter;
 import org.apache.flink.metrics.util.TestHistogram;
 import org.apache.flink.metrics.util.TestMeter;
@@ -52,7 +51,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static org.apache.flink.metrics.prometheus.PrometheusReporter.ARG_PORT;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
@@ -307,10 +305,7 @@ public class PrometheusReporterTest extends TestLogger {
 	}
 
 	static ReporterSetup createReporterSetup(String reporterName, String portString) {
-		MetricConfig metricConfig = new MetricConfig();
-		metricConfig.setProperty(ARG_PORT, portString);
-
-		return ReporterSetup.forReporter(reporterName, metricConfig, new PrometheusReporter());
+		return ReporterSetup.forReporter(reporterName, new PrometheusReporter(portString, false));
 	}
 
 	@After

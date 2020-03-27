@@ -48,8 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.apache.flink.metrics.prometheus.PrometheusPushGatewayReporterOptions.FILTER_LABEL_VALUE_CHARACTER;
-
 /**
  * base prometheus reporter for prometheus metrics.
  */
@@ -80,14 +78,14 @@ public abstract class AbstractPrometheusReporter implements MetricReporter {
 
 	private CharacterFilter labelValueCharactersFilter = CHARACTER_FILTER;
 
-	@Override
-	public void open(MetricConfig config) {
-		boolean filterLabelValueCharacters = config.getBoolean(
-			FILTER_LABEL_VALUE_CHARACTER.key(), FILTER_LABEL_VALUE_CHARACTER.defaultValue());
-
+	protected AbstractPrometheusReporter(boolean filterLabelValueCharacters) {
 		if (!filterLabelValueCharacters) {
 			labelValueCharactersFilter = input -> input;
 		}
+	}
+
+	@Override
+	public void open(MetricConfig config) {
 	}
 
 	@Override

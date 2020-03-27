@@ -19,8 +19,11 @@ package org.apache.flink.metrics.prometheus;
 
 import org.apache.flink.metrics.reporter.InterceptInstantiationViaReflection;
 import org.apache.flink.metrics.reporter.MetricReporterFactory;
+import org.apache.flink.util.PropertiesUtil;
 
 import java.util.Properties;
+
+import static org.apache.flink.metrics.prometheus.PrometheusPushGatewayReporterOptions.FILTER_LABEL_VALUE_CHARACTER;
 
 /**
  * {@link MetricReporterFactory} for {@link PrometheusReporter}.
@@ -28,8 +31,14 @@ import java.util.Properties;
 @InterceptInstantiationViaReflection(reporterClassName = "org.apache.flink.metrics.prometheus.PrometheusReporter")
 public class PrometheusReporterFactory implements MetricReporterFactory {
 
+	private static final String ARG_PORT = "port";
+	private static final String DEFAULT_PORT = "9249";
+
 	@Override
 	public PrometheusReporter createMetricReporter(Properties properties) {
-		return new PrometheusReporter();
+		final String portsConfig = properties.getProperty(ARG_PORT, DEFAULT_PORT);
+
+		boolean filterLabelValueCharacters = PropertiesUtil.getBoolean(properties, FILTER_LABEL_VALUE_CHARACTER.key(), FILTER_LABEL_VALUE_CHARACTER.defaultValue());
+		return new PrometheusReporter(portsConfig, filterLabelValueCharacters);
 	}
 }
