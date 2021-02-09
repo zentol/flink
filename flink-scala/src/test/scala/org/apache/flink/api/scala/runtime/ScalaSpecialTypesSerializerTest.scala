@@ -19,7 +19,6 @@ package org.apache.flink.api.scala.runtime
 
 import java.lang.{Boolean => JBoolean}
 import java.util.function.BiFunction
-
 import org.apache.flink.api.common.ExecutionConfig
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.common.typeutils.{SerializerTestInstance, TypeSerializer}
@@ -28,7 +27,7 @@ import org.apache.flink.api.scala._
 import org.apache.flink.testutils.DeeplyEqualsChecker
 import org.apache.flink.testutils.DeeplyEqualsChecker.CustomEqualityChecker
 import org.junit.Assert._
-import org.junit.{Assert, Test}
+import org.junit.{Assert, Ignore, Test}
 
 import scala.collection.{SortedMap, SortedSet}
 import scala.util.{Failure, Success}
@@ -194,6 +193,7 @@ object ScalaSpecialTypesSerializerTestInstance {
     }
 }
 
+@Ignore
 class ScalaSpecialTypesSerializerTestInstance[T](
     serializer: TypeSerializer[T],
     typeClass: Class[T],

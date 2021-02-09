@@ -19,12 +19,11 @@ package org.apache.flink.api.scala.runtime
 
 import java.lang.{Boolean => JBoolean}
 import java.util.function.BiFunction
-
 import org.apache.flink.api.common.typeutils.{SerializerTestInstance, TypeSerializer}
 import org.apache.flink.testutils.DeeplyEqualsChecker
 import org.apache.flink.testutils.DeeplyEqualsChecker.CustomEqualityChecker
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Ignore, Test}
 
 
 object TupleSerializerTestInstance {
@@ -55,6 +54,7 @@ object TupleSerializerTestInstance {
     }
 }
 
+@Ignore
 class TupleSerializerTestInstance[T <: Product] (
     serializer: TypeSerializer[T],
     typeClass: Class[T],
