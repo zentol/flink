@@ -157,6 +157,7 @@ under the License.
 		<japicmp.referenceVersion>1.12.0</japicmp.referenceVersion>
 		<japicmp.outputDir>tools/japicmp-output</japicmp.outputDir>
 		<spotless.version>2.4.2</spotless.version>
+		<test.unit.pattern>**/*Test.*</test.unit.pattern>
 	</properties>
 
 	<dependencies>
@@ -1572,7 +1573,7 @@ under the License.
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*Test.*</include>
+								<include>${test.unit.pattern}</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -1585,8 +1586,11 @@ under the License.
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*ITCase.*</include>
+								<include>**/*.java</include>
 							</includes>
+							<excludes>
+								<exclude>${test.unit.pattern}</exclude>
+							</excludes>
 							<reuseForks>false</reuseForks>
 						</configuration>
 					</execution>

@@ -31,6 +31,7 @@ import org.apache.flink.table.types.logical.DistinctType;
 import org.apache.flink.table.types.logical.StructuredType;
 import org.apache.flink.table.types.logical.StructuredType.StructuredComparision;
 
+import org.junit.Ignore;
 import org.junit.runners.Parameterized;
 
 import javax.annotation.Nonnull;
@@ -43,6 +44,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 /** Tests for {@link ComparableTypeStrategy}. */
+@Ignore
 public class ComparableInputTypeStrategyTests extends InputTypeStrategiesTestBase {
 
     @Parameterized.Parameters(name = "{index}: {0}")
