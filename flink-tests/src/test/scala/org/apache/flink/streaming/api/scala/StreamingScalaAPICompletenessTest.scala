@@ -19,7 +19,7 @@ package org.apache.flink.streaming.api.scala
 
 import org.apache.flink.api.scala.completeness.ScalaAPICompletenessTestBase
 import org.apache.flink.streaming.api.datastream.{DataStream => JavaStream}
-
+import org.apache.flink.streaming.api.scala._
 import org.junit.Test
 
 import java.lang.reflect.Method
@@ -98,7 +98,7 @@ class StreamingScalaAPICompletenessTest extends ScalaAPICompletenessTestBase {
 
   @Test
   override def testCompleteness(): Unit = {
-    checkMethods("DataStream", "DataStream", classOf[JavaStream[_]], classOf[DataStream[_]])
+    checkMethods("DataStream", "DataStream", classOf[JavaStream[_]], classOf[JavaStream[_]])
 
     checkMethods(
       "StreamExecutionEnvironment", "StreamExecutionEnvironment",
@@ -108,7 +108,7 @@ class StreamingScalaAPICompletenessTest extends ScalaAPICompletenessTestBase {
     checkMethods(
       "SingleOutputStreamOperator", "DataStream",
       classOf[org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator[_]],
-      classOf[DataStream[_]])
+      classOf[JavaStream[_]])
 
     checkMethods(
       "ConnectedStreams", "ConnectedStreams",
