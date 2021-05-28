@@ -23,6 +23,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -48,6 +49,9 @@ import org.apache.flink.core.memory.DataInputView;
 import org.apache.flink.core.memory.DataInputViewStreamWrapper;
 import org.apache.flink.core.memory.DataOutputView;
 import org.apache.flink.core.memory.DataOutputViewStreamWrapper;
+import org.apache.flink.metrics.Counter;
+import org.apache.flink.metrics.Gauge;
+import org.apache.flink.metrics.Metric;
 import org.apache.flink.runtime.client.JobCancellationException;
 import org.apache.flink.runtime.client.JobExecutionException;
 import org.apache.flink.runtime.jobgraph.JobGraph;
@@ -67,6 +71,8 @@ import org.apache.flink.streaming.api.graph.StreamingJobGraphGenerator;
 import org.apache.flink.streaming.connectors.kafka.config.StartupMode;
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaDeserializationSchemaWrapper;
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaTopicPartition;
+import org.apache.flink.streaming.connectors.kafka.internals.metrics.KafkaMetricWrapper;
+import org.apache.flink.streaming.connectors.kafka.partitioner.FlinkKafkaPartitioner;
 import org.apache.flink.streaming.connectors.kafka.testutils.DataGenerators;
 import org.apache.flink.streaming.connectors.kafka.testutils.FailingIdentityMapper;
 import org.apache.flink.streaming.connectors.kafka.testutils.PartitionValidatingMapper;
@@ -95,14 +101,12 @@ import org.apache.kafka.common.errors.TimeoutException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 
 import javax.annotation.Nullable;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -113,15 +117,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import static org.apache.flink.streaming.connectors.kafka.testutils.ClusterCommunicationUtils.getRunningJobs;
 import static org.apache.flink.streaming.connectors.kafka.testutils.ClusterCommunicationUtils.waitUntilJobIsRunning;
 import static org.apache.flink.streaming.connectors.kafka.testutils.ClusterCommunicationUtils.waitUntilNoJobIsRunning;
 import static org.apache.flink.test.util.TestUtils.submitJobAndWaitForResult;
 import static org.apache.flink.test.util.TestUtils.tryExecute;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -1796,6 +1802,11 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
         deleteTestTopic(topic);
     }
 
+    @Test
+    public void testMetrics() throws Throwable {
+        runMetricsTest();
+    }
+
     /**
      * Test metrics reporting for consumer.
      *
@@ -1816,46 +1827,18 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
         env1.getConfig().setRestartStrategy(RestartStrategies.noRestart());
         env1.disableOperatorChaining(); // let the source read everything into the network buffers
 
-        TypeInformationSerializationSchema<Tuple2<Integer, Integer>> schema =
+        TypeInformationSerializationSchema<Long> schema =
                 new TypeInformationSerializationSchema<>(
-                        TypeInformation.of(new TypeHint<Tuple2<Integer, Integer>>() {}),
-                        env1.getConfig());
+                        BasicTypeInfo.LONG_TYPE_INFO, env1.getConfig());
 
-        DataStream<Tuple2<Integer, Integer>> fromKafka =
-                getStream(env1, topic, schema, standardProps);
-        fromKafka.flatMap(
-                new FlatMapFunction<Tuple2<Integer, Integer>, Void>() {
-                    @Override
-                    public void flatMap(Tuple2<Integer, Integer> value, Collector<Void> out)
-                            throws Exception { // no op
-                    }
-                });
+        DataStream<Long> fromKafka = getStream(env1, topic, schema, standardProps);
+        long n = 1000;
+        fromKafka.map(new SignalingMapper<>(n - 1));
 
-        DataStream<Tuple2<Integer, Integer>> fromGen =
-                env1.addSource(
-                        new RichSourceFunction<Tuple2<Integer, Integer>>() {
-                            boolean running = true;
+        DataStream<Long> fromGen = env1.fromSequence(0, n + 1).map(new WaitingMapper<>(n));
 
-                            @Override
-                            public void run(SourceContext<Tuple2<Integer, Integer>> ctx)
-                                    throws Exception {
-                                int i = 0;
-                                while (running) {
-                                    ctx.collect(
-                                            Tuple2.of(
-                                                    i++,
-                                                    getRuntimeContext().getIndexOfThisSubtask()));
-                                    Thread.sleep(1);
-                                }
-                            }
-
-                            @Override
-                            public void cancel() {
-                                running = false;
-                            }
-                        });
-
-        kafkaServer.produceIntoKafka(fromGen, topic, schema, standardProps, null);
+        kafkaServer.produceIntoKafka(
+                fromGen, topic, schema, standardProps, new RoundRobinPartitioner());
 
         JobGraph jobGraph = StreamingJobGraphGenerator.createJobGraph(env1.getStreamGraph());
         final JobID jobId = jobGraph.getJobID();
@@ -1877,46 +1860,40 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
         jobThread.start();
 
         try {
+            SignalingMapper.processedAllRecords.await();
             // connect to JMX
-            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            // wait until we've found all 5 offset metrics
-            Set<ObjectName> offsetMetrics =
-                    mBeanServer.queryNames(new ObjectName("*current-offsets*:*"), null);
-            while (offsetMetrics.size()
-                    < 5) { // test will time out if metrics are not properly working
-                if (error.f0 != null) {
-                    // fail test early
-                    throw error.f0;
-                }
-                offsetMetrics = mBeanServer.queryNames(new ObjectName("*current-offsets*:*"), null);
-                Thread.sleep(50);
+            Map<String, Metric> metrics = flink.getMetricReporter().getMetrics("current-offsets");
+            Assert.assertEquals(5, metrics.size());
+
+            long nonNullOffsets = 0;
+            for (Metric metric : metrics.values()) {
+                nonNullOffsets += ((Number) ((Gauge) metric).getValue()).longValue() > 0 ? 1 : 0;
             }
-            Assert.assertEquals(5, offsetMetrics.size());
-            // we can't rely on the consumer to have touched all the partitions already
-            // that's why we'll wait until all five partitions have a positive offset.
-            // The test will fail if we never meet the condition
-            while (true) {
-                int numPosOffsets = 0;
-                // check that offsets are correctly reported
-                for (ObjectName object : offsetMetrics) {
-                    Object offset = mBeanServer.getAttribute(object, "Value");
-                    if ((long) offset >= 0) {
-                        numPosOffsets++;
-                    }
-                }
-                if (numPosOffsets == 5) {
-                    break;
-                }
-                // wait for the consumer to consume on all partitions
-                Thread.sleep(50);
-            }
+            Assert.assertEquals(nonNullOffsets, 5);
 
             // check if producer metrics are also available.
-            Set<ObjectName> producerMetrics =
-                    mBeanServer.queryNames(new ObjectName("*KafkaProducer*:*"), null);
+            Map<String, Metric> producerMetrics =
+                    flink.getMetricReporter().getMetrics("KafkaProducer");
             Assert.assertTrue("No producer metrics found", producerMetrics.size() > 30);
 
-            LOG.info("Found all JMX metrics. Cancelling job.");
+            long bytesRead = getLongMetric("Custom Source.*\\.numBytesIn$", Counter::getCount);
+            Assert.assertThat("No bytes read", bytesRead, greaterThan(0L));
+            long kafkaBytesRead =
+                    getLongMetric(
+                            "Custom Source.*\\.KafkaConsumer\\.bytes-consumed-total$",
+                            KafkaMetricWrapper::getValue);
+            assertEquals(kafkaBytesRead, bytesRead);
+
+            long recordsRead = getLongMetric("Custom Source.*\\.numRecordsIn$", Counter::getCount);
+            Assert.assertThat("No records read", recordsRead, greaterThan(0L));
+            long kafkaRecordsRead =
+                    getLongMetric(
+                            "Custom Source.*\\.KafkaConsumer\\.records-consumed-total$",
+                            KafkaMetricWrapper::getValue);
+            assertEquals(kafkaRecordsRead, recordsRead);
+
+            LOG.info("Found all metrics. Cancelling job.");
+            WaitingMapper.awaitEvaluation.countDown();
         } finally {
             // cancel
             client.cancel(jobId).get();
@@ -1929,6 +1906,14 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
         }
 
         deleteTestTopic(topic);
+    }
+
+    private <T> long getLongMetric(String pattern, Function<T, ? extends Number> extractor) {
+        long sum = 0;
+        for (Metric metric : flink.getMetricReporter().getMetrics(pattern).values()) {
+            sum += extractor.apply((T) metric).longValue();
+        }
+        return sum;
     }
 
     private static class CollectingDeserializationSchema
@@ -2755,6 +2740,50 @@ public abstract class KafkaConsumerTestBase extends KafkaTestBaseWithFlink {
             byte[] serializedValue = by.toByteArray();
 
             return new ProducerRecord<>(element.f2, serializedValue);
+        }
+    }
+
+    private static class SignalingMapper<T> implements MapFunction<T, T> {
+        static CountDownLatch processedAllRecords;
+        private final T signalElement;
+
+        private SignalingMapper(T signalElement) {
+            this.signalElement = signalElement;
+            processedAllRecords = new CountDownLatch(1);
+        }
+
+        @Override
+        public T map(T n) throws Exception {
+            if (n.equals(signalElement)) {
+                processedAllRecords.countDown();
+            }
+            return n;
+        }
+    }
+
+    private static class WaitingMapper<T> implements MapFunction<T, T> {
+        static CountDownLatch awaitEvaluation;
+        private final T waitElement;
+
+        private WaitingMapper(T waitElement) {
+            this.waitElement = waitElement;
+            awaitEvaluation = new CountDownLatch(1);
+        }
+
+        @Override
+        public T map(T n) throws Exception {
+            if (n.equals(waitElement)) {
+                awaitEvaluation.await();
+            }
+            return n;
+        }
+    }
+
+    private static class RoundRobinPartitioner extends FlinkKafkaPartitioner<Long> {
+        @Override
+        public int partition(
+                Long record, byte[] key, byte[] value, String targetTopic, int[] partitions) {
+            return partitions[(int) (record % partitions.length)];
         }
     }
 }
