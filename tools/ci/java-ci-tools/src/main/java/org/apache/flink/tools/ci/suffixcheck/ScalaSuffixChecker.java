@@ -93,6 +93,11 @@ public class ScalaSuffixChecker {
                 final Matcher matcher = moduleNamePattern.matcher(line);
                 if (matcher.matches()) {
                     final String moduleName = stripScalaSuffix(matcher.group(1));
+                    // we ignored flink-rpc-akka because it is loaded through a separate class
+                    // loader
+                    if (moduleName.equals("flink-rpc-akka")) {
+                        continue;
+                    }
                     LOG.trace("Parsing module '{}'.", moduleName);
 
                     // skip: [INFO] org.apache.flink:flink-annotations:jar:1.14-SNAPSHOT
@@ -103,10 +108,14 @@ public class ScalaSuffixChecker {
                     while (blockPattern.matcher(line).matches()) {
                         final boolean dependsOnScala = dependsOnScala(line);
                         final boolean isTestDependency = line.endsWith(":test");
+                        // we ignored flink-rpc-akka because it is loaded through a separate class
+                        // loader
+                        final boolean isFlinkAkkaRpc = line.contains("flink-rpc-akka");
                         LOG.trace("\tline:{}", line);
                         LOG.trace("\t\tdepends-on-scala:{}", dependsOnScala);
                         LOG.trace("\t\tis-test-dependency:{}", isTestDependency);
-                        if (dependsOnScala && !isTestDependency) {
+                        LOG.trace("\t\tis-flink-rpc-akka:{}", isFlinkAkkaRpc);
+                        if (dependsOnScala && !isTestDependency && !isFlinkAkkaRpc) {
                             LOG.trace("\t\tOutbreak detected at {}!", moduleName);
                             infected = true;
                         }
