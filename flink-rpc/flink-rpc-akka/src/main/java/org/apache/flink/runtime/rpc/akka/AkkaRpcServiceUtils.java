@@ -58,10 +58,10 @@ public class AkkaRpcServiceUtils {
     static final String SUPERVISOR_NAME = "rpc";
 
     private static final String SIMPLE_AKKA_CONFIG_TEMPLATE =
-            "akka {remote {netty.tcp {maximum-frame-size = %s}}}";
+            "akka {remote.classic {netty.tcp {maximum-frame-size = %s}}}";
 
     private static final String MAXIMUM_FRAME_SIZE_PATH =
-            "akka.remote.netty.tcp.maximum-frame-size";
+            "akka.remote.classic.netty.tcp.maximum-frame-size";
 
     // ------------------------------------------------------------------------
     //  RPC instantiation

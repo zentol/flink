@@ -688,11 +688,6 @@ under the License.
 									<exclude>org.apache.flink:flink-shaded-zookeeper-3</exclude>
 								</excludes>
 							</artifactSet>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-									<resource>reference.conf</resource>
-								</transformer>
-							</transformers>
 						</configuration>
 					</execution>
 					<execution>
