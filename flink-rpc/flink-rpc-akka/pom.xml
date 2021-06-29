@@ -209,12 +209,6 @@ under the License.
 									<include>io.netty:netty</include>
 								</includes>
 							</artifactSet>
-							<relocations combine.children="append">
-								<relocation>
-									<pattern>org.jboss.netty</pattern>
-									<shadedPattern>org.apache.flink.shaded.akka.org.jboss.netty</shadedPattern>
-								</relocation>
-							</relocations>
 							<filters>
 								<filter>
 									<artifact>io.netty:netty</artifact>
