@@ -51,6 +51,9 @@ public interface RpcSystem extends RpcSystemUtils {
             @Nullable String externalAddress,
             String externalPortRange);
 
+    /** Hook to cleanup resources, like common thread pools or classloaders. */
+    void cleanup();
+
     /** Builder for {@link RpcService}. */
     interface RpcServiceBuilder {
         RpcServiceBuilder withComponentName(String name);

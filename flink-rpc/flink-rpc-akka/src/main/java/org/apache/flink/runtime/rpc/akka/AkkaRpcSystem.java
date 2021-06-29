@@ -64,4 +64,7 @@ public class AkkaRpcSystem implements RpcSystem {
     public long getMaximumMessageSizeInBytes(Configuration config) {
         return AkkaRpcServiceUtils.extractMaximumFramesize(config);
     }
+
+    @Override
+    public void cleanup() {}
 }
