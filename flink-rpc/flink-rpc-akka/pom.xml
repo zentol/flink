@@ -29,7 +29,7 @@ under the License.
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>flink-rpc-akka_${scala.binary.version}</artifactId>
+	<artifactId>flink-rpc-akka</artifactId>
 	<name>Flink : RPC : Akka</name>
 	<packaging>jar</packaging>
 
