@@ -18,10 +18,19 @@
 package org.apache.flink.runtime.rpc;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.ConfigurationUtils;
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.core.plugin.PluginDescriptor;
+import org.apache.flink.core.plugin.PluginLoader;
+import org.apache.flink.util.IOUtils;
 
 import javax.annotation.Nullable;
 
-import java.util.ServiceLoader;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This interface serves as a factory interface for RPC services, with some additional utilities
@@ -86,8 +95,28 @@ public interface RpcSystem extends RpcSystemUtils {
      * @return loaded RpcSystem
      */
     static RpcSystem load(Configuration config) {
-        final ClassLoader classLoader = RpcSystem.class.getClassLoader();
-        return ServiceLoader.load(RpcSystem.class, classLoader).iterator().next();
+        try {
+            final ClassLoader classLoader = RpcSystem.class.getClassLoader();
+
+            final String tmpDirectory = ConfigurationUtils.parseTempDirectories(config)[0];
+            final Path tempFile = Files.createFile(Paths.get(tmpDirectory, "flink-rpc-akka.jar"));
+            IOUtils.copyBytes(
+                    classLoader.getResourceAsStream("flink-rpc-akka.jar"),
+                    Files.newOutputStream(tempFile));
+
+            final PluginLoader pluginLoader =
+                    PluginLoader.create(
+                            new PluginDescriptor(
+                                    "flink-rpc-akka",
+                                    new URL[] {tempFile.toUri().toURL()},
+                                    new String[0]),
+                            classLoader,
+                            CoreOptions.getPluginParentFirstLoaderPatterns(config));
+            return new PluginLoaderClosingRpcSystem(
+                    pluginLoader.load(RpcSystem.class).next(), pluginLoader);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not initialize RPC system.", e);
+        }
     }
 
     /** Descriptor for creating a fork-join thread-pool. */

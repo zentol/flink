@@ -20,6 +20,7 @@ package org.apache.flink.runtime.rpc.akka;
 
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.runtime.concurrent.akka.AkkaFutureUtils;
+import org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils;
 import org.apache.flink.runtime.rpc.FencedRpcGateway;
 import org.apache.flink.runtime.rpc.MainThreadExecutable;
 import org.apache.flink.runtime.rpc.RpcGateway;
@@ -229,22 +230,29 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
             final CompletableFuture<Object> completableFuture = new CompletableFuture<>();
             resultFuture.whenComplete(
-                    (resultValue, failure) -> {
-                        if (failure != null) {
-                            completableFuture.completeExceptionally(
-                                    resolveTimeoutException(failure, callStackCapture, method));
-                        } else {
-                            completableFuture.complete(
-                                    deserializeValueIfNeeded(resultValue, method));
-                        }
-                    });
+                    (resultValue, failure) ->
+                            ClassLoadingUtils.runWithFlinkContextClassLoader(
+                                    () -> {
+                                        if (failure != null) {
+                                            completableFuture.completeExceptionally(
+                                                    resolveTimeoutException(
+                                                            failure, callStackCapture, method));
+                                        } else {
+                                            completableFuture.complete(
+                                                    deserializeValueIfNeeded(resultValue, method));
+                                        }
+                                    }));
 
             if (Objects.equals(returnType, CompletableFuture.class)) {
                 result = completableFuture;
             } else {
                 try {
                     result =
-                            completableFuture.get(futureTimeout.getSize(), futureTimeout.getUnit());
+                            ClassLoadingUtils.runWithFlinkContextClassLoader(
+                                    () ->
+                                            completableFuture.get(
+                                                    futureTimeout.getSize(),
+                                                    futureTimeout.getUnit()));
                 } catch (ExecutionException ee) {
                     throw new RpcException(
                             "Failure while obtaining synchronous RPC result.",

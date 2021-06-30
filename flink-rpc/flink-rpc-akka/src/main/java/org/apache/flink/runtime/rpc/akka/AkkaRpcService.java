@@ -22,6 +22,7 @@ import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.concurrent.akka.ActorSystemScheduledExecutorAdapter;
 import org.apache.flink.runtime.concurrent.akka.AkkaFutureUtils;
+import org.apache.flink.runtime.concurrent.akka.ContextClassLoaderCleaningExecutor;
 import org.apache.flink.runtime.rpc.FencedMainThreadExecutable;
 import org.apache.flink.runtime.rpc.FencedRpcEndpoint;
 import org.apache.flink.runtime.rpc.FencedRpcGateway;
@@ -40,6 +41,7 @@ import org.apache.flink.util.TimeUtils;
 import org.apache.flink.util.concurrent.ExecutorThreadFactory;
 import org.apache.flink.util.concurrent.FutureUtils;
 import org.apache.flink.util.concurrent.ScheduledExecutor;
+import org.apache.flink.util.function.FunctionUtils;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
@@ -47,7 +49,6 @@ import akka.actor.ActorSelection;
 import akka.actor.ActorSystem;
 import akka.actor.Address;
 import akka.actor.Props;
-import akka.dispatch.Futures;
 import akka.pattern.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import scala.Option;
-import scala.concurrent.Future;
 import scala.reflect.ClassTag$;
 
 import static org.apache.flink.util.Preconditions.checkArgument;
@@ -107,6 +107,7 @@ public class AkkaRpcService implements RpcService {
 
     private final boolean captureAskCallstacks;
 
+    private final Executor internalExecutor;
     private final ScheduledExecutor internalScheduledExecutor;
 
     private final CompletableFuture<Void> terminationFuture;
@@ -137,6 +138,13 @@ public class AkkaRpcService implements RpcService {
 
         captureAskCallstacks = configuration.captureAskCallStack();
 
+        // Akka always sets the threads context class loader to the class loader with which it was
+        // loaded (i.e., the plugin class loader)
+        // we must ensure that the context class loader is set to the Flink class loader when we
+        // call into Flink
+        // otherwise we could leak the plugin class loader or poison the context class leader of
+        // external threads (because they inherit the current threads context class loader)
+        internalExecutor = new ContextClassLoaderCleaningExecutor(actorSystem.dispatcher());
         internalScheduledExecutor = new ActorSystemScheduledExecutorAdapter(actorSystem);
 
         terminationFuture = new CompletableFuture<>();
@@ -461,7 +469,7 @@ public class AkkaRpcService implements RpcService {
 
     @Override
     public Executor getExecutor() {
-        return actorSystem.dispatcher();
+        return internalExecutor;
     }
 
     @Override
@@ -480,14 +488,13 @@ public class AkkaRpcService implements RpcService {
 
     @Override
     public void execute(Runnable runnable) {
-        actorSystem.dispatcher().execute(runnable);
+        internalExecutor.execute(runnable);
     }
 
     @Override
     public <T> CompletableFuture<T> execute(Callable<T> callable) {
-        Future<T> scalaFuture = Futures.<T>future(callable, actorSystem.dispatcher());
-
-        return AkkaFutureUtils.toJava(scalaFuture);
+        return CompletableFuture.supplyAsync(
+                FunctionUtils.uncheckedSupplier(callable::call), internalExecutor);
     }
 
     // ---------------------------------------------------------------------------------------

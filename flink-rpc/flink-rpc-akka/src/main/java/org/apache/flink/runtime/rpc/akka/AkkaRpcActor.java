@@ -18,6 +18,7 @@
 
 package org.apache.flink.runtime.rpc.akka;
 
+import org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils;
 import org.apache.flink.runtime.rpc.MainThreadValidatorUtil;
 import org.apache.flink.runtime.rpc.RpcEndpoint;
 import org.apache.flink.runtime.rpc.RpcGateway;
@@ -40,6 +41,7 @@ import org.apache.flink.util.concurrent.FutureUtils;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Status;
+import akka.japi.pf.FI;
 import akka.japi.pf.ReceiveBuilder;
 import akka.pattern.Patterns;
 import org.slf4j.Logger;
@@ -55,6 +57,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import scala.concurrent.duration.FiniteDuration;
 import scala.concurrent.impl.Promise;
@@ -144,10 +147,19 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
     @Override
     public Receive createReceive() {
         return ReceiveBuilder.create()
-                .match(RemoteHandshakeMessage.class, this::handleHandshakeMessage)
-                .match(ControlMessages.class, this::handleControlMessage)
-                .matchAny(this::handleMessage)
+                .match(
+                        RemoteHandshakeMessage.class,
+                        withCleanContextClassLoader(this::handleHandshakeMessage))
+                .match(
+                        ControlMessages.class,
+                        withCleanContextClassLoader(this::handleControlMessage))
+                .matchAny(withCleanContextClassLoader(this::handleMessage))
                 .build();
+    }
+
+    private static <X> FI.UnitApply<X> withCleanContextClassLoader(Consumer<X> function) {
+        return object ->
+                ClassLoadingUtils.runWithFlinkContextClassLoader(() -> function.accept(object));
     }
 
     private void handleMessage(final Object message) {

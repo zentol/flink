@@ -35,7 +35,10 @@ import java.util.concurrent.TimeUnit;
 
 import scala.concurrent.duration.FiniteDuration;
 
-/** Adapter to use a {@link ActorSystem} as a {@link ScheduledExecutor}. */
+/**
+ * Adapter to use a {@link ActorSystem} as a {@link ScheduledExecutor}. Furthermore ensures that the
+ * context class loader is set to the Flink class loader while the runnable is running.
+ */
 public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecutor {
 
     private final ActorSystem actorSystem;
@@ -86,7 +89,7 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
                         .schedule(
                                 new FiniteDuration(initialDelay, unit),
                                 new FiniteDuration(period, unit),
-                                scheduledFutureTask,
+                                ClassLoadingUtils.withFlinkContextClassLoader(scheduledFutureTask),
                                 actorSystem.dispatcher());
 
         scheduledFutureTask.setCancellable(cancellable);
@@ -117,7 +120,10 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
     private Cancellable internalSchedule(Runnable runnable, long delay, TimeUnit unit) {
         return actorSystem
                 .scheduler()
-                .scheduleOnce(new FiniteDuration(delay, unit), runnable, actorSystem.dispatcher());
+                .scheduleOnce(
+                        new FiniteDuration(delay, unit),
+                        ClassLoadingUtils.withFlinkContextClassLoader(runnable),
+                        actorSystem.dispatcher());
     }
 
     private long now() {

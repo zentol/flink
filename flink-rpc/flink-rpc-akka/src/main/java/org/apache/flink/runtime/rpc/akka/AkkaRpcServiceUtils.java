@@ -26,6 +26,7 @@ import org.apache.flink.runtime.rpc.AddressResolution;
 import org.apache.flink.runtime.rpc.RpcSystem;
 import org.apache.flink.util.NetUtils;
 import org.apache.flink.util.Preconditions;
+import org.apache.flink.util.TemporaryClassLoaderContext;
 
 import akka.actor.ActorSystem;
 import com.typesafe.config.Config;
@@ -332,28 +333,33 @@ public class AkkaRpcServiceUtils {
 
             final ActorSystem actorSystem;
 
-            if (externalAddress == null) {
-                // create local actor system
-                actorSystem =
-                        AkkaBootstrapTools.startLocalActorSystem(
-                                configuration,
-                                actorSystemName,
-                                logger,
-                                actorSystemExecutorConfiguration,
-                                customConfig);
-            } else {
-                // create remote actor system
-                actorSystem =
-                        AkkaBootstrapTools.startRemoteActorSystem(
-                                configuration,
-                                actorSystemName,
-                                externalAddress,
-                                externalPortRange,
-                                bindAddress,
-                                Optional.ofNullable(bindPort),
-                                logger,
-                                actorSystemExecutorConfiguration,
-                                customConfig);
+            // akka internally caches the context class loader
+            // make sure it uses the plugin class loader
+            try (TemporaryClassLoaderContext ignored =
+                    TemporaryClassLoaderContext.of(getClass().getClassLoader())) {
+                if (externalAddress == null) {
+                    // create local actor system
+                    actorSystem =
+                            AkkaBootstrapTools.startLocalActorSystem(
+                                    configuration,
+                                    actorSystemName,
+                                    logger,
+                                    actorSystemExecutorConfiguration,
+                                    customConfig);
+                } else {
+                    // create remote actor system
+                    actorSystem =
+                            AkkaBootstrapTools.startRemoteActorSystem(
+                                    configuration,
+                                    actorSystemName,
+                                    externalAddress,
+                                    externalPortRange,
+                                    bindAddress,
+                                    Optional.ofNullable(bindPort),
+                                    logger,
+                                    actorSystemExecutorConfiguration,
+                                    customConfig);
+                }
             }
 
             return constructor.apply(
