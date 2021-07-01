@@ -77,6 +77,15 @@ public interface RpcSystem extends RpcSystemUtils {
      * @return loaded RpcSystem
      */
     static RpcSystem load() {
+        return load(new Configuration());
+    }
+
+    /**
+     * Loads the RpcSystem.
+     *
+     * @return loaded RpcSystem
+     */
+    static RpcSystem load(Configuration config) {
         final ClassLoader classLoader = RpcSystem.class.getClassLoader();
         return ServiceLoader.load(RpcSystem.class, classLoader).iterator().next();
     }
