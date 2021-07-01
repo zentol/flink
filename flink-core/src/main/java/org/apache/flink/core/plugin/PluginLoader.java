@@ -177,16 +177,16 @@ public class PluginLoader implements AutoCloseable {
                     return resolveIfNeeded(resolve, loadedClass);
                 }
 
-                if (isAllowedFlinkClass(name)) {
-                    try {
+                try {
+                    return super.loadClass(name, resolve);
+                } catch (ClassNotFoundException | NoClassDefFoundError e) {
+
+                    if (isAllowedFlinkClass(name)) {
                         return resolveIfNeeded(resolve, flinkClassLoader.loadClass(name));
-                    } catch (ClassNotFoundException e) {
-                        // fallback to resolving it in this classloader
-                        // for cases where the plugin uses org.apache.flink namespace
+                    } else {
+                        throw e;
                     }
                 }
-
-                return super.loadClass(name, resolve);
             }
         }
 
