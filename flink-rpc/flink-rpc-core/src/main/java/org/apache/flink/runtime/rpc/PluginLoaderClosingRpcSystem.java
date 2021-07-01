@@ -20,28 +20,44 @@ package org.apache.flink.runtime.rpc;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.plugin.PluginLoader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nullable;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * An {@link RpcSystem} wrapper that closes the used {@link PluginLoader} when the RPC system is
  * being closed.
  */
 class PluginLoaderClosingRpcSystem implements RpcSystem {
+    private static final Logger LOG = LoggerFactory.getLogger(PluginLoaderClosingRpcSystem.class);
+
     private final RpcSystem rpcSystem;
     private final PluginLoader pluginLoader;
+    private final Path tempFile;
 
-    public PluginLoaderClosingRpcSystem(RpcSystem rpcSystem, PluginLoader pluginLoader) {
+    public PluginLoaderClosingRpcSystem(
+            RpcSystem rpcSystem, PluginLoader pluginLoader, Path tempFile) {
         this.rpcSystem = rpcSystem;
         this.pluginLoader = pluginLoader;
+        this.tempFile = tempFile;
     }
 
     @Override
     public void cleanup() {
         rpcSystem.cleanup();
         pluginLoader.close();
+        try {
+            Files.delete(tempFile);
+        } catch (IOException e) {
+            LOG.warn("Could not delete temporary file {}.", tempFile, e);
+        }
     }
 
     @Override
