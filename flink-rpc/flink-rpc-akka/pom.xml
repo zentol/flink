@@ -86,10 +86,12 @@ under the License.
 			<version>${akka.version}</version>
 			<exclusions>
 				<exclusion>
+					<!-- optional dependency for UDP transport which we don't need -->
 					<groupId>io.aeron</groupId>
 					<artifactId>aeron-driver</artifactId>
 				</exclusion>
 				<exclusion>
+					<!-- optional dependency for UDP transport which we don't need -->
 					<groupId>io.aeron</groupId>
 					<artifactId>aeron-client</artifactId>
 				</exclusion>
