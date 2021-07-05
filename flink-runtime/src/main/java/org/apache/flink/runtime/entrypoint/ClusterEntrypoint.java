@@ -501,7 +501,7 @@ public abstract class ClusterEntrypoint implements AutoCloseableAsync, FatalErro
                             shutDownApplicationFuture, () -> stopClusterServices(cleanupHaData));
 
             final CompletableFuture<Void> rpcSystemClassLoaderCloseFuture =
-                    FutureUtils.runAfterwards(serviceShutdownFuture, () -> rpcSystem.cleanup());
+                    FutureUtils.runAfterwards(serviceShutdownFuture, rpcSystem::cleanup);
 
             final CompletableFuture<Void> cleanupDirectoriesFuture =
                     FutureUtils.runAfterwards(
