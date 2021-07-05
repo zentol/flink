@@ -46,6 +46,7 @@ public final class RpcSystemLoader {
     /**
      * Loads the RpcSystem.
      *
+     * @param config Flink configuration
      * @return loaded RpcSystem
      */
     public static RpcSystem load(Configuration config) {
