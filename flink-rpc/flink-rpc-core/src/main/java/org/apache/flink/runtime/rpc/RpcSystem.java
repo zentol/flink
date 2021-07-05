@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  * This interface serves as a factory interface for RPC services, with some additional utilities
  * that are reliant on implementation details of the RPC service.
  */
-public interface RpcSystem extends RpcSystemUtils {
+public interface RpcSystem extends RpcSystemUtils, AutoCloseable {
 
     /**
      * Returns a builder for an {@link RpcService} that is only reachable from the local machine.
@@ -50,7 +50,8 @@ public interface RpcSystem extends RpcSystemUtils {
             String externalPortRange);
 
     /** Hook to cleanup resources, like common thread pools or classloaders. */
-    void cleanup();
+    @Override
+    void close();
 
     /** Builder for {@link RpcService}. */
     interface RpcServiceBuilder {

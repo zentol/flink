@@ -50,8 +50,8 @@ class PluginLoaderClosingRpcSystem implements RpcSystem {
     }
 
     @Override
-    public void cleanup() {
-        rpcSystem.cleanup();
+    public void close() {
+        rpcSystem.close();
         pluginLoader.close();
         try {
             Files.delete(tempFile);

@@ -1069,7 +1069,7 @@ public class MiniCluster implements AutoCloseableAsync {
             }
 
             try {
-                rpcSystem.cleanup();
+                rpcSystem.close();
             } catch (Exception e) {
                 exception = ExceptionUtils.firstOrSuppressed(e, exception);
             }

@@ -254,7 +254,7 @@ public class TaskManagerRunner implements FatalErrorHandler {
                                 taskManagerTerminationFuture, this::shutDownServices);
 
                 final CompletableFuture<Void> rpcSystemClassLoaderCloseFuture =
-                        FutureUtils.runAfterwards(serviceTerminationFuture, rpcSystem::cleanup);
+                        FutureUtils.runAfterwards(serviceTerminationFuture, rpcSystem::close);
 
                 rpcSystemClassLoaderCloseFuture.whenComplete(
                         (Void ignored, Throwable throwable) -> {
