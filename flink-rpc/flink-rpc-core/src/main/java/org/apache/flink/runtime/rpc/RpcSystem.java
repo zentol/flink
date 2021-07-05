@@ -18,20 +18,8 @@
 package org.apache.flink.runtime.rpc;
 
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.ConfigurationUtils;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.core.plugin.PluginDescriptor;
-import org.apache.flink.core.plugin.PluginLoader;
-import org.apache.flink.util.IOUtils;
 
 import javax.annotation.Nullable;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 /**
  * This interface serves as a factory interface for RPC services, with some additional utilities
@@ -79,47 +67,6 @@ public interface RpcSystem extends RpcSystemUtils {
                 ForkJoinExecutorConfiguration executorConfiguration);
 
         RpcService createAndStart() throws Exception;
-    }
-
-    /**
-     * Loads the RpcSystem.
-     *
-     * @return loaded RpcSystem
-     */
-    static RpcSystem load() {
-        return load(new Configuration());
-    }
-
-    /**
-     * Loads the RpcSystem.
-     *
-     * @return loaded RpcSystem
-     */
-    static RpcSystem load(Configuration config) {
-        try {
-            final ClassLoader classLoader = RpcSystem.class.getClassLoader();
-
-            final String tmpDirectory = ConfigurationUtils.parseTempDirectories(config)[0];
-            final Path tempFile =
-                    Files.createFile(
-                            Paths.get(tmpDirectory, UUID.randomUUID() + "_flink-rpc-akka.jar"));
-            IOUtils.copyBytes(
-                    classLoader.getResourceAsStream("flink-rpc-akka.jar"),
-                    Files.newOutputStream(tempFile));
-
-            final PluginLoader pluginLoader =
-                    PluginLoader.create(
-                            new PluginDescriptor(
-                                    "flink-rpc-akka",
-                                    new URL[] {tempFile.toUri().toURL()},
-                                    new String[0]),
-                            classLoader,
-                            CoreOptions.getPluginParentFirstLoaderPatterns(config));
-            return new PluginLoaderClosingRpcSystem(
-                    pluginLoader.load(RpcSystem.class).next(), pluginLoader, tempFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize RPC system.", e);
-        }
     }
 
     /** Descriptor for creating a fork-join thread-pool. */

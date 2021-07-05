@@ -27,7 +27,7 @@ import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.MemorySize;
 import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.runtime.rpc.RpcService;
-import org.apache.flink.runtime.rpc.RpcSystem;
+import org.apache.flink.runtime.rpc.RpcSystemLoader;
 import org.apache.flink.runtime.testutils.MiniClusterResourceConfiguration;
 import org.apache.flink.test.testdata.WordCountData;
 import org.apache.flink.test.util.MiniClusterWithClientResource;
@@ -149,7 +149,7 @@ public class IPv6HostnamesITCase extends TestLogger {
                             int port = NetUtils.getAvailablePort();
 
                             final RpcService rpcService =
-                                    RpcSystem.load()
+                                    RpcSystemLoader.load()
                                             .localServiceBuilder(new Configuration())
                                             .withBindAddress(addr.getHostAddress())
                                             .withBindPort(port)

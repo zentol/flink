@@ -73,6 +73,7 @@ import org.apache.flink.runtime.resourcemanager.StandaloneResourceManagerFactory
 import org.apache.flink.runtime.rpc.FatalErrorHandler;
 import org.apache.flink.runtime.rpc.RpcService;
 import org.apache.flink.runtime.rpc.RpcSystem;
+import org.apache.flink.runtime.rpc.RpcSystemLoader;
 import org.apache.flink.runtime.rpc.RpcUtils;
 import org.apache.flink.runtime.taskexecutor.TaskExecutor;
 import org.apache.flink.runtime.taskexecutor.TaskManagerRunner;
@@ -276,7 +277,7 @@ public class MiniCluster implements AutoCloseableAsync {
             try {
                 initializeIOFormatClasses(configuration);
 
-                rpcSystem = RpcSystem.load(configuration);
+                rpcSystem = RpcSystemLoader.load(configuration);
 
                 LOG.info("Starting Metrics Registry");
                 metricRegistry =

@@ -88,13 +88,13 @@ public class RpcSSLAuthITCase extends TestLogger {
             // connect
             //   - set 'require-mutual-authentication = off' in the AkkaUtils ssl config section
             rpcService1 =
-                    RpcSystem.load()
+                    RpcSystemLoader.load()
                             .localServiceBuilder(sslConfig1)
                             .withBindAddress("localhost")
                             .withBindPort(0)
                             .createAndStart();
             rpcService2 =
-                    RpcSystem.load()
+                    RpcSystemLoader.load()
                             .localServiceBuilder(sslConfig2)
                             .withBindAddress("localhost")
                             .withBindPort(0)

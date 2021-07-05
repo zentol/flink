@@ -27,6 +27,7 @@ import org.apache.flink.runtime.jobmaster.JobMaster;
 import org.apache.flink.runtime.leaderretrieval.LeaderRetrievalService;
 import org.apache.flink.runtime.rpc.AddressResolution;
 import org.apache.flink.runtime.rpc.RpcSystem;
+import org.apache.flink.runtime.rpc.RpcSystemLoader;
 import org.apache.flink.runtime.testutils.TestingUtils;
 import org.apache.flink.runtime.util.LeaderRetrievalUtils;
 import org.apache.flink.runtime.util.ZooKeeperUtils;
@@ -53,7 +54,7 @@ import static org.junit.Assert.assertEquals;
 /** Tests for the ZooKeeper based leader election and retrieval. */
 public class ZooKeeperLeaderRetrievalTest extends TestLogger {
 
-    private static final RpcSystem RPC_SYSTEM = RpcSystem.load();
+    private static final RpcSystem RPC_SYSTEM = RpcSystemLoader.load();
 
     private TestingServer testingServer;
 

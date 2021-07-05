@@ -58,7 +58,8 @@ public class AsyncCallsTest extends TestLogger {
 
     @BeforeClass
     public static void setup() throws Exception {
-        rpcService = RpcSystem.load().localServiceBuilder(new Configuration()).createAndStart();
+        rpcService =
+                RpcSystemLoader.load().localServiceBuilder(new Configuration()).createAndStart();
     }
 
     @AfterClass

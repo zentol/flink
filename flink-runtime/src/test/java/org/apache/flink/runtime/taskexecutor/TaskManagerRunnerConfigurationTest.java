@@ -32,6 +32,7 @@ import org.apache.flink.runtime.highavailability.HighAvailabilityServicesUtils;
 import org.apache.flink.runtime.rpc.AddressResolution;
 import org.apache.flink.runtime.rpc.RpcService;
 import org.apache.flink.runtime.rpc.RpcSystem;
+import org.apache.flink.runtime.rpc.RpcSystemLoader;
 import org.apache.flink.util.IOUtils;
 import org.apache.flink.util.TestLogger;
 import org.apache.flink.util.concurrent.Executors;
@@ -75,7 +76,7 @@ import static org.junit.Assume.assumeNoException;
 @NotThreadSafe
 public class TaskManagerRunnerConfigurationTest extends TestLogger {
 
-    private static final RpcSystem RPC_SYSTEM = RpcSystem.load();
+    private static final RpcSystem RPC_SYSTEM = RpcSystemLoader.load();
 
     private static final int TEST_TIMEOUT_SECONDS = 10;
 
@@ -246,7 +247,7 @@ public class TaskManagerRunnerConfigurationTest extends TestLogger {
                 config,
                 Executors.directExecutor(),
                 AddressResolution.NO_ADDRESS_RESOLUTION,
-                RpcSystem.load());
+                RpcSystemLoader.load());
     }
 
     private static ServerSocket openServerSocket() {

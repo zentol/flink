@@ -49,7 +49,7 @@ public class RpcConnectionTest extends TestLogger {
         configuration.set(AkkaOptions.ASK_TIMEOUT_DURATION, Duration.ofSeconds(10000000));
 
         final RpcService rpcService =
-                RpcSystem.load()
+                RpcSystemLoader.load()
                         .localServiceBuilder(configuration)
                         .withBindAddress("localhost")
                         .withBindPort(0)
