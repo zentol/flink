@@ -68,7 +68,8 @@ public final class RpcSystemLoader {
                                     new URL[] {tempFile.toUri().toURL()},
                                     new String[0]),
                             classLoader,
-                            CoreOptions.getPluginParentFirstLoaderPatterns(config));
+                            CoreOptions.parseParentFirstLoaderPatterns(
+                                    "org.apache.flink", CoreOptions.PARENT_FIRST_LOGGING_PATTERNS));
             return new PluginLoaderClosingRpcSystem(
                     pluginLoader.load(RpcSystem.class).next(), pluginLoader, tempFile);
         } catch (IOException e) {
