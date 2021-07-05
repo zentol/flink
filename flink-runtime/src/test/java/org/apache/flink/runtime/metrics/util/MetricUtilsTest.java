@@ -46,7 +46,6 @@ import org.junit.Assume;
 import org.junit.Test;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,23 +83,8 @@ public class MetricUtilsTest extends TestLogger {
                         configuration, "localhost", RpcSystemLoader.load());
 
         try {
-            // dirty reflection code to avoid ClassCastExceptions
-            final Method getActorSystem = rpcService.getClass().getMethod("getActorSystem");
-            final Object actorSystem = getActorSystem.invoke(rpcService);
-
-            final Method settingsMethod = actorSystem.getClass().getMethod("settings");
-            final Object settings = settingsMethod.invoke(actorSystem);
-
-            final Method configMethod = settings.getClass().getMethod("config");
-            final Object config = configMethod.invoke(settings);
-
-            final Method getIntMethod = config.getClass().getMethod("getInt", String.class);
-            getIntMethod.setAccessible(true);
             final int threadPriority =
-                    (int)
-                            getIntMethod.invoke(
-                                    config, "akka.actor.default-dispatcher.thread-priority");
-
+                    rpcService.execute(() -> Thread.currentThread().getPriority()).get();
             assertThat(threadPriority, is(expectedThreadPriority));
         } finally {
             rpcService.stopService().get();
