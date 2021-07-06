@@ -51,7 +51,7 @@ public interface RpcSystem extends RpcSystemUtils, AutoCloseable {
 
     /** Hook to cleanup resources, like common thread pools or classloaders. */
     @Override
-    void close();
+    default void close() {}
 
     /** Builder for {@link RpcService}. */
     interface RpcServiceBuilder {
