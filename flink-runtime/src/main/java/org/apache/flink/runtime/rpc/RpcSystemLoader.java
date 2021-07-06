@@ -19,9 +19,7 @@ package org.apache.flink.runtime.rpc;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ConfigurationUtils;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.core.plugin.PluginDescriptor;
-import org.apache.flink.core.plugin.PluginLoader;
+import org.apache.flink.core.classloading.SubmoduleClassLoader;
 import org.apache.flink.util.IOUtils;
 
 import java.io.IOException;
@@ -29,6 +27,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /** Utils for loading the {@link RpcSystem}. */
@@ -61,17 +60,13 @@ public final class RpcSystemLoader {
                     classLoader.getResourceAsStream("flink-rpc-akka.jar"),
                     Files.newOutputStream(tempFile));
 
-            final PluginLoader pluginLoader =
-                    PluginLoader.create(
-                            new PluginDescriptor(
-                                    "flink-rpc-akka",
-                                    new URL[] {tempFile.toUri().toURL()},
-                                    new String[0]),
-                            classLoader,
-                            CoreOptions.parseParentFirstLoaderPatterns(
-                                    "org.apache.flink", CoreOptions.PARENT_FIRST_LOGGING_PATTERNS));
+            final SubmoduleClassLoader submoduleClassLoader =
+                    new SubmoduleClassLoader(new URL[] {tempFile.toUri().toURL()}, classLoader);
+
             return new PluginLoaderClosingRpcSystem(
-                    pluginLoader.load(RpcSystem.class).next(), pluginLoader, tempFile);
+                    ServiceLoader.load(RpcSystem.class, submoduleClassLoader).iterator().next(),
+                    submoduleClassLoader,
+                    tempFile);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize RPC system.", e);
         }

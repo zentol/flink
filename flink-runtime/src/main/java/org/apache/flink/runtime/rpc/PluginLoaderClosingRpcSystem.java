@@ -18,6 +18,7 @@
 package org.apache.flink.runtime.rpc;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.classloading.SubmoduleClassLoader;
 import org.apache.flink.core.plugin.PluginLoader;
 
 import org.slf4j.Logger;
@@ -39,11 +40,11 @@ class PluginLoaderClosingRpcSystem implements RpcSystem {
     private static final Logger LOG = LoggerFactory.getLogger(PluginLoaderClosingRpcSystem.class);
 
     private final RpcSystem rpcSystem;
-    private final PluginLoader pluginLoader;
+    private final SubmoduleClassLoader pluginLoader;
     private final Path tempFile;
 
     public PluginLoaderClosingRpcSystem(
-            RpcSystem rpcSystem, PluginLoader pluginLoader, Path tempFile) {
+            RpcSystem rpcSystem, SubmoduleClassLoader pluginLoader, Path tempFile) {
         this.rpcSystem = rpcSystem;
         this.pluginLoader = pluginLoader;
         this.tempFile = tempFile;
@@ -52,7 +53,11 @@ class PluginLoaderClosingRpcSystem implements RpcSystem {
     @Override
     public void close() {
         rpcSystem.close();
-        pluginLoader.close();
+        try {
+            pluginLoader.close();
+        } catch (IOException e) {
+            LOG.warn("Could not close RpcSystem classloader.", e);
+        }
         try {
             Files.delete(tempFile);
         } catch (IOException e) {
