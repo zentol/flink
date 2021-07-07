@@ -193,28 +193,10 @@ public class ComponentClassLoader extends URLClassLoader {
             throws IOException {
         final Iterator<URL> iterator =
                 Iterators.concat(
-                        new EnumerationBackedIterator<>(firstClassLoader.apply(name)),
-                        new EnumerationBackedIterator<>(secondClassLoader.apply(name)));
+                        Iterators.forEnumeration(firstClassLoader.apply(name)),
+                        Iterators.forEnumeration(secondClassLoader.apply(name)));
 
         return new IteratorBackedEnumeration<>(iterator);
-    }
-
-    private static class EnumerationBackedIterator<T> implements Iterator<T> {
-        private final Enumeration<T> backingEnumeration;
-
-        private EnumerationBackedIterator(Enumeration<T> backingEnumeration) {
-            this.backingEnumeration = backingEnumeration;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return backingEnumeration.hasMoreElements();
-        }
-
-        @Override
-        public T next() {
-            return backingEnumeration.nextElement();
-        }
     }
 
     private static class IteratorBackedEnumeration<T> implements Enumeration<T> {
