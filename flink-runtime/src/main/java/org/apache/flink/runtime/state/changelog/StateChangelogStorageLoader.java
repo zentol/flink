@@ -23,7 +23,7 @@ import org.apache.flink.core.plugin.PluginManager;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import static org.apache.flink.shaded.guava18.com.google.common.collect.Iterators.concat;
+import static org.apache.flink.shaded.guava30.com.google.common.collect.Iterators.concat;
 
 /** A thin wrapper around {@link PluginManager} to load {@link StateChangelogStorage}. */
 @Internal
