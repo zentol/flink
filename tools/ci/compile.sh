@@ -45,6 +45,11 @@ echo "==========================================================================
 echo "Compiling Flink"
 echo "=============================================================================="
 
+git clone https://github.com/zentol/flink-shaded.git --branch 23299 --single-branch
+cd flink-shaded
+mvn clean install
+cd ..
+
 EXIT_CODE=0
 
 run_mvn clean deploy -DaltDeploymentRepository=validation_repository::default::file:$MVN_VALIDATION_DIR $MAVEN_OPTS -Dflink.convergence.phase=install -Pcheck-convergence -Dflink.forkCount=2 \

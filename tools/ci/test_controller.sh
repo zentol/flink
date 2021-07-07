@@ -84,6 +84,11 @@ MVN_COMMON_OPTIONS="-Dflink.forkCount=2 -Dflink.forkCountTestPackage=2 -Dfast -P
 MVN_COMPILE_OPTIONS="-DskipTests"
 MVN_COMPILE_MODULES=$(get_compile_modules_for_stage ${STAGE})
 
+git clone https://github.com/zentol/flink-shaded.git --branch 23299 --single-branch
+cd flink-shaded
+mvn clean install
+cd ..
+
 CALLBACK_ON_TIMEOUT="print_stacktraces | tee ${DEBUG_FILES_OUTPUT_DIR}/jps-traces.out"
 run_with_watchdog "run_mvn $MVN_COMMON_OPTIONS $MVN_COMPILE_OPTIONS $PROFILE $MVN_COMPILE_MODULES install" $CALLBACK_ON_TIMEOUT
 EXIT_CODE=$?
