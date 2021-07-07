@@ -358,6 +358,9 @@ public class ClassPathPackagedProgramRetrieverTest extends TestLogger {
     public void testChildFirstDefaultConfiguration() throws FlinkException, IOException {
         // this is a sanity check to backup testConfigurationIsConsidered
         final Configuration configuration = new Configuration();
+        // CHECK_LEAKED_CLASSLOADER has to be disabled to enable the instanceof check later on in
+        // this test. Otherwise, the actual instance would be hidden by a wrapper
+        configuration.set(CoreOptions.CHECK_LEAKED_CLASSLOADER, false);
 
         final ClassPathPackagedProgramRetriever retriever =
                 ClassPathPackagedProgramRetriever.newBuilder(PROGRAM_ARGUMENTS, configuration)
@@ -380,6 +383,9 @@ public class ClassPathPackagedProgramRetrieverTest extends TestLogger {
 
         final Configuration configuration = new Configuration();
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, parentFirstConfigValue);
+        // CHECK_LEAKED_CLASSLOADER has to be disabled to enable the instanceof check later on in
+        // this test. Otherwise, the actual instance would be hidden by a wrapper
+        configuration.set(CoreOptions.CHECK_LEAKED_CLASSLOADER, false);
 
         final ClassPathPackagedProgramRetriever retriever =
                 ClassPathPackagedProgramRetriever.newBuilder(PROGRAM_ARGUMENTS, configuration)
