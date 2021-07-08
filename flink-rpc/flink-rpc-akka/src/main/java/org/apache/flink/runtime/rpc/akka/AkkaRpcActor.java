@@ -89,6 +89,8 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
     /** the endpoint to invoke the methods on. */
     protected final T rpcEndpoint;
 
+    private final ClassLoader flinkClassLoader;
+
     /** the helper that tracks whether calls come from the main thread. */
     private final MainThreadValidatorUtil mainThreadValidator;
 
@@ -108,10 +110,12 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
             final T rpcEndpoint,
             final CompletableFuture<Boolean> terminationFuture,
             final int version,
-            final long maximumFramesize) {
+            final long maximumFramesize,
+            final ClassLoader flinkClassLoader) {
 
         checkArgument(maximumFramesize > 0, "Maximum framesize must be positive.");
         this.rpcEndpoint = checkNotNull(rpcEndpoint, "rpc endpoint");
+        this.flinkClassLoader = checkNotNull(flinkClassLoader);
         this.mainThreadValidator = new MainThreadValidatorUtil(rpcEndpoint);
         this.terminationFuture = checkNotNull(terminationFuture);
         this.version = version;
@@ -149,17 +153,18 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         return ReceiveBuilder.create()
                 .match(
                         RemoteHandshakeMessage.class,
-                        withCleanContextClassLoader(this::handleHandshakeMessage))
+                        withFlinkContextClassLoader(this::handleHandshakeMessage))
                 .match(
                         ControlMessages.class,
-                        withCleanContextClassLoader(this::handleControlMessage))
-                .matchAny(withCleanContextClassLoader(this::handleMessage))
+                        withFlinkContextClassLoader(this::handleControlMessage))
+                .matchAny(withFlinkContextClassLoader(this::handleMessage))
                 .build();
     }
 
-    private static <X> FI.UnitApply<X> withCleanContextClassLoader(Consumer<X> function) {
+    private <X> FI.UnitApply<X> withFlinkContextClassLoader(Consumer<X> function) {
         return object ->
-                ClassLoadingUtils.runWithFlinkContextClassLoader(() -> function.accept(object));
+                ClassLoadingUtils.runWithContextClassLoader(
+                        () -> function.accept(object), flinkClassLoader);
     }
 
     private void handleMessage(final Object message) {

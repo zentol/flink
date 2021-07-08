@@ -77,6 +77,8 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
     private final ActorRef rpcEndpoint;
 
+    private final ClassLoader flinkClassLoader;
+
     // whether the actor ref is local and thus no message serialization is needed
     protected final boolean isLocal;
 
@@ -97,11 +99,13 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             Time timeout,
             long maximumFramesize,
             @Nullable CompletableFuture<Void> terminationFuture,
-            boolean captureAskCallStack) {
+            boolean captureAskCallStack,
+            ClassLoader flinkClassLoader) {
 
         this.address = Preconditions.checkNotNull(address);
         this.hostname = Preconditions.checkNotNull(hostname);
         this.rpcEndpoint = Preconditions.checkNotNull(rpcEndpoint);
+        this.flinkClassLoader = Preconditions.checkNotNull(flinkClassLoader);
         this.isLocal = this.rpcEndpoint.path().address().hasLocalScope();
         this.timeout = Preconditions.checkNotNull(timeout);
         this.maximumFramesize = maximumFramesize;
@@ -231,7 +235,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             final CompletableFuture<Object> completableFuture = new CompletableFuture<>();
             resultFuture.whenComplete(
                     (resultValue, failure) ->
-                            ClassLoadingUtils.runWithFlinkContextClassLoader(
+                            ClassLoadingUtils.runWithContextClassLoader(
                                     () -> {
                                         if (failure != null) {
                                             completableFuture.completeExceptionally(
@@ -241,18 +245,20 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
                                             completableFuture.complete(
                                                     deserializeValueIfNeeded(resultValue, method));
                                         }
-                                    }));
+                                    },
+                                    flinkClassLoader));
 
             if (Objects.equals(returnType, CompletableFuture.class)) {
                 result = completableFuture;
             } else {
                 try {
                     result =
-                            ClassLoadingUtils.runWithFlinkContextClassLoader(
+                            ClassLoadingUtils.runWithContextClassLoader(
                                     () ->
                                             completableFuture.get(
                                                     futureTimeout.getSize(),
-                                                    futureTimeout.getUnit()));
+                                                    futureTimeout.getUnit()),
+                                    flinkClassLoader);
                 } catch (ExecutionException ee) {
                     throw new RpcException(
                             "Failure while obtaining synchronous RPC result.",

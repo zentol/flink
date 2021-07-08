@@ -42,9 +42,12 @@ import scala.concurrent.duration.FiniteDuration;
 public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecutor {
 
     private final ActorSystem actorSystem;
+    private final ClassLoader flinkClassLoader;
 
-    public ActorSystemScheduledExecutorAdapter(ActorSystem actorSystem) {
+    public ActorSystemScheduledExecutorAdapter(
+            ActorSystem actorSystem, ClassLoader flinkClassLoader) {
         this.actorSystem = Preconditions.checkNotNull(actorSystem, "rpcService");
+        this.flinkClassLoader = Preconditions.checkNotNull(flinkClassLoader, "flinkClassLoader");
     }
 
     @Override
@@ -89,7 +92,8 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
                         .schedule(
                                 new FiniteDuration(initialDelay, unit),
                                 new FiniteDuration(period, unit),
-                                ClassLoadingUtils.withFlinkContextClassLoader(scheduledFutureTask),
+                                ClassLoadingUtils.withContextClassLoader(
+                                        scheduledFutureTask, flinkClassLoader),
                                 actorSystem.dispatcher());
 
         scheduledFutureTask.setCancellable(cancellable);
@@ -122,7 +126,7 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
                 .scheduler()
                 .scheduleOnce(
                         new FiniteDuration(delay, unit),
-                        ClassLoadingUtils.withFlinkContextClassLoader(runnable),
+                        ClassLoadingUtils.withContextClassLoader(runnable, flinkClassLoader),
                         actorSystem.dispatcher());
     }
 

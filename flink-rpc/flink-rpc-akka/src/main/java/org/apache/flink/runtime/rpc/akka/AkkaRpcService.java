@@ -97,6 +97,8 @@ public class AkkaRpcService implements RpcService {
     private final ActorSystem actorSystem;
     private final AkkaRpcServiceConfiguration configuration;
 
+    private final ClassLoader flinkClassLoader;
+
     @GuardedBy("lock")
     private final Map<ActorRef, RpcEndpoint> actors = new HashMap<>(4);
 
@@ -116,8 +118,16 @@ public class AkkaRpcService implements RpcService {
     @VisibleForTesting
     public AkkaRpcService(
             final ActorSystem actorSystem, final AkkaRpcServiceConfiguration configuration) {
+        this(actorSystem, configuration, AkkaRpcService.class.getClassLoader());
+    }
+
+    AkkaRpcService(
+            final ActorSystem actorSystem,
+            final AkkaRpcServiceConfiguration configuration,
+            final ClassLoader flinkClassLoader) {
         this.actorSystem = checkNotNull(actorSystem, "actor system");
         this.configuration = checkNotNull(configuration, "akka rpc service configuration");
+        this.flinkClassLoader = checkNotNull(flinkClassLoader, "flinkClassLoader");
 
         Address actorSystemAddress = AkkaUtils.getAddress(actorSystem);
 
@@ -141,7 +151,8 @@ public class AkkaRpcService implements RpcService {
         // call into Flink
         // otherwise we could leak the plugin class loader or poison the context class loader of
         // external threads (because they inherit the current threads context class loader)
-        internalScheduledExecutor = new ActorSystemScheduledExecutorAdapter(actorSystem);
+        internalScheduledExecutor =
+                new ActorSystemScheduledExecutorAdapter(actorSystem, flinkClassLoader);
 
         terminationFuture = new CompletableFuture<>();
 
@@ -197,7 +208,8 @@ public class AkkaRpcService implements RpcService {
                             configuration.getTimeout(),
                             configuration.getMaximumFramesize(),
                             null,
-                            captureAskCallstacks);
+                            captureAskCallstacks,
+                            flinkClassLoader);
                 });
     }
 
@@ -219,7 +231,8 @@ public class AkkaRpcService implements RpcService {
                             configuration.getMaximumFramesize(),
                             null,
                             () -> fencingToken,
-                            captureAskCallstacks);
+                            captureAskCallstacks,
+                            flinkClassLoader);
                 });
     }
 
@@ -266,7 +279,8 @@ public class AkkaRpcService implements RpcService {
                             configuration.getMaximumFramesize(),
                             actorTerminationFuture,
                             ((FencedRpcEndpoint<?>) rpcEndpoint)::getFencingToken,
-                            captureAskCallstacks);
+                            captureAskCallstacks,
+                            flinkClassLoader);
 
             implementedRpcGateways.add(FencedMainThreadExecutable.class);
         } else {
@@ -278,7 +292,8 @@ public class AkkaRpcService implements RpcService {
                             configuration.getTimeout(),
                             configuration.getMaximumFramesize(),
                             actorTerminationFuture,
-                            captureAskCallstacks);
+                            captureAskCallstacks,
+                            flinkClassLoader);
         }
 
         // Rather than using the System ClassLoader directly, we derive the ClassLoader
@@ -320,7 +335,8 @@ public class AkkaRpcService implements RpcService {
                                             rpcEndpoint,
                                             actorTerminationFuture,
                                             getVersion(),
-                                            configuration.getMaximumFramesize()),
+                                            configuration.getMaximumFramesize(),
+                                            flinkClassLoader),
                             rpcEndpoint.getEndpointId());
 
             final SupervisorActor.ActorRegistration actorRegistration =
@@ -352,7 +368,8 @@ public class AkkaRpcService implements RpcService {
                             configuration.getMaximumFramesize(),
                             null,
                             () -> fencingToken,
-                            captureAskCallstacks);
+                            captureAskCallstacks,
+                            flinkClassLoader);
 
             // Rather than using the System ClassLoader directly, we derive the ClassLoader
             // from this class . That works better in cases where Flink runs embedded and all Flink

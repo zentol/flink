@@ -17,7 +17,6 @@
 
 package org.apache.flink.runtime.concurrent.akka;
 
-import org.apache.flink.runtime.rpc.RpcService;
 import org.apache.flink.util.TemporaryClassLoaderContext;
 import org.apache.flink.util.function.SupplierWithException;
 
@@ -29,10 +28,12 @@ public class ClassLoadingUtils {
      * loader from leaking into Flink.
      *
      * @param runnable runnable to wrap
+     * @param contextClassLoader class loader that should be set as the context class loader
      * @return wrapped runnable
      */
-    public static Runnable withFlinkContextClassLoader(Runnable runnable) {
-        return () -> runWithFlinkContextClassLoader(runnable);
+    public static Runnable withContextClassLoader(
+            Runnable runnable, ClassLoader contextClassLoader) {
+        return () -> runWithContextClassLoader(runnable, contextClassLoader);
     }
 
     /**
@@ -40,24 +41,27 @@ public class ClassLoadingUtils {
      * loader from leaking into Flink.
      *
      * @param runnable runnable to run
+     * @param contextClassLoader class loader that should be set as the context class loader
      */
-    public static void runWithFlinkContextClassLoader(Runnable runnable) {
+    public static void runWithContextClassLoader(
+            Runnable runnable, ClassLoader contextClassLoader) {
         try (TemporaryClassLoaderContext ignored =
-                TemporaryClassLoaderContext.of(RpcService.class.getClassLoader())) {
+                TemporaryClassLoaderContext.of(contextClassLoader)) {
             runnable.run();
         }
     }
 
     /**
-     * Runs the given supplier in a {@link TemporaryClassLoaderContext} to prevent the plugin class
-     * loader from leaking into Flink.
+     * Runs the given supplier in a {@link TemporaryClassLoaderContext} based on the given
+     * classloader.
      *
      * @param supplier supplier to run
+     * @param contextClassLoader class loader that should be set as the context class loader
      */
-    public static <T, E extends Throwable> T runWithFlinkContextClassLoader(
-            SupplierWithException<T, E> supplier) throws E {
+    public static <T, E extends Throwable> T runWithContextClassLoader(
+            SupplierWithException<T, E> supplier, ClassLoader contextClassLoader) throws E {
         try (TemporaryClassLoaderContext ignored =
-                TemporaryClassLoaderContext.of(RpcService.class.getClassLoader())) {
+                TemporaryClassLoaderContext.of(contextClassLoader)) {
             return supplier.get();
         }
     }
