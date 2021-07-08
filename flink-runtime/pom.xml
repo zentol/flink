@@ -51,21 +51,9 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<!-- Ensures that flink-rpc-akka is built beforehand, in order to bundle the jar -->
 			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-rpc-akka</artifactId>
+			<artifactId>flink-rpc-akka-loader</artifactId>
 			<version>${project.version}</version>
-			<!-- We don't want any production code from flink-runtime to reference flink-rpc-akka directly -->
-			<scope>runtime</scope>
-			<!-- Prevent dependency from being accessible to modules depending on flink-runtime-->
-			<optional>true</optional>
-			<exclusions>
-				<!-- Prevent akka and scala from being visible to other modules depending on flink-runtime -->
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -183,6 +171,13 @@ under the License.
 			<version>${project.version}</version>
 			<scope>test</scope>
 			<type>test-jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-rpc-akka</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>

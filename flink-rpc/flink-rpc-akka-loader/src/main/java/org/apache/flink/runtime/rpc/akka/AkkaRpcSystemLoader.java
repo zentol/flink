@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.flink.runtime.rpc;
+package org.apache.flink.runtime.rpc.akka;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ConfigurationUtils;
 import org.apache.flink.core.classloading.SubmoduleClassLoader;
+import org.apache.flink.runtime.rpc.RpcSystem;
+import org.apache.flink.runtime.rpc.RpcSystemLoader;
 import org.apache.flink.util.IOUtils;
 
 import java.io.IOException;
@@ -30,25 +32,17 @@ import java.nio.file.Paths;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
-/** Utils for loading the {@link RpcSystem}. */
-public final class RpcSystemLoader {
+/**
+ * Loader for the {@link AkkaRpcSystemLoader}.
+ *
+ * <p>This loader expects the flink-rpc-akka jar to be accessible via {@link
+ * ClassLoader#getResource(String)}. It will extract the jar into a temporary directory and create a
+ * new {@link SubmoduleClassLoader} to load the rpc system from that jar.
+ */
+public class AkkaRpcSystemLoader implements RpcSystemLoader {
 
-    /**
-     * Loads the RpcSystem.
-     *
-     * @return loaded RpcSystem
-     */
-    public static RpcSystem load() {
-        return load(new Configuration());
-    }
-
-    /**
-     * Loads the RpcSystem.
-     *
-     * @param config Flink configuration
-     * @return loaded RpcSystem
-     */
-    public static RpcSystem load(Configuration config) {
+    @Override
+    public RpcSystem loadRpcSystem(Configuration config) {
         try {
             final ClassLoader classLoader = RpcSystem.class.getClassLoader();
 
@@ -71,6 +65,4 @@ public final class RpcSystemLoader {
             throw new RuntimeException("Could not initialize RPC system.", e);
         }
     }
-
-    private RpcSystemLoader() {}
 }
