@@ -715,7 +715,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                             taskMetricGroup,
                             resultPartitionConsumableNotifier,
                             partitionStateChecker,
-                            getRpcService().getExecutor());
+                            getRpcService().getScheduledExecutor());
 
             taskMetricGroup.gauge(MetricNames.IS_BACK_PRESSURED, task::isBackPressured);
 
@@ -856,7 +856,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
                                         task.failExternally(e);
                                     }
                                 },
-                                getRpcService().getExecutor()));
+                                getRpcService().getScheduledExecutor()));
             }
             return CompletableFuture.completedFuture(Acknowledge.get());
         } else {
@@ -1709,7 +1709,7 @@ public class TaskExecutor extends RpcEndpoint implements TaskExecutorGateway {
         ResultPartitionConsumableNotifier resultPartitionConsumableNotifier =
                 new RpcResultPartitionConsumableNotifier(
                         jobMasterGateway,
-                        getRpcService().getExecutor(),
+                        getRpcService().getScheduledExecutor(),
                         taskManagerConfiguration.getRpcTimeout());
 
         PartitionProducerStateChecker partitionStateChecker =

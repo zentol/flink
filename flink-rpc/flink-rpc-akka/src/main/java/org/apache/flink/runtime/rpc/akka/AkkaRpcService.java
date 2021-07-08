@@ -22,7 +22,6 @@ import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.concurrent.akka.ActorSystemScheduledExecutorAdapter;
 import org.apache.flink.runtime.concurrent.akka.AkkaFutureUtils;
-import org.apache.flink.runtime.concurrent.akka.ContextClassLoaderCleaningExecutor;
 import org.apache.flink.runtime.rpc.FencedMainThreadExecutable;
 import org.apache.flink.runtime.rpc.FencedRpcEndpoint;
 import org.apache.flink.runtime.rpc.FencedRpcGateway;
@@ -69,7 +68,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -107,7 +105,6 @@ public class AkkaRpcService implements RpcService {
 
     private final boolean captureAskCallstacks;
 
-    private final Executor internalExecutor;
     private final ScheduledExecutor internalScheduledExecutor;
 
     private final CompletableFuture<Void> terminationFuture;
@@ -144,7 +141,6 @@ public class AkkaRpcService implements RpcService {
         // call into Flink
         // otherwise we could leak the plugin class loader or poison the context class leader of
         // external threads (because they inherit the current threads context class loader)
-        internalExecutor = new ContextClassLoaderCleaningExecutor(actorSystem.dispatcher());
         internalScheduledExecutor = new ActorSystemScheduledExecutorAdapter(actorSystem);
 
         terminationFuture = new CompletableFuture<>();
@@ -468,11 +464,6 @@ public class AkkaRpcService implements RpcService {
     }
 
     @Override
-    public Executor getExecutor() {
-        return internalExecutor;
-    }
-
-    @Override
     public ScheduledExecutor getScheduledExecutor() {
         return internalScheduledExecutor;
     }
@@ -488,13 +479,13 @@ public class AkkaRpcService implements RpcService {
 
     @Override
     public void execute(Runnable runnable) {
-        internalExecutor.execute(runnable);
+        getScheduledExecutor().execute(runnable);
     }
 
     @Override
     public <T> CompletableFuture<T> execute(Callable<T> callable) {
         return CompletableFuture.supplyAsync(
-                FunctionUtils.uncheckedSupplier(callable::call), internalExecutor);
+                FunctionUtils.uncheckedSupplier(callable::call), getScheduledExecutor());
     }
 
     // ---------------------------------------------------------------------------------------
