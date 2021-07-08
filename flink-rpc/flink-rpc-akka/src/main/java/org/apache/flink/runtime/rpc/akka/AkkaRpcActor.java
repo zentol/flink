@@ -18,7 +18,6 @@
 
 package org.apache.flink.runtime.rpc.akka;
 
-import org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils;
 import org.apache.flink.runtime.rpc.MainThreadValidatorUtil;
 import org.apache.flink.runtime.rpc.RpcEndpoint;
 import org.apache.flink.runtime.rpc.RpcGateway;
@@ -41,7 +40,6 @@ import org.apache.flink.util.concurrent.FutureUtils;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Status;
-import akka.japi.pf.FI;
 import akka.japi.pf.ReceiveBuilder;
 import akka.pattern.Patterns;
 import org.slf4j.Logger;
@@ -57,11 +55,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 import scala.concurrent.duration.FiniteDuration;
 import scala.concurrent.impl.Promise;
 
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.runWithContextClassLoader;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
@@ -151,20 +149,10 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
     @Override
     public Receive createReceive() {
         return ReceiveBuilder.create()
-                .match(
-                        RemoteHandshakeMessage.class,
-                        withFlinkContextClassLoader(this::handleHandshakeMessage))
-                .match(
-                        ControlMessages.class,
-                        withFlinkContextClassLoader(this::handleControlMessage))
-                .matchAny(withFlinkContextClassLoader(this::handleMessage))
+                .match(RemoteHandshakeMessage.class, this::handleHandshakeMessage)
+                .match(ControlMessages.class, this::handleControlMessage)
+                .matchAny(this::handleMessage)
                 .build();
-    }
-
-    private <X> FI.UnitApply<X> withFlinkContextClassLoader(Consumer<X> function) {
-        return object ->
-                ClassLoadingUtils.runWithContextClassLoader(
-                        () -> function.accept(object), flinkClassLoader);
     }
 
     private void handleMessage(final Object message) {
@@ -194,13 +182,13 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         try {
             switch (controlMessage) {
                 case START:
-                    state = state.start(this);
+                    state = state.start(this, flinkClassLoader);
                     break;
                 case STOP:
                     state = state.stop();
                     break;
                 case TERMINATE:
-                    state = state.terminate(this);
+                    state = state.terminate(this, flinkClassLoader);
                     break;
                 default:
                     handleUnknownControlMessage(controlMessage);
@@ -313,13 +301,21 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
                 // this supports declaration of anonymous classes
                 rpcMethod.setAccessible(true);
 
+                final Method capturedRpcMethod = rpcMethod;
                 if (rpcMethod.getReturnType().equals(Void.TYPE)) {
                     // No return value to send back
-                    rpcMethod.invoke(rpcEndpoint, rpcInvocation.getArgs());
+                    runWithContextClassLoader(
+                            () -> capturedRpcMethod.invoke(rpcEndpoint, rpcInvocation.getArgs()),
+                            flinkClassLoader);
                 } else {
                     final Object result;
                     try {
-                        result = rpcMethod.invoke(rpcEndpoint, rpcInvocation.getArgs());
+                        result =
+                                runWithContextClassLoader(
+                                        () ->
+                                                capturedRpcMethod.invoke(
+                                                        rpcEndpoint, rpcInvocation.getArgs()),
+                                        flinkClassLoader);
                     } catch (InvocationTargetException e) {
                         log.debug(
                                 "Reporting back error thrown in remote procedure {}", rpcMethod, e);
@@ -433,7 +429,9 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
      */
     private void handleCallAsync(CallAsync callAsync) {
         try {
-            Object result = callAsync.getCallable().call();
+            Object result =
+                    runWithContextClassLoader(
+                            () -> callAsync.getCallable().call(), flinkClassLoader);
 
             getSender().tell(new Status.Success(result), getSelf());
         } catch (Throwable e) {
@@ -454,7 +452,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         if (timeToRun == 0 || (delayNanos = timeToRun - System.nanoTime()) <= 0) {
             // run immediately
             try {
-                runAsync.getRunnable().run();
+                runWithContextClassLoader(() -> runAsync.getRunnable().run(), flinkClassLoader);
             } catch (Throwable t) {
                 log.error("Caught exception while executing runnable in main thread.", t);
                 ExceptionUtils.rethrowIfFatalErrorOrOOM(t);
@@ -527,7 +525,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
     // ---------------------------------------------------------------------------
 
     interface State {
-        default State start(AkkaRpcActor<?> akkaRpcActor) {
+        default State start(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             throw new AkkaRpcInvalidStateException(
                     invalidStateTransitionMessage(StartedState.STARTED));
         }
@@ -537,7 +535,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
                     invalidStateTransitionMessage(StoppedState.STOPPED));
         }
 
-        default State terminate(AkkaRpcActor<?> akkaRpcActor) {
+        default State terminate(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             throw new AkkaRpcInvalidStateException(
                     invalidStateTransitionMessage(TerminatingState.TERMINATING));
         }
@@ -562,7 +560,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         STARTED;
 
         @Override
-        public State start(AkkaRpcActor<?> akkaRpcActor) {
+        public State start(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             return STARTED;
         }
 
@@ -572,12 +570,15 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         }
 
         @Override
-        public State terminate(AkkaRpcActor<?> akkaRpcActor) {
+        public State terminate(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             akkaRpcActor.mainThreadValidator.enterMainThread();
 
             CompletableFuture<Void> terminationFuture;
             try {
-                terminationFuture = akkaRpcActor.rpcEndpoint.internalCallOnStop();
+                terminationFuture =
+                        runWithContextClassLoader(
+                                () -> akkaRpcActor.rpcEndpoint.internalCallOnStop(),
+                                flinkClassLoader);
             } catch (Throwable t) {
                 terminationFuture =
                         FutureUtils.completedExceptionally(
@@ -615,11 +616,12 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         STOPPED;
 
         @Override
-        public State start(AkkaRpcActor<?> akkaRpcActor) {
+        public State start(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             akkaRpcActor.mainThreadValidator.enterMainThread();
 
             try {
-                akkaRpcActor.rpcEndpoint.internalCallOnStart();
+                runWithContextClassLoader(
+                        () -> akkaRpcActor.rpcEndpoint.internalCallOnStart(), flinkClassLoader);
             } catch (Throwable throwable) {
                 akkaRpcActor.stop(
                         RpcEndpointTerminationResult.failure(
@@ -641,7 +643,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         }
 
         @Override
-        public State terminate(AkkaRpcActor<?> akkaRpcActor) {
+        public State terminate(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             akkaRpcActor.stop(RpcEndpointTerminationResult.success());
 
             return TerminatingState.TERMINATING;
@@ -653,7 +655,7 @@ class AkkaRpcActor<T extends RpcEndpoint & RpcGateway> extends AbstractActor {
         TERMINATING;
 
         @Override
-        public State terminate(AkkaRpcActor<?> akkaRpcActor) {
+        public State terminate(AkkaRpcActor<?> akkaRpcActor, ClassLoader flinkClassLoader) {
             return TERMINATING;
         }
 

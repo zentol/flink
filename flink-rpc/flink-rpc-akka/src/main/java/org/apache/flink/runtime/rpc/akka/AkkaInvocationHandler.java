@@ -20,7 +20,6 @@ package org.apache.flink.runtime.rpc.akka;
 
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.runtime.concurrent.akka.AkkaFutureUtils;
-import org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils;
 import org.apache.flink.runtime.rpc.FencedRpcGateway;
 import org.apache.flink.runtime.rpc.MainThreadExecutable;
 import org.apache.flink.runtime.rpc.RpcGateway;
@@ -55,6 +54,8 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.guardCompletionWithContextClassLoader;
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.runWithContextClassLoader;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
@@ -119,12 +120,13 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
         Object result;
 
-        if (declaringClass.equals(AkkaBasedEndpoint.class)
-                || declaringClass.equals(Object.class)
+        if (declaringClass.equals(Object.class)
                 || declaringClass.equals(RpcGateway.class)
                 || declaringClass.equals(StartStoppable.class)
                 || declaringClass.equals(MainThreadExecutable.class)
                 || declaringClass.equals(RpcServer.class)) {
+            result = runWithContextClassLoader(() -> method.invoke(this, args), flinkClassLoader);
+        } else if (declaringClass.equals(AkkaBasedEndpoint.class)) {
             result = method.invoke(this, args);
         } else if (declaringClass.equals(FencedRpcGateway.class)) {
             throw new UnsupportedOperationException(
@@ -235,7 +237,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             final CompletableFuture<Object> completableFuture = new CompletableFuture<>();
             resultFuture.whenComplete(
                     (resultValue, failure) ->
-                            ClassLoadingUtils.runWithContextClassLoader(
+                            runWithContextClassLoader(
                                     () -> {
                                         if (failure != null) {
                                             completableFuture.completeExceptionally(
@@ -253,12 +255,7 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
             } else {
                 try {
                     result =
-                            ClassLoadingUtils.runWithContextClassLoader(
-                                    () ->
-                                            completableFuture.get(
-                                                    futureTimeout.getSize(),
-                                                    futureTimeout.getUnit()),
-                                    flinkClassLoader);
+                            completableFuture.get(futureTimeout.getSize(), futureTimeout.getUnit());
                 } catch (ExecutionException ee) {
                     throw new RpcException(
                             "Failure while obtaining synchronous RPC result.",
@@ -383,7 +380,10 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
      * @return Response future
      */
     protected CompletableFuture<?> ask(Object message, Time timeout) {
-        return AkkaFutureUtils.toJava(Patterns.ask(rpcEndpoint, message, timeout.toMilliseconds()));
+        final CompletableFuture<?> response =
+                AkkaFutureUtils.toJava(
+                        Patterns.ask(rpcEndpoint, message, timeout.toMilliseconds()));
+        return guardCompletionWithContextClassLoader(response, flinkClassLoader);
     }
 
     @Override

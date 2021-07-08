@@ -118,7 +118,9 @@ public final class ActorSystemScheduledExecutorAdapter implements ScheduledExecu
 
     @Override
     public void execute(@Nonnull Runnable command) {
-        actorSystem.dispatcher().execute(command);
+        actorSystem
+                .dispatcher()
+                .execute(ClassLoadingUtils.withContextClassLoader(command, flinkClassLoader));
     }
 
     private Cancellable internalSchedule(Runnable runnable, long delay, TimeUnit unit) {

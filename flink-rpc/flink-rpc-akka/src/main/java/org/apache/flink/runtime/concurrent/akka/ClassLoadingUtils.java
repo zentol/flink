@@ -18,7 +18,12 @@
 package org.apache.flink.runtime.concurrent.akka;
 
 import org.apache.flink.util.TemporaryClassLoaderContext;
+import org.apache.flink.util.concurrent.FutureUtils;
 import org.apache.flink.util.function.SupplierWithException;
+import org.apache.flink.util.function.ThrowingRunnable;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /** Classloading utilities. */
 public class ClassLoadingUtils {
@@ -33,7 +38,20 @@ public class ClassLoadingUtils {
      */
     public static Runnable withContextClassLoader(
             Runnable runnable, ClassLoader contextClassLoader) {
-        return () -> runWithContextClassLoader(runnable, contextClassLoader);
+        return () -> runWithContextClassLoader(runnable::run, contextClassLoader);
+    }
+
+    /**
+     * Wraps the given executor such that all submitted are runnables are run in a {@link
+     * TemporaryClassLoaderContext} based on the given classloader.
+     *
+     * @param executor executor to wrap
+     * @param contextClassLoader class loader that should be set as the context class loader
+     * @return wrapped executor
+     */
+    public static Executor withContextClassLoader(
+            Executor executor, ClassLoader contextClassLoader) {
+        return new ContextClassLoaderSettingExecutor(executor, contextClassLoader);
     }
 
     /**
@@ -43,8 +61,8 @@ public class ClassLoadingUtils {
      * @param runnable runnable to run
      * @param contextClassLoader class loader that should be set as the context class loader
      */
-    public static void runWithContextClassLoader(
-            Runnable runnable, ClassLoader contextClassLoader) {
+    public static <T extends Throwable> void runWithContextClassLoader(
+            ThrowingRunnable<T> runnable, ClassLoader contextClassLoader) throws T {
         try (TemporaryClassLoaderContext ignored =
                 TemporaryClassLoaderContext.of(contextClassLoader)) {
             runnable.run();
@@ -63,6 +81,39 @@ public class ClassLoadingUtils {
         try (TemporaryClassLoaderContext ignored =
                 TemporaryClassLoaderContext.of(contextClassLoader)) {
             return supplier.get();
+        }
+    }
+
+    public static <T> CompletableFuture<T> guardCompletionWithContextClassLoader(
+            CompletableFuture<T> future, ClassLoader contextClassLoader) {
+        final CompletableFuture<T> guardedFuture = new CompletableFuture<>();
+        future.whenComplete(
+                (value, throwable) ->
+                        runWithContextClassLoader(
+                                () -> FutureUtils.doForward(value, throwable, guardedFuture),
+                                contextClassLoader));
+        return guardedFuture;
+    }
+
+    /**
+     * An {@link Executor} wrapper that temporarily resets the ContextClassLoader to the Flink
+     * ClassLoader.
+     */
+    private static class ContextClassLoaderSettingExecutor implements Executor {
+
+        private final Executor backingExecutor;
+        private ClassLoader contextClassLoader;
+
+        public ContextClassLoaderSettingExecutor(
+                Executor backingExecutor, ClassLoader contextClassLoader) {
+            this.backingExecutor = backingExecutor;
+            this.contextClassLoader = contextClassLoader;
+        }
+
+        @Override
+        public void execute(Runnable command) {
+            backingExecutor.execute(
+                    ClassLoadingUtils.withContextClassLoader(command, contextClassLoader));
         }
     }
 }

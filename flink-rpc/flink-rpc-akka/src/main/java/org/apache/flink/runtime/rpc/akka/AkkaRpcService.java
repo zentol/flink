@@ -77,6 +77,9 @@ import java.util.function.Function;
 import scala.Option;
 import scala.reflect.ClassTag$;
 
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.guardCompletionWithContextClassLoader;
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.runWithContextClassLoader;
+import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.withContextClassLoader;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 import static org.apache.flink.util.Preconditions.checkState;
@@ -167,7 +170,9 @@ public class AkkaRpcService implements RpcService {
                         new ExecutorThreadFactory(
                                 "AkkaRpcService-Supervisor-Termination-Future-Executor"));
         final ActorRef actorRef =
-                SupervisorActor.startSupervisorActor(actorSystem, terminationFutureExecutor);
+                SupervisorActor.startSupervisorActor(
+                        actorSystem,
+                        withContextClassLoader(terminationFutureExecutor, flinkClassLoader));
 
         return Supervisor.create(actorRef, terminationFutureExecutor);
     }
@@ -439,11 +444,9 @@ public class AkkaRpcService implements RpcService {
 
         actorSystemTerminationFuture.whenComplete(
                 (Void ignored, Throwable throwable) -> {
-                    if (throwable != null) {
-                        terminationFuture.completeExceptionally(throwable);
-                    } else {
-                        terminationFuture.complete(null);
-                    }
+                    runWithContextClassLoader(
+                            () -> FutureUtils.doForward(ignored, throwable, terminationFuture),
+                            flinkClassLoader);
 
                     LOG.info("Stopped Akka RPC service.");
                 });
@@ -550,27 +553,36 @@ public class AkkaRpcService implements RpcService {
                                                                         HandshakeSuccessMessage
                                                                                 .class))));
 
-        return actorRefFuture.thenCombineAsync(
-                handshakeFuture,
-                (ActorRef actorRef, HandshakeSuccessMessage ignored) -> {
-                    InvocationHandler invocationHandler = invocationHandlerFactory.apply(actorRef);
+        final CompletableFuture<C> gatewayFuture =
+                actorRefFuture.thenCombineAsync(
+                        handshakeFuture,
+                        (ActorRef actorRef, HandshakeSuccessMessage ignored) -> {
+                            InvocationHandler invocationHandler =
+                                    invocationHandlerFactory.apply(actorRef);
 
-                    // Rather than using the System ClassLoader directly, we derive the ClassLoader
-                    // from this class . That works better in cases where Flink runs embedded and
-                    // all Flink
-                    // code is loaded dynamically (for example from an OSGI bundle) through a custom
-                    // ClassLoader
-                    ClassLoader classLoader = getClass().getClassLoader();
+                            // Rather than using the System ClassLoader directly, we derive the
+                            // ClassLoader
+                            // from this class . That works better in cases where Flink runs
+                            // embedded and
+                            // all Flink
+                            // code is loaded dynamically (for example from an OSGI bundle) through
+                            // a custom
+                            // ClassLoader
+                            ClassLoader classLoader = getClass().getClassLoader();
 
-                    @SuppressWarnings("unchecked")
-                    C proxy =
-                            (C)
-                                    Proxy.newProxyInstance(
-                                            classLoader, new Class<?>[] {clazz}, invocationHandler);
+                            @SuppressWarnings("unchecked")
+                            C proxy =
+                                    (C)
+                                            Proxy.newProxyInstance(
+                                                    classLoader,
+                                                    new Class<?>[] {clazz},
+                                                    invocationHandler);
 
-                    return proxy;
-                },
-                actorSystem.dispatcher());
+                            return proxy;
+                        },
+                        actorSystem.dispatcher());
+
+        return guardCompletionWithContextClassLoader(gatewayFuture, flinkClassLoader);
     }
 
     private CompletableFuture<ActorRef> resolveActorAddress(String address) {

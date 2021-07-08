@@ -1319,13 +1319,16 @@ public class FutureUtils {
     }
 
     private static <T> BiConsumer<T, Throwable> forwardTo(CompletableFuture<T> target) {
-        return (value, throwable) -> {
-            if (throwable != null) {
-                target.completeExceptionally(throwable);
-            } else {
-                target.complete(value);
-            }
-        };
+        return (value, throwable) -> doForward(value, throwable, target);
+    }
+
+    public static <T> void doForward(
+            @Nullable T value, @Nullable Throwable throwable, CompletableFuture<T> target) {
+        if (throwable != null) {
+            target.completeExceptionally(throwable);
+        } else {
+            target.complete(value);
+        }
     }
 
     /**
