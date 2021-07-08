@@ -139,7 +139,7 @@ public class AkkaRpcService implements RpcService {
         // loaded (i.e., the plugin class loader)
         // we must ensure that the context class loader is set to the Flink class loader when we
         // call into Flink
-        // otherwise we could leak the plugin class loader or poison the context class leader of
+        // otherwise we could leak the plugin class loader or poison the context class loader of
         // external threads (because they inherit the current threads context class loader)
         internalScheduledExecutor = new ActorSystemScheduledExecutorAdapter(actorSystem);
 
