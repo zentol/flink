@@ -55,7 +55,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.guardCompletionWithContextClassLoader;
-import static org.apache.flink.runtime.concurrent.akka.ClassLoadingUtils.runWithContextClassLoader;
 import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
@@ -120,13 +119,12 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
         Object result;
 
-        if (declaringClass.equals(Object.class)
+        if (declaringClass.equals(AkkaBasedEndpoint.class)
+                || declaringClass.equals(Object.class)
                 || declaringClass.equals(RpcGateway.class)
                 || declaringClass.equals(StartStoppable.class)
                 || declaringClass.equals(MainThreadExecutable.class)
                 || declaringClass.equals(RpcServer.class)) {
-            result = runWithContextClassLoader(() -> method.invoke(this, args), flinkClassLoader);
-        } else if (declaringClass.equals(AkkaBasedEndpoint.class)) {
             result = method.invoke(this, args);
         } else if (declaringClass.equals(FencedRpcGateway.class)) {
             throw new UnsupportedOperationException(
@@ -236,19 +234,15 @@ class AkkaInvocationHandler implements InvocationHandler, AkkaBasedEndpoint, Rpc
 
             final CompletableFuture<Object> completableFuture = new CompletableFuture<>();
             resultFuture.whenComplete(
-                    (resultValue, failure) ->
-                            runWithContextClassLoader(
-                                    () -> {
-                                        if (failure != null) {
-                                            completableFuture.completeExceptionally(
-                                                    resolveTimeoutException(
-                                                            failure, callStackCapture, method));
-                                        } else {
-                                            completableFuture.complete(
-                                                    deserializeValueIfNeeded(resultValue, method));
-                                        }
-                                    },
-                                    flinkClassLoader));
+                    (resultValue, failure) -> {
+                        if (failure != null) {
+                            completableFuture.completeExceptionally(
+                                    resolveTimeoutException(failure, callStackCapture, method));
+                        } else {
+                            completableFuture.complete(
+                                    deserializeValueIfNeeded(resultValue, method));
+                        }
+                    });
 
             if (Objects.equals(returnType, CompletableFuture.class)) {
                 result = completableFuture;
