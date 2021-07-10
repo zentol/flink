@@ -561,13 +561,10 @@ public class AkkaRpcService implements RpcService {
                                     invocationHandlerFactory.apply(actorRef);
 
                             // Rather than using the System ClassLoader directly, we derive the
-                            // ClassLoader
-                            // from this class . That works better in cases where Flink runs
-                            // embedded and
-                            // all Flink
-                            // code is loaded dynamically (for example from an OSGI bundle) through
-                            // a custom
-                            // ClassLoader
+                            // ClassLoader from this class.
+                            // That works better in cases where Flink runs embedded and
+                            // all Flink code is loaded dynamically
+                            // (for example from an OSGI bundle) through a custom ClassLoader
                             ClassLoader classLoader = getClass().getClassLoader();
 
                             @SuppressWarnings("unchecked")

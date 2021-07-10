@@ -96,13 +96,13 @@ public class ClassLoadingUtils {
     }
 
     /**
-     * An {@link Executor} wrapper that temporarily resets the ContextClassLoader to the Flink
+     * An {@link Executor} wrapper that temporarily resets the ContextClassLoader to the given
      * ClassLoader.
      */
     private static class ContextClassLoaderSettingExecutor implements Executor {
 
         private final Executor backingExecutor;
-        private ClassLoader contextClassLoader;
+        private final ClassLoader contextClassLoader;
 
         public ContextClassLoaderSettingExecutor(
                 Executor backingExecutor, ClassLoader contextClassLoader) {
