@@ -103,7 +103,8 @@ public class KubernetesClientTestBase extends KubernetesTestBase {
                         .withLoadBalancer(
                                 new LoadBalancerStatus(
                                         Collections.singletonList(
-                                                new LoadBalancerIngress(hostname, ip))))
+                                                new LoadBalancerIngress(
+                                                        hostname, ip, Collections.emptyList()))))
                         .build();
 
         return buildExternalService(
