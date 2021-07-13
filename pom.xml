@@ -133,6 +133,7 @@ under the License.
 		<beam.version>2.27.0</beam.version>
 		<protoc.version>3.11.1</protoc.version>
 		<arrow.version>0.16.0</arrow.version>
+		<lz4.version>1.8.0</lz4.version>
 		<japicmp.skip>false</japicmp.skip>
 		<flink.convergence.phase>validate</flink.convergence.phase>
 		<!--
