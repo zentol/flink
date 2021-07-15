@@ -95,7 +95,6 @@ under the License.
 			<dependency>
 				<groupId>org.lz4</groupId>
 				<artifactId>lz4-java</artifactId>
-				<version>${lz4.version}</version>
 			</dependency>
 
 			<dependency>
